@@ -1,13 +1,20 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace BossRush.NPCs
+namespace BossRush.NPCs;
+
+public class BossSlaves : GlobalNPC
 {
-    public class BossSlaves : GlobalNPC
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
     {
-        public override void SetDefaults(NPC entity)
+        return lateInstantiation;
+    }
+
+    public override void SetDefaults(NPC entity)
+    {
+        if (BossRushSystem.IsBossRushActive() && !entity.boss)
         {
-            entity.damage *= 2;
+            entity.lifeMax *= 30;
         }
     }
 }

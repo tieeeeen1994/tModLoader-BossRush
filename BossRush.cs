@@ -1,8 +1,7 @@
 using Terraria.ModLoader;
 
-namespace BossRush
+namespace BossRush;
+
+public class BossRush : Mod
 {
-    public class BossRush : Mod
-	{
-	}
 }

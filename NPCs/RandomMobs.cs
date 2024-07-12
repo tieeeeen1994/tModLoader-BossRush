@@ -1,17 +1,21 @@
 ﻿using Terraria;
 using Terraria.ModLoader;
 
-namespace BossRush.NPCs
+namespace BossRush.NPCs;
+
+public class RandomMobs : GlobalNPC
 {
-    public class RandomMobs : GlobalNPC
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
     {
-        public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+        return lateInstantiation;
+    }
+
+    public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+    {
+        if (BossRushSystem.IsBossRushActive())
         {
-            if (BossRushSystem.I.state != BossRushSystem.States.Off)
-            {
-                maxSpawns = 0;
-                spawnRate = int.MaxValue;
-            }
+            maxSpawns = 0;
+            spawnRate = int.MaxValue;
         }
     }
 }
