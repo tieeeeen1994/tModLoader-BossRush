@@ -77,6 +77,10 @@ public class BossRush : Mod
         {
             orig(self, closestPlayer);
         }
+        else if (BossRushSystem.IsBossRushActive() && self.type == BossRushSystem.I.currentBoss.type)
+        {
+            BossRushSystem.I.bossDefeated = true;
+        }
     }
 
     private void NPCLoot_DropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)

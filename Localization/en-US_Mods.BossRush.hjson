@@ -4,3 +4,10 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+Messages: {
+	BossRushActive: Boss Rush commencing.
+	PussyOut: Why pussy out?
+	Win: You win.
+	Failure: An issue of skill, it is.
+}

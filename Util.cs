@@ -73,21 +73,6 @@ public static class Util
         return new(RoundOff(value.X), RoundOff(value.Y));
     }
 
-    public static bool IsNPCGone(NPC npc)
-    {
-        return IsNPCDespawned(npc) || IsNPCDefeated(npc);
-    }
-
-    public static bool IsNPCDefeated(NPC npc)
-    {
-        return npc.life <= 0;
-    }
-
-    public static bool IsNPCDespawned(NPC npc)
-    {
-        return npc == null || !npc.active;
-    }
-
     public static void NewText(string message, Color? color = null)
     {
         if (Main.netMode == NetmodeID.SinglePlayer)

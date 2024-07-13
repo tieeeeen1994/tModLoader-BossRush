@@ -10,6 +10,10 @@ public partial class BossRushSystem
         public double time;
         public bool dayTime;
 
+        public static TimeContext Day => new TimeContext(0, true);
+
+        public static TimeContext Night => new TimeContext(0, false);
+
         public TimeContext(double time, bool dayTime)
         {
             this.time = time;

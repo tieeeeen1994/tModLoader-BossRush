@@ -14,7 +14,7 @@ public class BossSlaves : GlobalNPC
     {
         if (BossRushSystem.IsBossRushActive() && !entity.boss)
         {
-            entity.lifeMax *= 30;
+            // entity.lifeMax *= 30;
         }
     }
 }

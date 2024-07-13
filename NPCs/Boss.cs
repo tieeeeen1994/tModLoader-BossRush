@@ -14,7 +14,7 @@ public class Boss : GlobalNPC
     {
         if (BossRushSystem.IsBossRushActive() && entity.boss)
         {
-            entity.lifeMax = Util.RoundOff(entity.lifeMax * 0.1f);
+            // entity.lifeMax = Util.RoundOff(entity.lifeMax * 0.1f);
         }
     }
 }
