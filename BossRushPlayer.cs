@@ -1,5 +1,4 @@
-﻿using System.Security.Policy;
-using Terraria;
+﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 
