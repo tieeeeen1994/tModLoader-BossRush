@@ -1,5 +1,4 @@
 ﻿using Terraria;
-using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace BossRush;
@@ -10,7 +9,7 @@ public class BossRushPlayer : ModPlayer
     {
         if (BossRushSystem.IsBossRushActive())
         {
-            Player.respawnTimer = 600;
+            Player.respawnTimer = 10 * Main.frameRate;
         }
     }
 }

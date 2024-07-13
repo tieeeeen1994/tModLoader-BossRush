@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
+using static BossRush.BossRushSystem;
 
 namespace BossRush;
 
 public static class Util
 {
-    public static int SpawnBoss(int type, Vector2? offset = null)
+    public static int SpawnBoss(BossData data)
     {
-        Vector2 offsetValue = offset ?? Vector2.Zero;
+        data.timeContext?.ChangeTime();
+
+        Vector2 offsetValue = data.RandomSpawnLocation();
         List<Player> potentialTargetPlayers = [];
         float highestAggro = float.MinValue;
 
@@ -32,7 +38,7 @@ public static class Util
         int spawnX = RoundOff(target.Center.X + offsetValue.X);
         int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
 
-        return NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 0, 0, 0, 0, 0, target.whoAmI);
+        return NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, data.type, 0, 0, 0, 0, 0, target.whoAmI);
     }
 
     public static void SpawnDeadPlayers()
@@ -65,5 +71,32 @@ public static class Util
     public static Vector2 RoundOff(Vector2 value)
     {
         return new(RoundOff(value.X), RoundOff(value.Y));
+    }
+
+    public static bool IsNPCGone(NPC npc)
+    {
+        return IsNPCDespawned(npc) || IsNPCDefeated(npc);
+    }
+
+    public static bool IsNPCDefeated(NPC npc)
+    {
+        return npc.life <= 0;
+    }
+
+    public static bool IsNPCDespawned(NPC npc)
+    {
+        return npc == null || !npc.active;
+    }
+
+    public static void NewText(string message, Color? color = null)
+    {
+        if (Main.netMode == NetmodeID.SinglePlayer)
+        {
+            Main.NewText(message, color ?? Color.White);
+        }
+        else if (Main.netMode == NetmodeID.Server)
+        {
+            ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), color ?? Color.White);
+        }
     }
 }

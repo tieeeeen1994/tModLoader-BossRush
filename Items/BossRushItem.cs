@@ -17,6 +17,7 @@ public class BossRushItem : ModItem
         Item.consumable = false;
         Item.useTime = Item.useAnimation = 60;
         Item.UseSound = SoundID.Roar;
+        Item.autoReuse = false;
     }
 
     public override string Texture => $"Terraria/Images/Item_{ItemID.Acorn}";
