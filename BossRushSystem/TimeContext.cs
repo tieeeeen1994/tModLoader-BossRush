@@ -6,7 +6,7 @@ namespace BossRush;
 public partial class BossRushSystem
 {
     /// <summary>
-    /// Struct for containing information about the spawn requirements of a boss.
+    /// Struct for containing information about the spawn requirements of a boss related to time.
     /// This is used in BossData struct.
     /// </summary>
     public struct TimeContext

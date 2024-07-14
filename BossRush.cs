@@ -13,6 +13,9 @@ namespace BossRush;
 /// </summary>
 public class BossRush : Mod
 {
+    /// <summary>
+    ///
+    /// </summary>
     public static BossRush I => ModContent.GetInstance<BossRush>();
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -22,11 +25,17 @@ public class BossRush : Mod
         {
             case PacketType.Teleport:
                 Vector2 position = reader.ReadVector2();
-                Main.player[whoAmI].Teleport(position);
+                if (Main.LocalPlayer.active)
+                {
+                    Main.LocalPlayer.Teleport(position);
+                }
                 break;
 
             case PacketType.SpawnPlayer:
-                Main.player[whoAmI].Spawn(PlayerSpawnContext.ReviveFromDeath);
+                if (Main.LocalPlayer.dead)
+                {
+                    Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                }
                 break;
         }
     }
@@ -156,7 +165,13 @@ public class BossRush : Mod
 
     public enum PacketType : byte
     {
+        /// <summary>
+        /// Teleports a player to a specified position.
+        /// </summary>
         Teleport,
+        /// <summary>
+        /// Revives a player from death.
+        /// </summary>
         SpawnPlayer
     }
 }

@@ -61,6 +61,11 @@ public partial class BossRushSystem
         /// </summary>
         public TimeContext? timeContext;
 
+        /// <summary>
+        /// Place requirement for the boss to work properly.
+        /// Players will be teleported to the specified location before the boss is spawned.
+        /// If no context is provided, players will not be teleported.
+        /// </summary>
         public PlaceContext? placeContext;
 
         /// <summary>

@@ -9,6 +9,11 @@
             Mod class for Boss Rush.
             </summary>
         </member>
+        <member name="P:BossRush.BossRush.I">
+             <summary>
+            
+             </summary>
+        </member>
         <member name="M:BossRush.BossRush.Load">
             <summary>
             Contains hooks and detours for the mod.
@@ -51,6 +56,16 @@
             <summary>
             Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
             Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRush.PacketType.Teleport">
+            <summary>
+            Teleports a player to a specified position.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRush.PacketType.SpawnPlayer">
+            <summary>
+            Revives a player from death.
             </summary>
         </member>
         <member name="T:BossRush.BossRushPlayer">
@@ -297,6 +312,13 @@
             If no context is provided, time will not change.
             </summary>
         </member>
+        <member name="F:BossRush.BossRushSystem.BossData.placeContext">
+            <summary>
+            Place requirement for the boss to work properly.
+            Players will be teleported to the specified location before the boss is spawned.
+            If no context is provided, players will not be teleported.
+            </summary>
+        </member>
         <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int16},System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
@@ -331,7 +353,7 @@
         </member>
         <member name="T:BossRush.BossRushSystem.TimeContext">
             <summary>
-            Struct for containing information about the spawn requirements of a boss.
+            Struct for containing information about the spawn requirements of a boss related to time.
             This is used in BossData struct.
             </summary>
         </member>
@@ -367,6 +389,39 @@
         <member name="M:BossRush.BossRushSystem.TimeContext.ChangeTime">
             <summary>
             Changes the time of day according to this struct.
+            </summary>
+        </member>
+        <member name="T:BossRush.PlaceContext">
+            <summary>
+            Struct for containing information about the spawn requirements of a boss related to place.
+            This is used in BossData struct.
+            </summary>
+        </member>
+        <member name="F:BossRush.PlaceContext.initialPosition">
+            <summary>
+            The initial position where players will be teleported.
+            </summary>
+        </member>
+        <member name="F:BossRush.PlaceContext.teleportRange">
+            <summary>
+            The range where players will be teleported based on the initial position.
+            The initial position will be the center of this rectangle.
+            A random location will be chosen in the rectangle so that players will not be cramped in one spot.
+            </summary>
+        </member>
+        <member name="M:BossRush.PlaceContext.#ctor(Microsoft.Xna.Framework.Vector2,System.Int32)">
+            <summary>
+            Constructor for PlaceContext.
+            </summary>
+            <param name="initialPosition">Position where players are teleported</param>
+            <param name="radius">
+            Length of the rectangle from the center to the edge
+            This is not a circle
+            </param>
+        </member>
+        <member name="M:BossRush.PlaceContext.TeleportPlayers">
+            <summary>
+            Teleports all active players to a random location in the teleport range.
             </summary>
         </member>
         <member name="T:BossRush.Items.BossRushItem">
