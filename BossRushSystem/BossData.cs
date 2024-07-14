@@ -61,6 +61,8 @@ public partial class BossRushSystem
         /// </summary>
         public TimeContext? timeContext;
 
+        public PlaceContext? placeContext;
+
         /// <summary>
         /// Constructor for BossData.
         /// </summary>
@@ -71,10 +73,11 @@ public partial class BossRushSystem
         /// <param name="lifeFlatIncrease">Life added when the boss spawns</param>
         /// <param name="damageFlatIncrease">Damage added when the boss spawns</param>
         /// <param name="timeContext">Refer to TimeContext struct for more details</param>
+        /// <param name="placeContext">Refer to PlaceContext struct for more details</param>
         public BossData(List<short> type, List<Rectangle> spawnOffsets = null,
                         float lifeMultiplier = 1f, float damageMultiplier = 1f,
                         int lifeFlatIncrease = 0, int damageFlatIncrease = 0,
-                        TimeContext? timeContext = null)
+                        TimeContext? timeContext = null, PlaceContext? placeContext = null)
         {
             this.type = type;
             this.spawnOffsets = spawnOffsets ?? [new(0, 0, 0, 0)];
@@ -83,6 +86,7 @@ public partial class BossRushSystem
             this.lifeFlatIncrease = lifeFlatIncrease;
             this.damageFlatIncrease = damageFlatIncrease;
             this.timeContext = timeContext;
+            this.placeContext = placeContext;
         }
 
         /// <summary>
@@ -95,12 +99,13 @@ public partial class BossRushSystem
         /// <param name="lifeFlatIncrease">Life added when the boss spawns</param>
         /// <param name="damageFlatIncrease">Damage added when the boss spawns</param>
         /// <param name="timeContext">Refer to TimeContext struct for more details</param>
+        /// <param name="placeContext">Refer to PlaceContext struct for more details</param>
         public BossData(short type, List<Rectangle> spawnOffsets = null,
                         float lifeMultiplier = 1f, float damageMultiplier = 1f,
                         int lifeFlatIncrease = 0, int damageFlatIncrease = 0,
-                        TimeContext? timeContext = null)
+                        TimeContext? timeContext = null, PlaceContext? placeContext = null)
                : this([type], spawnOffsets, lifeMultiplier, damageMultiplier,
-                      lifeFlatIncrease, damageFlatIncrease, timeContext)
+                      lifeFlatIncrease, damageFlatIncrease, timeContext, placeContext)
         {
         }
 
@@ -111,11 +116,8 @@ public partial class BossRushSystem
         public Vector2 RandomSpawnLocation()
         {
             Rectangle spawnOffset = Main.rand.Next(spawnOffsets);
-            int signWidth = Math.Sign(spawnOffset.Width);
-            int signHeight = Math.Sign(spawnOffset.Height);
-            int offsetX = spawnOffset.X + Main.rand.Next(Math.Abs(spawnOffset.Width) + 1) * signWidth;
-            int offsetY = spawnOffset.Y + Main.rand.Next(Math.Abs(spawnOffset.Height) + 1) * signHeight;
-            return Util.RoundOff(new Vector2(offsetX, offsetY));
+            Vector2 chosenOffset = Util.ChooseRandomPointInRectangle(spawnOffset);
+            return Util.RoundOff(chosenOffset);
         }
     }
 }

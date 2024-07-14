@@ -6,6 +6,7 @@ using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 
 namespace BossRush;
 
@@ -22,6 +23,7 @@ public static class Util
     public static List<int> SpawnBoss(BossRushSystem.BossData data)
     {
         data.timeContext?.ChangeTime();
+        data.placeContext?.TeleportPlayers();
 
         List<Player> potentialTargetPlayers = [];
         float highestAggro = float.MinValue;
@@ -65,7 +67,16 @@ public static class Util
         {
             if (player.dead)
             {
-                player.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    player.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                }
+                else if (Main.netMode == NetmodeID.Server)
+                {
+                    ModPacket packet = BossRush.I.GetPacket();
+                    packet.Write((byte)BossRush.PacketType.SpawnPlayer);
+                    packet.Send(player.whoAmI);
+                }
             }
         }
     }
@@ -143,5 +154,19 @@ public static class Util
     public static int SecondsInFrames(int seconds)
     {
         return seconds * Main.frameRate;
+    }
+
+    /// <summary>
+    /// Chooses a random point in a rectangle.
+    /// </summary>
+    /// <param name="rectangle">Rectangle to choose a rnadom point from</param>
+    /// <returns>A random point</returns>
+    public static Vector2 ChooseRandomPointInRectangle(Rectangle rectangle)
+    {
+        int signWidth = Math.Sign(rectangle.Width);
+        int signHeight = Math.Sign(rectangle.Height);
+        int offsetX = rectangle.X + Main.rand.Next(Math.Abs(rectangle.Width) + 1) * signWidth;
+        int offsetY = rectangle.Y + Main.rand.Next(Math.Abs(rectangle.Height) + 1) * signHeight;
+        return new(offsetX, offsetY);
     }
 }

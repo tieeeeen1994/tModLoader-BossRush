@@ -1,4 +1,6 @@
+using System.IO;
 using System.Reflection;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -11,6 +13,24 @@ namespace BossRush;
 /// </summary>
 public class BossRush : Mod
 {
+    public static BossRush I => ModContent.GetInstance<BossRush>();
+
+    public override void HandlePacket(BinaryReader reader, int whoAmI)
+    {
+        PacketType packetType = (PacketType)reader.ReadByte();
+        switch (packetType)
+        {
+            case PacketType.Teleport:
+                Vector2 position = reader.ReadVector2();
+                Main.player[whoAmI].Teleport(position);
+                break;
+
+            case PacketType.SpawnPlayer:
+                Main.player[whoAmI].Spawn(PlayerSpawnContext.ReviveFromDeath);
+                break;
+        }
+    }
+
     /// <summary>
     /// Contains hooks and detours for the mod.
     /// Repsonsible for disabling loot in Boss Rush mode and tracking boss defeat.
@@ -132,5 +152,11 @@ public class BossRush : Mod
         {
             orig(self, ref typeName);
         }
+    }
+
+    public enum PacketType : byte
+    {
+        Teleport,
+        SpawnPlayer
     }
 }

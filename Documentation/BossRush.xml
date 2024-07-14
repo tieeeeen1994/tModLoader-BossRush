@@ -297,7 +297,7 @@
             If no context is provided, time will not change.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int16},System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int16},System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
@@ -308,8 +308,9 @@
             <param name="lifeFlatIncrease">Life added when the boss spawns</param>
             <param name="damageFlatIncrease">Damage added when the boss spawns</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
+            <param name="placeContext">Refer to PlaceContext struct for more details</param>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Int16,System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Int16,System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
@@ -320,6 +321,7 @@
             <param name="lifeFlatIncrease">Life added when the boss spawns</param>
             <param name="damageFlatIncrease">Damage added when the boss spawns</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
+            <param name="placeContext">Refer to PlaceContext struct for more details</param>
         </member>
         <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation">
             <summary>
@@ -476,6 +478,13 @@
             </summary>
             <param name="seconds">Time in seconds</param>
             <returns>Computed frames</returns>
+        </member>
+        <member name="M:BossRush.Util.ChooseRandomPointInRectangle(Microsoft.Xna.Framework.Rectangle)">
+            <summary>
+            Chooses a random point in a rectangle.
+            </summary>
+            <param name="rectangle">Rectangle to choose a rnadom point from</param>
+            <returns>A random point</returns>
         </member>
     </members>
 </doc>
