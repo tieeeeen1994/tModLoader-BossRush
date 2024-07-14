@@ -7,24 +7,88 @@ using Terraria.ModLoader;
 
 namespace BossRush;
 
+/// <summary>
+/// Main class for the Boss Rush System.
+/// </summary>
 public partial class BossRushSystem : ModSystem
 {
+    /// <summary>
+    /// Instance of the Boss Rush System.
+    /// </summary>
     public static BossRushSystem I => ModContent.GetInstance<BossRushSystem>();
 
+    /// <summary>
+    /// Checks if Boss Rush is active.
+    /// </summary>
+    /// <returns>True or False</returns>
     public static bool IsBossRushActive() => I.state != States.Off;
 
+    /// <summary>
+    /// Checks if Boss Rush is inactive.
+    /// </summary>
+    /// <returns>True or False</returns>
     public static bool IsBossRushOff() => I.state == States.Off;
 
+    /// <summary>
+    /// Current state of the Boss Rush System.
+    /// </summary>
     public States state = States.Off;
+
+    /// <summary>
+    /// Pertains to the current boss of a stage. This contains all the entities of the boss.
+    /// e.g. The Twins will contain Retinazer and Spazmatism.
+    /// </summary>
     public List<NPC> currentBoss = null;
+
+    /// <summary>
+    /// Just a reference to the boss of the current stage.
+    /// This field is equal to currentBoss.First().
+    /// This field exists for performance reasons.
+    /// Use this if checks are needed for the boss, but only one entity is needed to confirm the current boss.
+    /// e.g.
+    /// </summary>
     public NPC referenceBoss = null;
+
+    /// <summary>
+    /// Contains trackers for the bosses if they were truly defeated or not.
+    /// Bosses are considered defeated if they are killed by the player and supposed loot is to be dropped.
+    /// Boss Rush mod disables loot drops for enemies and instead uses that as a tracker.
+    /// </summary>
     public Dictionary<NPC, bool> bossDefeated = null;
+
+    /// <summary>
+    /// Contains the queue of bosses to be spawned.
+    /// Each entry is one boss rush stage, and a boss rush stage can contain multiple entities.
+    /// </summary>
     private Queue<BossData> bossQueue = [];
+
+    /// <summary>
+    /// Flag for determining of all players are dead within a boss rush stage.
+    /// </summary>
     private bool allDead = false;
+
+    /// <summary>
+    /// A timer for fallback scenarios if all players are dead.
+    /// Boss Rush System only officially ends when all players are dead and all bosses have despawned.
+    /// This timer is a fallback in case the boss refuses to despawn.
+    /// </summary>
     private int allDeadEndTimer = 0;
+
+    /// <summary>
+    /// A timer for preparing the next boss.
+    /// It just adds pauses in between bosses upon being defeated and spawning a new one.
+    /// </summary>
     private int prepareTimer = 0;
+
+    /// <summary>
+    /// A timer for performance reasons. States.Run is a heavy task, so the timer is used to lessen the load.
+    /// Only execute the code in States.Run every time the timer hits the threshold.
+    /// </summary>
     private int performanceTimer = 0;
 
+    /// <summary>
+    /// Main code for the Boss Rush System. Runs every in-game frame.
+    /// </summary>
     public override void PostUpdateWorld()
     {
         switch (state)
@@ -66,11 +130,18 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
+    /// <summary>
+    /// When the world shuts down, the Boss Rush System will reset.
+    /// This will ensure that loading into the world again resets everything.
+    /// </summary>
     public override void OnWorldUnload()
     {
         ResetSystem();
     }
 
+    /// <summary>
+    /// Method mainly used for the item that activates Boss Rush mode.
+    /// </summary>
     public void ToggleBossRush()
     {
         switch (state)
@@ -89,6 +160,10 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
+    /// <summary>
+    /// Initializes the Boss Rush System. This is where bosses are queued using BossData struct.
+    /// Refer to BossData struct for more details.
+    /// </summary>
     private void InitializeSystem()
     {
         ResetSystem();
@@ -162,6 +237,9 @@ public partial class BossRushSystem : ModSystem
         bossQueue.Enqueue(new(NPCID.MoonLordCore));
     }
 
+    /// <summary>
+    /// Resets the system to default values.
+    /// </summary>
     private void ResetSystem()
     {
         state = States.Off;
@@ -175,6 +253,9 @@ public partial class BossRushSystem : ModSystem
         performanceTimer = 0;
     }
 
+    /// <summary>
+    /// Spawns the next boss in the queue.
+    /// </summary>
     private void SpawnNextBoss()
     {
         BossData nextBoss = bossQueue.Peek();
@@ -184,6 +265,10 @@ public partial class BossRushSystem : ModSystem
         bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
     }
 
+    /// <summary>
+    /// Tracks the deaths of all players. Does not return anything.
+    /// It automatically assigns allDead variable upon running the method.
+    /// </summary>
     private void TrackPlayerDeaths()
     {
         if (!allDead)
@@ -200,22 +285,40 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
+    /// <summary>
+    /// Checks if the boss is gone.
+    /// The boss is considered gone if it is despawned or defeated.
+    /// </summary>
+    /// <returns>True or False</returns>
     private bool IsBossGone()
     {
         return IsBossDespawned() || IsBossDefeated();
     }
 
+    /// <summary>
+    /// Checks if the boss is defeated.
+    /// The boss is considered defeated if all entities are defeated.
+    /// </summary>
+    /// <returns>True or False</returns>
     private bool IsBossDefeated()
     {
         return !bossDefeated.ContainsValue(false);
     }
 
+    /// <summary>
+    /// Checks if the boss is despawned.
+    /// The boss is considered despawned if it is becomes inactive while the tracker has not marked it as defeated.
+    /// </summary>
+    /// <returns>True or False</returns>
     private bool IsBossDespawned()
     {
         return currentBoss == null || bossDefeated == null ||
                currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
     }
 
+    /// <summary>
+    /// Main code for States.Run.
+    /// </summary>
     private void CheckBossAndPlayerCondition()
     {
         if (allDead)
@@ -239,5 +342,30 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
-    public enum States { Off, On, Prepare, Run, End }
+    /// <summary>
+    /// States of the Boss Rush System.
+    /// </summary>
+    public enum States
+    {
+        /// <summary>
+        /// Boss Rush is inactive.
+        /// </summary>
+        Off,
+        /// <summary>
+        /// Boss Rush is initializing.
+        /// </summary>
+        On,
+        /// <summary>
+        /// Boss Rush is preparing the next boss.
+        /// </summary>
+        Prepare,
+        /// <summary>
+        /// Boss Rush is checking for player and boss conditions.
+        /// </summary>
+        Run,
+        /// <summary>
+        /// Boss Rush is ending.
+        /// </summary>
+        End
+    }
 }

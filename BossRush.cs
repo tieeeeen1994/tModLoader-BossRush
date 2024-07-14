@@ -6,8 +6,16 @@ using Terraria.ModLoader;
 
 namespace BossRush;
 
+/// <summary>
+/// Mod class for Boss Rush.
+/// </summary>
 public class BossRush : Mod
 {
+    /// <summary>
+    /// Contains hooks and detours for the mod.
+    /// Repsonsible for disabling loot in Boss Rush mode and tracking boss defeat.
+    /// It also removes the pesky King Slime has awoken message included in NPC.NewNPC when Boss Rush is active.
+    /// </summary>
     public override void Load()
     {
         On_NPC.NPCLoot_DropHeals += NPCLoot_DropHeals;
@@ -17,6 +25,9 @@ public class BossRush : Mod
         On_NPC.NewNPC += NewNPC;
     }
 
+    /// <summary>
+    /// Unloads the hooks and detours for the mod.
+    /// </summary>
     public override void Unload()
     {
         On_NPC.NPCLoot_DropHeals -= NPCLoot_DropHeals;
@@ -26,6 +37,10 @@ public class BossRush : Mod
         On_NPC.NewNPC -= NewNPC;
     }
 
+    /// <summary>
+    /// Detour for NPC.NewNPC.
+    /// It only disables the King Slime has awoken message when Boss Rush is active.
+    /// </summary>
     private int NewNPC(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type,
                        int Start, float ai0, float ai1, float ai2, float ai3, int Target)
     {
@@ -63,6 +78,10 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Detour for NPC.NPCLoot_DropMoney.
+    /// Removes coin drops when Boss Rush is active.
+    /// </summary>
     private void NPCLoot_DropMoney(On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -71,6 +90,11 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Detour for NPC.NPCLoot_DropItems.
+    /// Removes item drops when Boss Rush is active.
+    /// It is instead used as a tracker for boss defeat when Boss Rush is active.
+    /// </summary>
     private void NPCLoot_DropItems(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -84,6 +108,11 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Detour for NPC.NPCLoot_DropHeals.
+    /// Disables mana and heart drops when Boss Rush is active.
+    /// Statues should still work.
+    /// </summary>
     private void NPCLoot_DropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -92,6 +121,10 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
+    /// Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
+    /// </summary>
     private void DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig,
                                           NPC self, ref string typeName)
     {
