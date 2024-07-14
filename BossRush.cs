@@ -77,9 +77,10 @@ public class BossRush : Mod
         {
             orig(self, closestPlayer);
         }
-        else if (BossRushSystem.IsBossRushActive() && self.type == BossRushSystem.I.currentBoss.type)
+        else if (BossRushSystem.IsBossRushActive() &&
+                 BossRushSystem.I.currentBoss.Exists(boss => boss == self))
         {
-            BossRushSystem.I.bossDefeated = true;
+            BossRushSystem.I.bossDefeated[self] = true;
         }
     }
 

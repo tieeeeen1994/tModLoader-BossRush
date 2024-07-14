@@ -12,11 +12,10 @@ namespace BossRush;
 
 public static class Util
 {
-    public static int SpawnBoss(BossData data)
+    public static List<int> SpawnBoss(BossData data)
     {
         data.timeContext?.ChangeTime();
 
-        Vector2 offsetValue = data.RandomSpawnLocation();
         List<Player> potentialTargetPlayers = [];
         float highestAggro = float.MinValue;
 
@@ -35,11 +34,19 @@ public static class Util
         }
 
         Player target = Main.rand.Next(potentialTargetPlayers);
-        int spawnX = RoundOff(target.Center.X + offsetValue.X);
-        int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
+        List<int> spawnedBossIndex = [];
 
-        // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-        return NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, data.type, 1);
+        foreach (var type in data.type)
+        {
+            Vector2 offsetValue = data.RandomSpawnLocation();
+            int spawnX = RoundOff(target.Center.X + offsetValue.X);
+            int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
+
+            // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
+            spawnedBossIndex.Add(NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1));
+        }
+
+        return spawnedBossIndex;
     }
 
     public static void SpawnDeadPlayers()
@@ -53,9 +60,10 @@ public static class Util
         }
     }
 
-    public static void CleanAllEnemies()
+    public static void CleanAllEnemies(IEnumerable<NPC> npcs = null)
     {
-        foreach (var npc in Main.npc)
+        npcs ??= Main.npc;
+        foreach (var npc in npcs)
         {
             if (!npc.friendly)
             {
@@ -84,5 +92,15 @@ public static class Util
         {
             ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), color ?? Color.White);
         }
+    }
+
+    public static int SecondsInFrames(float seconds)
+    {
+        return RoundOff(seconds * Main.frameRate);
+    }
+
+    public static int SecondsInFrames(int seconds)
+    {
+        return seconds * Main.frameRate;
     }
 }

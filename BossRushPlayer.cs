@@ -16,17 +16,21 @@ public class BossRushPlayer : ModPlayer
 
     public override void PostUpdate()
     {
-        if (BossRushSystem.IsBossRushActive() && BossRushSystem.I.currentBoss != null)
+        if (BossRushSystem.IsBossRushActive())
         {
-            switch (BossRushSystem.I.currentBoss.type)
+            NPC boss = BossRushSystem.I.referenceBoss;
+            if (boss != null && boss.active)
             {
-                case NPCID.BrainofCthulhu:
-                    Player.ZoneCrimson = true;
-                    break;
+                switch (boss.type)
+                {
+                    case NPCID.BrainofCthulhu:
+                        Player.ZoneCrimson = true;
+                        break;
 
-                case NPCID.QueenBee:
-                    Player.ZoneJungle = true;
-                    break;
+                    case NPCID.QueenBee:
+                        Player.ZoneJungle = true;
+                        break;
+                }
             }
         }
     }

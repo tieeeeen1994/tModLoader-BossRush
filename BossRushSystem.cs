@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -15,12 +16,14 @@ public partial class BossRushSystem : ModSystem
     public static bool IsBossRushOff() => I.state == States.Off;
 
     public States state = States.Off;
-    public NPC currentBoss = null;
-    public bool bossDefeated = false;
+    public List<NPC> currentBoss = null;
+    public NPC referenceBoss = null;
+    public Dictionary<NPC, bool> bossDefeated = null;
     private Queue<BossData> bossQueue = [];
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
+    private int performanceTimer = 0;
 
     public override void PostUpdateWorld()
     {
@@ -32,7 +35,7 @@ public partial class BossRushSystem : ModSystem
                 break;
 
             case States.Prepare:
-                if (++prepareTimer >= .3f * Main.frameRate)
+                if (++prepareTimer >= Util.SecondsInFrames(.3f))
                 {
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
@@ -50,23 +53,10 @@ public partial class BossRushSystem : ModSystem
 
             case States.Run:
                 TrackPlayerDeaths();
-                if (allDead)
+                if (++performanceTimer >= Util.SecondsInFrames(.05f))
                 {
-                    if (IsBossGone() || ++allDeadEndTimer >= 10 * Main.frameRate)
-                    {
-                        state = States.End;
-                    }
-                }
-                else if (IsBossDespawned())
-                {
-                    state = States.Prepare;
-                }
-                else if (IsBossDefeated())
-                {
-                    Util.SpawnDeadPlayers();
-                    allDead = false;
-                    bossQueue.Dequeue();
-                    state = States.Prepare;
+                    performanceTimer = 0;
+                    CheckBossAndPlayerCondition();
                 }
                 break;
 
@@ -135,9 +125,10 @@ public partial class BossRushSystem : ModSystem
                                              new(-1000, -500, 100, -100)],
                               timeContext: TimeContext.Day));
 
-        // bossQueue.Enqueue(new(NPCID.TheTwins,
-        //                       spawnOffsets: [new(1000, 1000, 200, -2000),
-        //                                      new(-1000, 1000, -200,-2000)]));
+        bossQueue.Enqueue(new([NPCID.Retinazer, NPCID.Spazmatism],
+                              spawnOffsets: [new(1000, 1000, 200, -2000),
+                                             new(-1000, 1000, -200,-2000)],
+                              timeContext: TimeContext.Night));
 
         bossQueue.Enqueue(new(NPCID.TheDestroyer,
                               spawnOffsets: [new(-1000, 1000, 2000, 500)],
@@ -175,19 +166,22 @@ public partial class BossRushSystem : ModSystem
     {
         state = States.Off;
         currentBoss = null;
+        referenceBoss = null;
         bossQueue.Clear();
         allDeadEndTimer = 0;
         allDead = false;
         prepareTimer = 0;
-        bossDefeated = false;
+        bossDefeated = null;
+        performanceTimer = 0;
     }
 
     private void SpawnNextBoss()
     {
-        bossDefeated = false;
         BossData nextBoss = bossQueue.Peek();
-        int npcIndex = Util.SpawnBoss(nextBoss);
-        currentBoss = Main.npc[npcIndex];
+        List<int> npcIndex = Util.SpawnBoss(nextBoss);
+        currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
+        referenceBoss = currentBoss.First();
+        bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
     }
 
     private void TrackPlayerDeaths()
@@ -213,12 +207,36 @@ public partial class BossRushSystem : ModSystem
 
     private bool IsBossDefeated()
     {
-        return bossDefeated;
+        return !bossDefeated.ContainsValue(false);
     }
 
     private bool IsBossDespawned()
     {
-        return currentBoss == null || !bossDefeated && !currentBoss.active;
+        return currentBoss == null || bossDefeated == null ||
+               currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
+    }
+
+    private void CheckBossAndPlayerCondition()
+    {
+        if (allDead)
+        {
+            if (IsBossGone() || ++allDeadEndTimer >= Util.SecondsInFrames(10))
+            {
+                state = States.End;
+            }
+        }
+        else if (IsBossDespawned())
+        {
+            Util.CleanAllEnemies(currentBoss);
+            state = States.Prepare;
+        }
+        else if (IsBossDefeated())
+        {
+            Util.SpawnDeadPlayers();
+            allDead = false;
+            bossQueue.Dequeue();
+            state = States.Prepare;
+        }
     }
 
     public enum States { Off, On, Prepare, Run, End }
