@@ -4,5 +4,478 @@
         <name>BossRush</name>
     </assembly>
     <members>
+        <member name="T:BossRush.BossRush">
+            <summary>
+            Mod class for Boss Rush.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.Load">
+            <summary>
+            Contains hooks and detours for the mod.
+            Repsonsible for disabling loot in Boss Rush mode and tracking boss defeat.
+            It also removes the pesky King Slime has awoken message included in NPC.NewNPC when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.Unload">
+            <summary>
+            Unloads the hooks and detours for the mod.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.NewNPC(Terraria.On_NPC.orig_NewNPC,Terraria.DataStructures.IEntitySource,System.Int32,System.Int32,System.Int32,System.Int32,System.Single,System.Single,System.Single,System.Single,System.Int32)">
+            <summary>
+            Detour for NPC.NewNPC.
+            It only disables the King Slime has awoken message when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.NPCLoot_DropMoney(Terraria.On_NPC.orig_NPCLoot_DropMoney,Terraria.NPC,Terraria.Player)">
+            <summary>
+            Detour for NPC.NPCLoot_DropMoney.
+            Removes coin drops when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.NPCLoot_DropItems(Terraria.On_NPC.orig_NPCLoot_DropItems,Terraria.NPC,Terraria.Player)">
+            <summary>
+            Detour for NPC.NPCLoot_DropItems.
+            Removes item drops when Boss Rush is active.
+            It is instead used as a tracker for boss defeat when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.NPCLoot_DropHeals(Terraria.On_NPC.orig_NPCLoot_DropHeals,Terraria.NPC,Terraria.Player)">
+            <summary>
+            Detour for NPC.NPCLoot_DropHeals.
+            Disables mana and heart drops when Boss Rush is active.
+            Statues should still work.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.DropBossPotionsAndHearts(Terraria.On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts,Terraria.NPC,System.String@)">
+            <summary>
+            Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
+            Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="T:BossRush.BossRushPlayer">
+            <summary>
+            Player class that handles the player's behavior during Boss Rush.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushPlayer.UpdateDead">
+            <summary>
+            When a player dies in Boss Rush mode, pause the respawn timer.
+            They can only respawn again when the boss of that stage is defeated.
+            This prevents respawn cheesing.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushPlayer.PostUpdate">
+            <summary>
+            Necessary to make the boss work. It forces the biome to prevent the boss from despawning.
+            </summary>
+        </member>
+        <member name="T:BossRush.BossRushSystem">
+            <summary>
+            Main class for the Boss Rush System.
+            </summary>
+        </member>
+        <member name="P:BossRush.BossRushSystem.I">
+            <summary>
+            Instance of the Boss Rush System.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.IsBossRushActive">
+            <summary>
+            Checks if Boss Rush is active.
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="M:BossRush.BossRushSystem.IsBossRushOff">
+            <summary>
+            Checks if Boss Rush is inactive.
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="F:BossRush.BossRushSystem.state">
+            <summary>
+            Current state of the Boss Rush System.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.currentBoss">
+            <summary>
+            Pertains to the current boss of a stage. This contains all the entities of the boss.
+            e.g. The Twins will contain Retinazer and Spazmatism.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.referenceBoss">
+            <summary>
+            Just a reference to the boss of the current stage.
+            This field is equal to currentBoss.First().
+            This field exists for performance reasons.
+            Use this if checks are needed for the boss, but only one entity is needed to confirm the current boss.
+            e.g.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.bossDefeated">
+            <summary>
+            Contains trackers for the bosses if they were truly defeated or not.
+            Bosses are considered defeated if they are killed by the player and supposed loot is to be dropped.
+            Boss Rush mod disables loot drops for enemies and instead uses that as a tracker.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.bossQueue">
+            <summary>
+            Contains the queue of bosses to be spawned.
+            Each entry is one boss rush stage, and a boss rush stage can contain multiple entities.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.allDead">
+            <summary>
+            Flag for determining of all players are dead within a boss rush stage.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.allDeadEndTimer">
+            <summary>
+            A timer for fallback scenarios if all players are dead.
+            Boss Rush System only officially ends when all players are dead and all bosses have despawned.
+            This timer is a fallback in case the boss refuses to despawn.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.prepareTimer">
+            <summary>
+            A timer for preparing the next boss.
+            It just adds pauses in between bosses upon being defeated and spawning a new one.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.performanceTimer">
+            <summary>
+            A timer for performance reasons. States.Run is a heavy task, so the timer is used to lessen the load.
+            Only execute the code in States.Run every time the timer hits the threshold.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.PostUpdateWorld">
+            <summary>
+            Main code for the Boss Rush System. Runs every in-game frame.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.OnWorldUnload">
+            <summary>
+            When the world shuts down, the Boss Rush System will reset.
+            This will ensure that loading into the world again resets everything.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.ToggleBossRush">
+            <summary>
+            Method mainly used for the item that activates Boss Rush mode.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.InitializeSystem">
+            <summary>
+            Initializes the Boss Rush System. This is where bosses are queued using BossData struct.
+            Refer to BossData struct for more details.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.ResetSystem">
+            <summary>
+            Resets the system to default values.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.SpawnNextBoss">
+            <summary>
+            Spawns the next boss in the queue.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.TrackPlayerDeaths">
+            <summary>
+            Tracks the deaths of all players. Does not return anything.
+            It automatically assigns allDead variable upon running the method.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.IsBossGone">
+            <summary>
+            Checks if the boss is gone.
+            The boss is considered gone if it is despawned or defeated.
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="M:BossRush.BossRushSystem.IsBossDefeated">
+            <summary>
+            Checks if the boss is defeated.
+            The boss is considered defeated if all entities are defeated.
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="M:BossRush.BossRushSystem.IsBossDespawned">
+            <summary>
+            Checks if the boss is despawned.
+            The boss is considered despawned if it is becomes inactive while the tracker has not marked it as defeated.
+            </summary>
+            <returns>True or False</returns>
+        </member>
+        <member name="M:BossRush.BossRushSystem.CheckBossAndPlayerCondition">
+            <summary>
+            Main code for States.Run.
+            </summary>
+        </member>
+        <member name="T:BossRush.BossRushSystem.States">
+            <summary>
+            States of the Boss Rush System.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.States.Off">
+            <summary>
+            Boss Rush is inactive.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.States.On">
+            <summary>
+            Boss Rush is initializing.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.States.Prepare">
+            <summary>
+            Boss Rush is preparing the next boss.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.States.Run">
+            <summary>
+            Boss Rush is checking for player and boss conditions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.States.End">
+            <summary>
+            Boss Rush is ending.
+            </summary>
+        </member>
+        <member name="T:BossRush.BossRushSystem.BossData">
+            <summary>
+            Contains information about the boss in Boss Rush mode.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.type">
+            <summary>
+            List of types of entities to be spawned.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.spawnOffsets">
+            <summary>
+            List of offsets to be used for spawning.
+            The center here will be the target player's Center.
+            Use offsets to spawn the boss in a random location in the specified rectangle.
+            Only on offset will be chosen from the list by random.
+            e.g. Use two offsets to spawn the boss in either the left or the right side of the player.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.lifeMultiplier">
+            <summary>
+            Multiplier for the boss's life.
+            Computed after the flat increase.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.damageMultiplier">
+            <summary>
+            Multiplier for the boss's damage.
+            Computed after the flat increase.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.lifeFlatIncrease">
+            <summary>
+            Flat increase for the boss's life.
+            Computed before the multiplier.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.damageFlatIncrease">
+            <summary>
+            Flat increase for the boss's damage.
+            Computed before the multiplier.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.BossData.timeContext">
+            <summary>
+            Time requirement for the boss to work properly.
+            Time will change according to the context when the boss is spawned.
+            If no context is provided, time will not change.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int16},System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext})">
+            <summary>
+            Constructor for BossData.
+            </summary>
+            <param name="type">Types of bosses</param>
+            <param name="spawnOffsets">Spawn offsets for bosses to spawn</param>
+            <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
+            <param name="damageMultiplier">Damage multipled when the boss spawns</param>
+            <param name="lifeFlatIncrease">Life added when the boss spawns</param>
+            <param name="damageFlatIncrease">Damage added when the boss spawns</param>
+            <param name="timeContext">Refer to TimeContext struct for more details</param>
+        </member>
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Int16,System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext})">
+            <summary>
+            Constructor for BossData.
+            </summary>
+            <param name="type">Types of bosses</param>
+            <param name="spawnOffsets">Spawn offsets for bosses to spawn</param>
+            <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
+            <param name="damageMultiplier">Damage multipled when the boss spawns</param>
+            <param name="lifeFlatIncrease">Life added when the boss spawns</param>
+            <param name="damageFlatIncrease">Damage added when the boss spawns</param>
+            <param name="timeContext">Refer to TimeContext struct for more details</param>
+        </member>
+        <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation">
+            <summary>
+            Used to determine and pinpoint a random location from the given spawnOffsets.
+            </summary>
+            <returns>A random location</returns>
+        </member>
+        <member name="T:BossRush.BossRushSystem.TimeContext">
+            <summary>
+            Struct for containing information about the spawn requirements of a boss.
+            This is used in BossData struct.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.TimeContext.time">
+            <summary>
+            The time of day to be set.
+            Values should be similar as to how Terraria handles time.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.TimeContext.dayTime">
+            <summary>
+            Whether it is day time or night time.
+            Values should be similar as to how Terraria handles time.
+            </summary>
+        </member>
+        <member name="P:BossRush.BossRushSystem.TimeContext.Day">
+            <summary>
+            Returns the TimeContext for the beginning of a day.
+            </summary>
+        </member>
+        <member name="P:BossRush.BossRushSystem.TimeContext.Night">
+            <summary>
+            Returns the TimeContext for the beginning of a night.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.TimeContext.#ctor(System.Double,System.Boolean)">
+            <summary>
+            Constructor for TimeContext.
+            </summary>
+            <param name="time">Similar to Main.time</param>
+            <param name="dayTime">Similar to Main.dayTime></param>
+        </member>
+        <member name="M:BossRush.BossRushSystem.TimeContext.ChangeTime">
+            <summary>
+            Changes the time of day according to this struct.
+            </summary>
+        </member>
+        <member name="T:BossRush.Items.BossRushItem">
+            <summary>
+            Item that toggles the Boss Rush mode.
+            </summary>
+        </member>
+        <member name="M:BossRush.Items.BossRushItem.SetDefaults">
+            <summary>
+            Sets the defaults for the item.
+            </summary>
+        </member>
+        <member name="P:BossRush.Items.BossRushItem.Texture">
+            <summary>
+            Returns the texture for the item.
+            </summary>
+        </member>
+        <member name="M:BossRush.Items.BossRushItem.UseItem(Terraria.Player)">
+            <summary>
+            Uses the item to toggle the Boss Rush mode.
+            </summary>
+        </member>
+        <member name="T:BossRush.NPCs.BossAndSlaves">
+            <summary>
+            NPCs that refers to the bosses and their minions when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.BossAndSlaves.AppliesToEntity(Terraria.NPC,System.Boolean)">
+            <summary>
+            Late instantiation for the NPC.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.BossAndSlaves.SetDefaults(Terraria.NPC)">
+            <summary>
+            Sets the defaults for the NPC when it spawns during Boss Rush.
+            </summary>
+        </member>
+        <member name="T:BossRush.NPCs.RandomMobs">
+            <summary>
+            NPCs that refers to the random mobs that spawn in the world.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.RandomMobs.AppliesToEntity(Terraria.NPC,System.Boolean)">
+            <summary>
+            Late instantiation for the NPC.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.RandomMobs.EditSpawnRate(Terraria.Player,System.Int32@,System.Int32@)">
+            <summary>
+            Removes the spawn rate of random mobs when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="T:BossRush.Util">
+            <summary>
+            Utility static class for the mod.
+            </summary>
+        </member>
+        <member name="M:BossRush.Util.SpawnBoss(BossRush.BossRushSystem.BossData)">
+            <summary>
+            Method of spawning in Boss Rush mode.
+            </summary>
+            <param name="data">Refer to BossData struct for more details</param>
+            <returns>List of indices to be used in Main.npc</returns>
+        </member>
+        <member name="M:BossRush.Util.SpawnDeadPlayers">
+            <summary>
+            Spawns all dead players in the game.
+            </summary>
+        </member>
+        <member name="M:BossRush.Util.CleanAllEnemies(System.Collections.Generic.IEnumerable{Terraria.NPC})">
+            <summary>
+            Removes all enemies according to the parameter.
+            If the parameter is not given or null, it will use Main.npc.
+            </summary>
+            <param name="npcs">Group of enemies to remove</param>
+        </member>
+        <member name="M:BossRush.Util.RoundOff(System.Single)">
+            <summary>
+            Rounds off a float value to the nearest integer.
+            </summary>
+            <param name="value">Value to round off</param>
+            <returns>Rounded off value</returns>
+        </member>
+        <member name="M:BossRush.Util.RoundOff(Microsoft.Xna.Framework.Vector2)">
+            <summary>
+            Rounds off Vector2 coordinates to the nearest integers.
+            </summary>
+            <param name="value">Coordinates to round off</param>
+            <returns>Vector2 containing the rounded coordinates</returns>
+        </member>
+        <member name="M:BossRush.Util.NewText(System.String,System.Nullable{Microsoft.Xna.Framework.Color})">
+            <summary>
+            Sends a message to all players in the game.
+            It automatically uses the proper methods for singleplayer and multiplayer.
+            </summary>
+            <param name="message"></param>
+            <param name="color"></param>
+        </member>
+        <member name="M:BossRush.Util.SecondsInFrames(System.Single)">
+            <summary>
+            Converts seconds to frames. Useful for checking against code timers.
+            </summary>
+            <param name="seconds">Time in seconds</param>
+            <returns>Computed frames</returns>
+        </member>
+        <member name="M:BossRush.Util.SecondsInFrames(System.Int32)">
+            <summary>
+            Converts seconds to frames. Useful for checking against code timers.
+            </summary>
+            <param name="seconds">Time in seconds</param>
+            <returns>Computed frames</returns>
+        </member>
     </members>
 </doc>

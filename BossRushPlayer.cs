@@ -4,8 +4,16 @@ using Terraria.ModLoader;
 
 namespace BossRush;
 
+/// <summary>
+/// Player class that handles the player's behavior during Boss Rush.
+/// </summary>
 public class BossRushPlayer : ModPlayer
 {
+    /// <summary>
+    /// When a player dies in Boss Rush mode, pause the respawn timer.
+    /// They can only respawn again when the boss of that stage is defeated.
+    /// This prevents respawn cheesing.
+    /// </summary>
     public override void UpdateDead()
     {
         if (BossRushSystem.IsBossRushActive())
@@ -14,6 +22,9 @@ public class BossRushPlayer : ModPlayer
         }
     }
 
+    /// <summary>
+    /// Necessary to make the boss work. It forces the biome to prevent the boss from despawning.
+    /// </summary>
     public override void PostUpdate()
     {
         if (BossRushSystem.IsBossRushActive())
