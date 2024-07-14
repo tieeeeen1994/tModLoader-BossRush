@@ -28,6 +28,11 @@ public partial class BossRushSystem
         public static TimeContext Day => new(0, true);
 
         /// <summary>
+        /// Returns the TimeContext for .
+        /// </summary>
+        public static TimeContext Noon => new(27000, true);
+
+        /// <summary>
         /// Returns the TimeContext for the beginning of a night.
         /// </summary>
         public static TimeContext Night => new(0, false);

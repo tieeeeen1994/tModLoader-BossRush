@@ -34,11 +34,17 @@ public class BossRushPlayer : ModPlayer
             {
                 switch (boss.type)
                 {
+                    case NPCID.EaterofWorldsHead:
+                        Player.ZoneCorrupt = true;
+                        break;
+
                     case NPCID.BrainofCthulhu:
                         Player.ZoneCrimson = true;
                         break;
 
                     case NPCID.QueenBee:
+                    case NPCID.Plantera:
+                    case NPCID.Golem:
                         Player.ZoneJungle = true;
                         break;
                 }

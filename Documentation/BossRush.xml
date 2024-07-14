@@ -10,9 +10,16 @@
             </summary>
         </member>
         <member name="P:BossRush.BossRush.I">
-             <summary>
-            
-             </summary>
+            <summary>
+            Instance of the Boss Rush Mod.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.HandlePacket(System.IO.BinaryReader,System.Int32)">
+            <summary>
+            Handles the packet sent from the server or client.
+            </summary>
+            <param name="reader"></param>
+            <param name="whoAmI"></param>
         </member>
         <member name="M:BossRush.BossRush.Load">
             <summary>
@@ -56,6 +63,11 @@
             <summary>
             Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
             Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="T:BossRush.BossRush.PacketType">
+            <summary>
+            Packet types used in Boss Rush.
             </summary>
         </member>
         <member name="F:BossRush.BossRush.PacketType.Teleport">
@@ -372,6 +384,11 @@
         <member name="P:BossRush.BossRushSystem.TimeContext.Day">
             <summary>
             Returns the TimeContext for the beginning of a day.
+            </summary>
+        </member>
+        <member name="P:BossRush.BossRushSystem.TimeContext.Noon">
+            <summary>
+            Returns the TimeContext for .
             </summary>
         </member>
         <member name="P:BossRush.BossRushSystem.TimeContext.Night">

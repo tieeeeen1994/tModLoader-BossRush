@@ -168,6 +168,9 @@ public partial class BossRushSystem : ModSystem
     {
         ResetSystem();
 
+        // bossQueue.Enqueue(new(NPCID.WallofFlesh,
+        //                       placeContext: PlaceContext.LeftUnderworld));
+
         bossQueue.Enqueue(new(NPCID.KingSlime,
                               spawnOffsets: [new(1000, -700, -200, -200),
                                              new(-1000, -700, 200, -200)]));
@@ -186,7 +189,7 @@ public partial class BossRushSystem : ModSystem
 
         bossQueue.Enqueue(new(NPCID.QueenBee,
                               spawnOffsets: [new(-1000, -1000, 2000, -200)],
-                              timeContext: TimeContext.Day));
+                              timeContext: TimeContext.Noon));
 
         bossQueue.Enqueue(new(NPCID.SkeletronHead,
                               spawnOffsets: [new(500, 500, 200, -1000),
@@ -198,7 +201,7 @@ public partial class BossRushSystem : ModSystem
         bossQueue.Enqueue(new(NPCID.QueenSlimeBoss,
                               spawnOffsets: [new(1000, -500, -100, -100),
                                              new(-1000, -500, 100, -100)],
-                              timeContext: TimeContext.Day));
+                              timeContext: TimeContext.Noon));
 
         bossQueue.Enqueue(new([NPCID.Retinazer, NPCID.Spazmatism],
                               spawnOffsets: [new(1000, 1000, 200, -2000),
@@ -215,7 +218,7 @@ public partial class BossRushSystem : ModSystem
 
         bossQueue.Enqueue(new(NPCID.Plantera,
                               spawnOffsets: [new(-1000, 1500, 2000, 500)],
-                              timeContext: TimeContext.Day));
+                              timeContext: TimeContext.Noon));
 
         bossQueue.Enqueue(new(NPCID.Golem,
                               spawnOffsets: [new(500, 0, -200, -500),
@@ -232,7 +235,7 @@ public partial class BossRushSystem : ModSystem
         bossQueue.Enqueue(new(NPCID.CultistBoss,
                               spawnOffsets: [new(300, 0, -100, -500),
                                              new(-300, 0, 100, -500)],
-                              timeContext: TimeContext.Day));
+                              timeContext: TimeContext.Noon));
 
         bossQueue.Enqueue(new(NPCID.MoonLordCore));
     }

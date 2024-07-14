@@ -24,6 +24,8 @@ namespace BossRush
         /// </summary>
         public Rectangle teleportRange;
 
+        // public static PlaceContext LeftUnderworld => CONTINUE HERE
+
         /// <summary>
         /// Constructor for PlaceContext.
         /// </summary>

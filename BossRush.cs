@@ -14,27 +14,38 @@ namespace BossRush;
 public class BossRush : Mod
 {
     /// <summary>
-    ///
+    /// Instance of the Boss Rush Mod.
     /// </summary>
     public static BossRush I => ModContent.GetInstance<BossRush>();
 
+    /// <summary>
+    /// Handles the packet sent from the server or client.
+    /// </summary>
+    /// <param name="reader"></param>
+    /// <param name="whoAmI"></param>
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
         PacketType packetType = (PacketType)reader.ReadByte();
         switch (packetType)
         {
             case PacketType.Teleport:
-                Vector2 position = reader.ReadVector2();
-                if (Main.LocalPlayer.active)
+                if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    Main.LocalPlayer.Teleport(position);
+                    Vector2 position = reader.ReadVector2();
+                    if (Main.LocalPlayer.active)
+                    {
+                        Main.LocalPlayer.Teleport(position);
+                    }
                 }
                 break;
 
             case PacketType.SpawnPlayer:
-                if (Main.LocalPlayer.dead)
+                if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                    if (Main.LocalPlayer.dead)
+                    {
+                        Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                    }
                 }
                 break;
         }
@@ -163,6 +174,9 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Packet types used in Boss Rush.
+    /// </summary>
     public enum PacketType : byte
     {
         /// <summary>
