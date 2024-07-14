@@ -112,24 +112,63 @@ public partial class BossRushSystem : ModSystem
                                              new(-1000, 1000, -200,-2000)],
                               timeContext: TimeContext.Night));
 
+        // bossQueue.Enqueue(new(NPCID.EaterofWorldsHead,
+        //                       spawnOffsets: [new(-1000, 1000, 2000, 500)]));
+
         bossQueue.Enqueue(new(NPCID.BrainofCthulhu,
                               spawnOffsets: [new(500, 500, 200, -1000),
-                                             new(-500, 500, -200,-1000)],
-                              timeContext: TimeContext.Day));
+                                             new(-500, 500, -200,-1000)]));
 
         bossQueue.Enqueue(new(NPCID.QueenBee,
-                              spawnOffsets: [new(1000, -700, -200, -200),
-                                             new(-1000, -700, 200, -200)]));
+                              spawnOffsets: [new(-1000, -1000, 2000, -200)],
+                              timeContext: TimeContext.Day));
 
         bossQueue.Enqueue(new(NPCID.SkeletronHead,
                               spawnOffsets: [new(500, 500, 200, -1000),
                                              new(-500, 500, -200,-1000)],
                               timeContext: TimeContext.Night));
 
+        // bossQueue.Enqueue(new(NPCID.WallofFlesh));
+
         bossQueue.Enqueue(new(NPCID.QueenSlimeBoss,
                               spawnOffsets: [new(1000, -500, -100, -100),
                                              new(-1000, -500, 100, -100)],
                               timeContext: TimeContext.Day));
+
+        // bossQueue.Enqueue(new(NPCID.TheTwins,
+        //                       spawnOffsets: [new(1000, 1000, 200, -2000),
+        //                                      new(-1000, 1000, -200,-2000)]));
+
+        bossQueue.Enqueue(new(NPCID.TheDestroyer,
+                              spawnOffsets: [new(-1000, 1000, 2000, 500)],
+                              timeContext: TimeContext.Night));
+
+        bossQueue.Enqueue(new(NPCID.SkeletronPrime,
+                              spawnOffsets: [new(-1000, -1200, 2000, -300)],
+                              timeContext: TimeContext.Night));
+
+        bossQueue.Enqueue(new(NPCID.Plantera,
+                              spawnOffsets: [new(-1000, 1500, 2000, 500)],
+                              timeContext: TimeContext.Day));
+
+        bossQueue.Enqueue(new(NPCID.Golem,
+                              spawnOffsets: [new(500, 0, -200, -500),
+                                             new(-500, 0, 200, -500)]));
+
+        bossQueue.Enqueue(new(NPCID.DukeFishron,
+                              spawnOffsets: [new(300, 50, -100, -50),
+                                             new(-300, 50, 100, -50)]));
+
+        bossQueue.Enqueue(new(NPCID.HallowBoss,
+                              spawnOffsets: [new(-50, -50, 100, -50)],
+                              timeContext: TimeContext.Night));
+
+        bossQueue.Enqueue(new(NPCID.CultistBoss,
+                              spawnOffsets: [new(300, 0, -100, -500),
+                                             new(-300, 0, 100, -500)],
+                              timeContext: TimeContext.Day));
+
+        bossQueue.Enqueue(new(NPCID.MoonLordCore));
     }
 
     private void ResetSystem()

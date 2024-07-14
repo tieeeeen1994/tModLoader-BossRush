@@ -38,7 +38,8 @@ public static class Util
         int spawnX = RoundOff(target.Center.X + offsetValue.X);
         int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
 
-        return NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, data.type, 0, 0, 0, 0, 0, target.whoAmI);
+        // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
+        return NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, data.type, 1);
     }
 
     public static void SpawnDeadPlayers()
