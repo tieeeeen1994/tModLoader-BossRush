@@ -91,23 +91,21 @@ public class BossRush : Mod
             int availableNPCSlot = (int)method.Invoke(null, [Type, Start]);
             if (availableNPCSlot >= 0)
             {
-                Main.npc[availableNPCSlot] = new NPC();
-                Main.npc[availableNPCSlot].SetDefaults(Type, default);
-                Main.npc[availableNPCSlot].whoAmI = availableNPCSlot;
+                NPC selected = Main.npc[availableNPCSlot] = new NPC();
+                selected.SetDefaults(Type, default);
+                selected.whoAmI = availableNPCSlot;
                 method = typeof(NPC).GetMethod("GiveTownUniqueDataToNPCsThatNeedIt", flags);
                 method.Invoke(null, [Type, availableNPCSlot]);
-                Main.npc[availableNPCSlot].position.X = X - Main.npc[availableNPCSlot].width / 2;
-                Main.npc[availableNPCSlot].position.Y = Y - Main.npc[availableNPCSlot].height;
-                Main.npc[availableNPCSlot].active = true;
-                Main.npc[availableNPCSlot].timeLeft = (int)(NPC.activeTime * 1.25);
-                Main.npc[availableNPCSlot].wet = Collision.WetCollision(Main.npc[availableNPCSlot].position,
-                                                                        Main.npc[availableNPCSlot].width,
-                                                                        Main.npc[availableNPCSlot].height);
-                Main.npc[availableNPCSlot].ai[0] = ai0;
-                Main.npc[availableNPCSlot].ai[1] = ai1;
-                Main.npc[availableNPCSlot].ai[2] = ai2;
-                Main.npc[availableNPCSlot].ai[3] = ai3;
-                Main.npc[availableNPCSlot].target = Target;
+                selected.position.X = X - selected.width / 2;
+                selected.position.Y = Y - selected.height;
+                selected.active = true;
+                selected.timeLeft = (int)(NPC.activeTime * 1.25);
+                selected.wet = Collision.WetCollision(selected.position, selected.width, selected.height);
+                selected.ai[0] = ai0;
+                selected.ai[1] = ai1;
+                selected.ai[2] = ai2;
+                selected.ai[3] = ai3;
+                selected.target = Target;
                 return availableNPCSlot;
             }
             return 200;

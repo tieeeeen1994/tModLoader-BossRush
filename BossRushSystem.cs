@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -168,76 +170,128 @@ public partial class BossRushSystem : ModSystem
     {
         ResetSystem();
 
-        // bossQueue.Enqueue(new(NPCID.WallofFlesh,
-        //                       placeContext: PlaceContext.LeftUnderworld));
+        bossQueue.Enqueue(new([NPCID.WallofFlesh],
+                              placeContext: PlaceContext.LeftUnderworld,
+                              spawnOffset: (_) => new(-500, 0, 0, 0)));
 
-        bossQueue.Enqueue(new(NPCID.KingSlime,
-                              spawnOffsets: [new(1000, -700, -200, -200),
-                                             new(-1000, -700, 200, -200)]));
+        bossQueue.Enqueue(new(
+            [NPCID.KingSlime],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, -700, 200 * sign, -200);
+            }
+        ));
 
-        bossQueue.Enqueue(new(NPCID.EyeofCthulhu,
-                              spawnOffsets: [new(1000, 1000, 200, -2000),
-                                             new(-1000, 1000, -200,-2000)],
-                              timeContext: TimeContext.Night));
+        bossQueue.Enqueue(new(
+            [NPCID.EyeofCthulhu],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, 1000, 200 * sign, -2000);
+            },
+            timeContext: TimeContext.Night
+        ));
 
         // bossQueue.Enqueue(new(NPCID.EaterofWorldsHead,
         //                       spawnOffsets: [new(-1000, 1000, 2000, 500)]));
 
-        bossQueue.Enqueue(new(NPCID.BrainofCthulhu,
-                              spawnOffsets: [new(500, 500, 200, -1000),
-                                             new(-500, 500, -200,-1000)]));
+        bossQueue.Enqueue(new(
+            [NPCID.BrainofCthulhu],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 500, 200 * sign, -1000);
+            }
+        ));
 
-        bossQueue.Enqueue(new(NPCID.QueenBee,
-                              spawnOffsets: [new(-1000, -1000, 2000, -200)],
+        bossQueue.Enqueue(new([NPCID.QueenBee],
+                              spawnOffset: (_) => new(-1000, -1000, 2000, -200),
                               timeContext: TimeContext.Noon));
 
-        bossQueue.Enqueue(new(NPCID.SkeletronHead,
-                              spawnOffsets: [new(500, 500, 200, -1000),
-                                             new(-500, 500, -200,-1000)],
-                              timeContext: TimeContext.Night));
+        bossQueue.Enqueue(new(
+            [NPCID.SkeletronHead],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 500, 200 * sign, -1000);
+            },
+            timeContext: TimeContext.Night
+        ));
 
         // bossQueue.Enqueue(new(NPCID.WallofFlesh));
 
-        bossQueue.Enqueue(new(NPCID.QueenSlimeBoss,
-                              spawnOffsets: [new(1000, -500, -100, -100),
-                                             new(-1000, -500, 100, -100)],
+        bossQueue.Enqueue(new(
+            [NPCID.QueenSlimeBoss],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, -500, -100 * sign, -100);
+            },
+            timeContext: TimeContext.Noon
+        ));
+
+        int twinsSign = Util.RandomSign();
+        bossQueue.Enqueue(new(
+            [NPCID.Retinazer, NPCID.Spazmatism],
+            spawnOffset: (type) =>
+            {
+                if (type == NPCID.Retinazer)
+                {
+                    return new(1000 * twinsSign, 1000, 200 * twinsSign, -2000);
+                }
+                else
+                {
+                    return new(-1000 * twinsSign, 1000, -200 * twinsSign, -2000);
+                }
+            },
+            timeContext: TimeContext.Night
+        ));
+
+        bossQueue.Enqueue(new([NPCID.TheDestroyer],
+                              spawnOffset: (_) => new(-1000, 1000, 2000, 500),
+                              timeContext: TimeContext.Night));
+
+        bossQueue.Enqueue(new([NPCID.SkeletronPrime],
+                              spawnOffset: (_) => new(-1000, -1200, 2000, -300),
+                              timeContext: TimeContext.Night));
+
+        bossQueue.Enqueue(new([NPCID.Plantera],
+                              spawnOffset: (_) => new(-1000, 1500, 2000, 500),
                               timeContext: TimeContext.Noon));
 
-        bossQueue.Enqueue(new([NPCID.Retinazer, NPCID.Spazmatism],
-                              spawnOffsets: [new(1000, 1000, 200, -2000),
-                                             new(-1000, 1000, -200,-2000)],
+        bossQueue.Enqueue(new(
+            [NPCID.Golem],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 0, -200 * sign, -500);
+            }
+        ));
+
+        bossQueue.Enqueue(new(
+            [NPCID.DukeFishron],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(300 * sign, 50, -100 * sign, -50);
+            }
+        ));
+
+        bossQueue.Enqueue(new([NPCID.HallowBoss],
+                              spawnOffset: (_) => new(-50, -50, 100, -50),
                               timeContext: TimeContext.Night));
 
-        bossQueue.Enqueue(new(NPCID.TheDestroyer,
-                              spawnOffsets: [new(-1000, 1000, 2000, 500)],
-                              timeContext: TimeContext.Night));
+        bossQueue.Enqueue(new(
+            [NPCID.CultistBoss],
+            spawnOffset: (_) =>
+            {
+                int sign = Util.RandomSign();
+                return new(300 * sign, 0, -100 * sign, -500);
+            }
+        ));
 
-        bossQueue.Enqueue(new(NPCID.SkeletronPrime,
-                              spawnOffsets: [new(-1000, -1200, 2000, -300)],
-                              timeContext: TimeContext.Night));
-
-        bossQueue.Enqueue(new(NPCID.Plantera,
-                              spawnOffsets: [new(-1000, 1500, 2000, 500)],
-                              timeContext: TimeContext.Noon));
-
-        bossQueue.Enqueue(new(NPCID.Golem,
-                              spawnOffsets: [new(500, 0, -200, -500),
-                                             new(-500, 0, 200, -500)]));
-
-        bossQueue.Enqueue(new(NPCID.DukeFishron,
-                              spawnOffsets: [new(300, 50, -100, -50),
-                                             new(-300, 50, 100, -50)]));
-
-        bossQueue.Enqueue(new(NPCID.HallowBoss,
-                              spawnOffsets: [new(-50, -50, 100, -50)],
-                              timeContext: TimeContext.Night));
-
-        bossQueue.Enqueue(new(NPCID.CultistBoss,
-                              spawnOffsets: [new(300, 0, -100, -500),
-                                             new(-300, 0, 100, -500)],
-                              timeContext: TimeContext.Noon));
-
-        bossQueue.Enqueue(new(NPCID.MoonLordCore));
+        bossQueue.Enqueue(new([NPCID.MoonLordCore]));
     }
 
     /// <summary>

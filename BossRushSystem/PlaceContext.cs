@@ -24,7 +24,26 @@ namespace BossRush
         /// </summary>
         public Rectangle teleportRange;
 
-        // public static PlaceContext LeftUnderworld => CONTINUE HERE
+        public static PlaceContext LeftUnderworld
+        {
+            get
+            {
+                int yInTile = Util.RoundOff(Main.UnderworldLayer + 0.34f * (Main.maxTilesY - Main.UnderworldLayer));
+                Vector2 worldPosition = new Vector2(100, yInTile).ToWorldCoordinates();
+                return new(worldPosition, 10);
+            }
+        }
+
+        public static PlaceContext RightUnderworld
+        {
+            get
+            {
+                int yInTile = Util.RoundOff(Main.UnderworldLayer + 0.34f * (Main.maxTilesY - Main.UnderworldLayer));
+                Vector2 worldPosition = new Vector2(Main.maxTilesX - 100, yInTile).ToWorldCoordinates();
+                return new(worldPosition, 10);
+            }
+        }
+
 
         /// <summary>
         /// Constructor for PlaceContext.
@@ -52,10 +71,10 @@ namespace BossRush
             {
                 if (player.active)
                 {
-                    Vector2 offsetPosition = Util.ChooseRandomPointInRectangle(teleportRange);
-                    Vector2 position = Util.RoundOff(initialPosition + offsetPosition);
+                    Vector2 position = Util.RoundOff(Util.ChooseRandomPointInRectangle(teleportRange));
                     if (Main.netMode == NetmodeID.SinglePlayer)
                     {
+
                         player.Teleport(position);
                     }
                     else if (Main.netMode == NetmodeID.Server)

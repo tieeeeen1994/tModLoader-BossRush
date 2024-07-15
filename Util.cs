@@ -47,7 +47,7 @@ public static class Util
 
         foreach (var type in data.type)
         {
-            Vector2 offsetValue = data.RandomSpawnLocation();
+            Vector2 offsetValue = data.RandomSpawnLocation(type);
             int spawnX = RoundOff(target.Center.X + offsetValue.X);
             int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
 
@@ -168,5 +168,10 @@ public static class Util
         int offsetX = rectangle.X + Main.rand.Next(Math.Abs(rectangle.Width) + 1) * signWidth;
         int offsetY = rectangle.Y + Main.rand.Next(Math.Abs(rectangle.Height) + 1) * signHeight;
         return new(offsetX, offsetY);
+    }
+
+    public static int RandomSign()
+    {
+        return Main.rand.NextBool() ? 1 : -1;
     }
 }
