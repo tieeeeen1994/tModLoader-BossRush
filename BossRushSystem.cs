@@ -239,11 +239,12 @@ public partial class BossRushSystem : ModSystem
                 return new(1000 * sign, -500, -100 * sign, -100);
             },
             timeContext: TimeContext.Noon,
-            placeContexts: [new((_) =>
+            placeContexts: [new((player) =>
             {
                 Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
+                worldCoordinates -= new Vector2(player.width / 2, player.height);
                 worldCoordinates = Util.RoundOff(worldCoordinates);
-                return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, -50);
+                return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, 0);
             })]
         ));
 
