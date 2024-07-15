@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -242,7 +243,7 @@ public partial class BossRushSystem : ModSystem
             {
                 Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
                 worldCoordinates = Util.RoundOff(worldCoordinates);
-                return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, 0);
+                return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, -50);
             })]
         ));
 
@@ -332,7 +333,7 @@ public partial class BossRushSystem : ModSystem
     private void SpawnNextBoss()
     {
         BossData nextBoss = bossQueue.Peek();
-        List<int> npcIndex = Util.SpawnBoss(nextBoss);
+        List<int> npcIndex = SpawnBoss(nextBoss);
         currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
         referenceBoss = currentBoss.First();
         bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
@@ -413,6 +414,49 @@ public partial class BossRushSystem : ModSystem
             bossQueue.Dequeue();
             state = States.Prepare;
         }
+    }
+
+    /// <summary>
+    /// Method of spawning in Boss Rush mode.
+    /// </summary>
+    /// <param name="data">Refer to BossData struct for more details</param>
+    /// <returns>List of indices to be used in Main.npc</returns>
+    private List<int> SpawnBoss(BossData data)
+    {
+        data.timeContext?.ChangeTime();
+        data.placeContext?.TeleportPlayers();
+
+        List<Player> potentialTargetPlayers = [];
+        float highestAggro = float.MinValue;
+
+        foreach (var player in Main.ActivePlayers)
+        {
+            if (highestAggro == player.aggro)
+            {
+                potentialTargetPlayers.Add(player);
+            }
+            else if (player.aggro > highestAggro)
+            {
+                potentialTargetPlayers.Clear();
+                potentialTargetPlayers.Add(player);
+                highestAggro = player.aggro;
+            }
+        }
+
+        Player target = Main.rand.Next(potentialTargetPlayers);
+        List<int> spawnedBossIndex = [];
+
+        foreach (var type in data.types)
+        {
+            Vector2 offsetValue = data.RandomSpawnLocation(type);
+            int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
+            int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
+
+            // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
+            spawnedBossIndex.Add(NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1));
+        }
+
+        return spawnedBossIndex;
     }
 
     /// <summary>

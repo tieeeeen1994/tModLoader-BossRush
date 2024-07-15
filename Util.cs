@@ -16,49 +16,6 @@ namespace BossRush;
 public static class Util
 {
     /// <summary>
-    /// Method of spawning in Boss Rush mode.
-    /// </summary>
-    /// <param name="data">Refer to BossData struct for more details</param>
-    /// <returns>List of indices to be used in Main.npc</returns>
-    public static List<int> SpawnBoss(BossRushSystem.BossData data)
-    {
-        data.timeContext?.ChangeTime();
-        data.placeContext?.TeleportPlayers();
-
-        List<Player> potentialTargetPlayers = [];
-        float highestAggro = float.MinValue;
-
-        foreach (var player in Main.ActivePlayers)
-        {
-            if (highestAggro == player.aggro)
-            {
-                potentialTargetPlayers.Add(player);
-            }
-            else if (player.aggro > highestAggro)
-            {
-                potentialTargetPlayers.Clear();
-                potentialTargetPlayers.Add(player);
-                highestAggro = player.aggro;
-            }
-        }
-
-        Player target = Main.rand.Next(potentialTargetPlayers);
-        List<int> spawnedBossIndex = [];
-
-        foreach (var type in data.types)
-        {
-            Vector2 offsetValue = data.RandomSpawnLocation(type);
-            int spawnX = RoundOff(target.Center.X + offsetValue.X);
-            int spawnY = RoundOff(target.Center.Y + offsetValue.Y);
-
-            // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-            spawnedBossIndex.Add(NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1));
-        }
-
-        return spawnedBossIndex;
-    }
-
-    /// <summary>
     /// Spawns all dead players in the game.
     /// </summary>
     public static void SpawnDeadPlayers()
@@ -170,6 +127,10 @@ public static class Util
         return new(offsetX, offsetY);
     }
 
+    /// <summary>
+    /// Returns -1 or 1 randomly.
+    /// </summary>
+    /// <returns>-1 or 1</returns>
     public static int RandomSign()
     {
         return Main.rand.NextBool() ? 1 : -1;

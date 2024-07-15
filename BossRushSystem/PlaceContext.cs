@@ -25,8 +25,15 @@ namespace BossRush
         /// </summary>
         private Rectangle? teleportRange;
 
+        /// <summary>
+        /// Custom implementation for the place context.
+        /// This is used for more dynamic and flexible implementation where static data will not do.
+        /// </summary>
         private Func<Player, Rectangle> customImplementation;
 
+        /// <summary>
+        /// Shortcut for the left side of the Underworld.
+        /// </summary>
         public static PlaceContext LeftUnderworld
         {
             get
@@ -37,6 +44,9 @@ namespace BossRush
             }
         }
 
+        /// <summary>
+        /// Shortcut for the right side of the Underworld.
+        /// </summary>
         public static PlaceContext RightUnderworld
         {
             get
@@ -46,7 +56,6 @@ namespace BossRush
                 return new(worldPosition, 10);
             }
         }
-
 
         /// <summary>
         /// Constructor for PlaceContext.
@@ -69,6 +78,14 @@ namespace BossRush
             teleportRange = new(x, y, roundedDiameter, roundedDiameter);
         }
 
+        /// <summary>
+        /// Constructor for PlaceContext.
+        /// This constructor is used for a more dynamic approach.
+        /// </summary>
+        /// <param name="implementation">
+        /// Custom implementation
+        /// (Player parameter is is the player being teleported)
+        /// </param>
         public PlaceContext(Func<Player, Rectangle> implementation)
         {
             customImplementation = implementation;
@@ -101,6 +118,11 @@ namespace BossRush
             }
         }
 
+        /// <summary>
+        /// Selects the implementation to use.
+        /// </summary>
+        /// <param name="player">Player being teleported</param>
+        /// <returns>Rectangle for spawning the player</returns>
         private Rectangle UseImplementation(Player player)
         {
             if (customImplementation == null)

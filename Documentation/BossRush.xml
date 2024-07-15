@@ -240,6 +240,13 @@
             Main code for States.Run.
             </summary>
         </member>
+        <member name="M:BossRush.BossRushSystem.SpawnBoss(BossRush.BossRushSystem.BossData)">
+            <summary>
+            Method of spawning in Boss Rush mode.
+            </summary>
+            <param name="data">Refer to BossData struct for more details</param>
+            <returns>List of indices to be used in Main.npc</returns>
+        </member>
         <member name="T:BossRush.BossRushSystem.States">
             <summary>
             States of the Boss Rush System.
@@ -289,32 +296,10 @@
             The integer parameter is the type of the boss.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.lifeMultiplier">
+        <member name="F:BossRush.BossRushSystem.BossData.modifiedAttributes">
             <summary>
-            Multiplier for the boss's life.
-            Computed after the flat increase.
-            This also affects its minions.
-            </summary>
-        </member>
-        <member name="F:BossRush.BossRushSystem.BossData.damageMultiplier">
-            <summary>
-            Multiplier for the boss's damage.
-            Computed after the flat increase.
-            This also affects its minions.
-            </summary>
-        </member>
-        <member name="F:BossRush.BossRushSystem.BossData.lifeFlatIncrease">
-            <summary>
-            Flat increase for the boss's life.
-            Computed before the multiplier.
-            This also affects its minions.
-            </summary>
-        </member>
-        <member name="F:BossRush.BossRushSystem.BossData.damageFlatIncrease">
-            <summary>
-            Flat increase for the boss's damage.
-            Computed before the multiplier.
-            This also affects its minions.
+            Data structure containing the supposedly attributes modifications for the boss.
+            This will be used to adjust the stats of the boss when it spawns.
             </summary>
         </member>
         <member name="F:BossRush.BossRushSystem.BossData.timeContext">
@@ -333,16 +318,13 @@
             A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},BossRush.BossRushSystem.ModifiedAttributes,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
             <param name="types">Types of bosses</param>
             <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
-            <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
-            <param name="damageMultiplier">Damage multipled when the boss spawns</param>
-            <param name="lifeFlatIncrease">Life added when the boss spawns</param>
-            <param name="damageFlatIncrease">Damage added when the boss spawns</param>
+            <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
             <param name="placeContexts">Refer to PlaceContext struct for more details</param>
         </member>
@@ -353,6 +335,48 @@
             </summary>
             <param name="type">Type of the boss</param>
             <returns>A random location</returns>
+        </member>
+        <member name="T:BossRush.BossRushSystem.ModifiedAttributes">
+            <summary>
+            Contains information about the modifications to the stats of the boss.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.lifeMultiplier">
+            <summary>
+            Multiplier for the boss's life.
+            Computed after the flat increase.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.damageMultiplier">
+            <summary>
+            Multiplier for the boss's damage.
+            Computed after the flat increase.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.lifeFlatIncrease">
+            <summary>
+            Flat increase for the boss's life.
+            Computed before the multiplier.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.damageFlatIncrease">
+            <summary>
+            Flat increase for the boss's damage.
+            Computed before the multiplier.
+            This also affects its minions.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.ModifiedAttributes.#ctor(System.Single,System.Single,System.Int32,System.Int32)">
+            <summary>
+            Constructor for ModifiedAttributes.
+            </summary>
+            <param name="lifeMultiplier">Multiplier to life</param>
+            <param name="damageMultiplier">Multiplier to damage</param>
+            <param name="lifeFlatIncrease">Flat increase to life</param>
+            <param name="damageFlatIncrease">Flat increase to damage</param>
         </member>
         <member name="T:BossRush.BossRushSystem.TimeContext">
             <summary>
@@ -417,6 +441,22 @@
             A random location will be chosen in the rectangle so that players will not be cramped in one spot.
             </summary>
         </member>
+        <member name="F:BossRush.PlaceContext.customImplementation">
+            <summary>
+            Custom implementation for the place context.
+            This is used for more dynamic and flexible implementation where static data will not do.
+            </summary>
+        </member>
+        <member name="P:BossRush.PlaceContext.LeftUnderworld">
+            <summary>
+            Shortcut for the left side of the Underworld.
+            </summary>
+        </member>
+        <member name="P:BossRush.PlaceContext.RightUnderworld">
+            <summary>
+            Shortcut for the right side of the Underworld.
+            </summary>
+        </member>
         <member name="M:BossRush.PlaceContext.#ctor(Microsoft.Xna.Framework.Vector2,System.Int32)">
             <summary>
             Constructor for PlaceContext.
@@ -429,10 +469,27 @@
             This is not a circle
             </param>
         </member>
+        <member name="M:BossRush.PlaceContext.#ctor(System.Func{Terraria.Player,Microsoft.Xna.Framework.Rectangle})">
+            <summary>
+            Constructor for PlaceContext.
+            This constructor is used for a more dynamic approach.
+            </summary>
+            <param name="implementation">
+            Custom implementation
+            (Player parameter is is the player being teleported)
+            </param>
+        </member>
         <member name="M:BossRush.PlaceContext.TeleportPlayers">
             <summary>
             Teleports all active players to a random location in the teleport range.
             </summary>
+        </member>
+        <member name="M:BossRush.PlaceContext.UseImplementation(Terraria.Player)">
+            <summary>
+            Selects the implementation to use.
+            </summary>
+            <param name="player">Player being teleported</param>
+            <returns>Rectangle for spawning the player</returns>
         </member>
         <member name="T:BossRush.Items.BossRushItem">
             <summary>
@@ -489,13 +546,6 @@
             Utility static class for the mod.
             </summary>
         </member>
-        <member name="M:BossRush.Util.SpawnBoss(BossRush.BossRushSystem.BossData)">
-            <summary>
-            Method of spawning in Boss Rush mode.
-            </summary>
-            <param name="data">Refer to BossData struct for more details</param>
-            <returns>List of indices to be used in Main.npc</returns>
-        </member>
         <member name="M:BossRush.Util.SpawnDeadPlayers">
             <summary>
             Spawns all dead players in the game.
@@ -550,6 +600,12 @@
             </summary>
             <param name="rectangle">Rectangle to choose a rnadom point from</param>
             <returns>A random point</returns>
+        </member>
+        <member name="M:BossRush.Util.RandomSign">
+            <summary>
+            Returns -1 or 1 randomly.
+            </summary>
+            <returns>-1 or 1</returns>
         </member>
     </members>
 </doc>
