@@ -170,10 +170,6 @@ public partial class BossRushSystem : ModSystem
     {
         ResetSystem();
 
-        bossQueue.Enqueue(new([NPCID.WallofFlesh],
-                              placeContext: PlaceContext.LeftUnderworld,
-                              spawnOffset: (_) => new(-500, 0, 0, 0)));
-
         bossQueue.Enqueue(new(
             [NPCID.KingSlime],
             spawnOffset: (_) =>
@@ -219,7 +215,9 @@ public partial class BossRushSystem : ModSystem
             timeContext: TimeContext.Night
         ));
 
-        // bossQueue.Enqueue(new(NPCID.WallofFlesh));
+        bossQueue.Enqueue(new([NPCID.WallofFlesh],
+                              placeContext: PlaceContext.LeftUnderworld,
+                              spawnOffset: (_) => new(-500, 0, 0, 0)));
 
         bossQueue.Enqueue(new(
             [NPCID.QueenSlimeBoss],
@@ -228,25 +226,32 @@ public partial class BossRushSystem : ModSystem
                 int sign = Util.RandomSign();
                 return new(1000 * sign, -500, -100 * sign, -100);
             },
-            timeContext: TimeContext.Noon
+            timeContext: TimeContext.Noon,
+            placeContext: new((_) =>
+            {
+                Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
+                worldCoordinates = Util.RoundOff(worldCoordinates);
+                return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, 0);
+            })
         ));
 
         int twinsSign = Util.RandomSign();
         bossQueue.Enqueue(new(
+
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: (type) =>
-            {
-                if (type == NPCID.Retinazer)
                 {
-                    return new(1000 * twinsSign, 1000, 200 * twinsSign, -2000);
-                }
-                else
-                {
-                    return new(-1000 * twinsSign, 1000, -200 * twinsSign, -2000);
-                }
-            },
-            timeContext: TimeContext.Night
-        ));
+                    if (type == NPCID.Retinazer)
+                    {
+                        return new(1000 * twinsSign, 1000, 200 * twinsSign, -2000);
+                    }
+                    else
+                    {
+                        return new(-1000 * twinsSign, 1000, -200 * twinsSign, -2000);
+                    }
+                },
+                timeContext: TimeContext.Night
+            ));
 
         bossQueue.Enqueue(new([NPCID.TheDestroyer],
                               spawnOffset: (_) => new(-1000, 1000, 2000, 500),

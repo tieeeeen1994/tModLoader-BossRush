@@ -47,6 +47,10 @@ public class BossRushPlayer : ModPlayer
                     case NPCID.Golem:
                         Player.ZoneJungle = true;
                         break;
+
+                    case NPCID.DukeFishron:
+                        Player.ZoneBeach = true;
+                        break;
                 }
             }
         }

@@ -86,7 +86,7 @@ public partial class BossRushSystem
                         TimeContext? timeContext = null, PlaceContext? placeContext = null)
         {
             this.type = type;
-            this.spawnOffset = (_) => new(0, 0, 0, 0);
+            this.spawnOffset = spawnOffset ?? ((_) => new(0, 0, 0, 0));
             this.lifeMultiplier = lifeMultiplier;
             this.damageMultiplier = damageMultiplier;
             this.lifeFlatIncrease = lifeFlatIncrease;

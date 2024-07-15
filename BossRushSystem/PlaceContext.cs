@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -15,14 +16,16 @@ namespace BossRush
         /// <summary>
         /// The initial position where players will be teleported.
         /// </summary>
-        public Vector2 initialPosition;
+        public Vector2? initialPosition;
 
         /// <summary>
         /// The range where players will be teleported based on the initial position.
         /// The initial position will be the center of this rectangle.
         /// A random location will be chosen in the rectangle so that players will not be cramped in one spot.
         /// </summary>
-        public Rectangle teleportRange;
+        public Rectangle? teleportRange;
+
+        public Func<Player, Rectangle> customImplementation;
 
         public static PlaceContext LeftUnderworld
         {
@@ -47,6 +50,8 @@ namespace BossRush
 
         /// <summary>
         /// Constructor for PlaceContext.
+        /// The rectangle here is only statically created.
+        /// Use the other constructor for a dynamic approach.
         /// </summary>
         /// <param name="initialPosition">Position where players are teleported</param>
         /// <param name="radius">
@@ -55,11 +60,20 @@ namespace BossRush
         /// </param>
         public PlaceContext(Vector2 initialPosition, int radius)
         {
+            customImplementation = null;
             this.initialPosition = Util.RoundOff(initialPosition);
-            int x = (int)this.initialPosition.X - radius;
-            int y = (int)this.initialPosition.Y - radius;
+            Vector2 valuePosition = this.initialPosition.Value;
+            int x = (int)valuePosition.X - radius;
+            int y = (int)valuePosition.Y - radius;
             int roundedDiameter = Util.RoundOff(radius * 2);
             teleportRange = new(x, y, roundedDiameter, roundedDiameter);
+        }
+
+        public PlaceContext(Func<Player, Rectangle> implementation)
+        {
+            customImplementation = implementation;
+            initialPosition = null;
+            teleportRange = null;
         }
 
         /// <summary>
@@ -71,10 +85,9 @@ namespace BossRush
             {
                 if (player.active)
                 {
-                    Vector2 position = Util.RoundOff(Util.ChooseRandomPointInRectangle(teleportRange));
+                    Vector2 position = Util.RoundOff(Util.ChooseRandomPointInRectangle(UseImplementation(player)));
                     if (Main.netMode == NetmodeID.SinglePlayer)
                     {
-
                         player.Teleport(position);
                     }
                     else if (Main.netMode == NetmodeID.Server)
@@ -85,6 +98,18 @@ namespace BossRush
                         packet.Send(player.whoAmI);
                     }
                 }
+            }
+        }
+
+        private Rectangle UseImplementation(Player player)
+        {
+            if (customImplementation == null)
+            {
+                return teleportRange.Value;
+            }
+            else
+            {
+                return customImplementation(player);
             }
         }
     }

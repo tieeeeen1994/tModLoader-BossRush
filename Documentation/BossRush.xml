@@ -280,13 +280,13 @@
             List of types of entities to be spawned.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.spawnOffsets">
+        <member name="F:BossRush.BossRushSystem.BossData.spawnOffset">
             <summary>
-            List of offsets to be used for spawning.
-            The center here will be the target player's Center.
+            Offset to be used for spawning. The center here will be the target player's Center.
             Use offsets to spawn the boss in a random location in the specified rectangle.
-            Only on offset will be chosen from the list by random.
-            e.g. Use two offsets to spawn the boss in either the left or the right side of the player.
+            The field is a Func so that it runs the logic when the check is needed.
+            This will allow flexible checks instead of being hard-coded and static.
+            The integer parameter is the type of the boss.
             </summary>
         </member>
         <member name="F:BossRush.BossRushSystem.BossData.lifeMultiplier">
@@ -329,14 +329,16 @@
             Place requirement for the boss to work properly.
             Players will be teleported to the specified location before the boss is spawned.
             If no context is provided, players will not be teleported.
+            This contains a list so that there can be multiple places the boss fight can happen.
+            A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int16},System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
             <param name="type">Types of bosses</param>
-            <param name="spawnOffsets">Spawn offsets for bosses to spawn</param>
+            <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
             <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
             <param name="damageMultiplier">Damage multipled when the boss spawns</param>
             <param name="lifeFlatIncrease">Life added when the boss spawns</param>
@@ -344,23 +346,12 @@
             <param name="timeContext">Refer to TimeContext struct for more details</param>
             <param name="placeContext">Refer to PlaceContext struct for more details</param>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Int16,System.Collections.Generic.List{Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
-            <summary>
-            Constructor for BossData.
-            </summary>
-            <param name="type">Types of bosses</param>
-            <param name="spawnOffsets">Spawn offsets for bosses to spawn</param>
-            <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
-            <param name="damageMultiplier">Damage multipled when the boss spawns</param>
-            <param name="lifeFlatIncrease">Life added when the boss spawns</param>
-            <param name="damageFlatIncrease">Damage added when the boss spawns</param>
-            <param name="timeContext">Refer to TimeContext struct for more details</param>
-            <param name="placeContext">Refer to PlaceContext struct for more details</param>
-        </member>
-        <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation">
+        <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation(System.Int32)">
             <summary>
             Used to determine and pinpoint a random location from the given spawnOffsets.
+            The parameter is mainly used for spawnOffset Func object for flexibility.
             </summary>
+            <param name="type">Type of the boss</param>
             <returns>A random location</returns>
         </member>
         <member name="T:BossRush.BossRushSystem.TimeContext">
@@ -429,6 +420,8 @@
         <member name="M:BossRush.PlaceContext.#ctor(Microsoft.Xna.Framework.Vector2,System.Int32)">
             <summary>
             Constructor for PlaceContext.
+            The rectangle here is only statically created.
+            Use the other constructor for a dynamic approach.
             </summary>
             <param name="initialPosition">Position where players are teleported</param>
             <param name="radius">
