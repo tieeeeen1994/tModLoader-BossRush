@@ -45,7 +45,7 @@ public static class Util
         Player target = Main.rand.Next(potentialTargetPlayers);
         List<int> spawnedBossIndex = [];
 
-        foreach (var type in data.type)
+        foreach (var type in data.types)
         {
             Vector2 offsetValue = data.RandomSpawnLocation(type);
             int spawnX = RoundOff(target.Center.X + offsetValue.X);

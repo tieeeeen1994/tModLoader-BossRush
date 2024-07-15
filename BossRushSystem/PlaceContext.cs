@@ -23,9 +23,9 @@ namespace BossRush
         /// The initial position will be the center of this rectangle.
         /// A random location will be chosen in the rectangle so that players will not be cramped in one spot.
         /// </summary>
-        public Rectangle? teleportRange;
+        private Rectangle? teleportRange;
 
-        public Func<Player, Rectangle> customImplementation;
+        private Func<Player, Rectangle> customImplementation;
 
         public static PlaceContext LeftUnderworld
         {

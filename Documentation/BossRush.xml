@@ -275,7 +275,7 @@
             Contains information about the boss in Boss Rush mode.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.type">
+        <member name="F:BossRush.BossRushSystem.BossData.types">
             <summary>
             List of types of entities to be spawned.
             </summary>
@@ -333,18 +333,18 @@
             A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Nullable{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},System.Single,System.Single,System.Int32,System.Int32,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
-            <param name="type">Types of bosses</param>
+            <param name="types">Types of bosses</param>
             <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
             <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
             <param name="damageMultiplier">Damage multipled when the boss spawns</param>
             <param name="lifeFlatIncrease">Life added when the boss spawns</param>
             <param name="damageFlatIncrease">Damage added when the boss spawns</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
-            <param name="placeContext">Refer to PlaceContext struct for more details</param>
+            <param name="placeContexts">Refer to PlaceContext struct for more details</param>
         </member>
         <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation(System.Int32)">
             <summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Terraria;
 
 namespace BossRush;
 
@@ -14,7 +15,7 @@ public partial class BossRushSystem
         /// <summary>
         /// List of types of entities to be spawned.
         /// </summary>
-        public List<int> type;
+        public List<int> types;
 
         /// <summary>
         /// Offset to be used for spawning. The center here will be the target player's Center.
@@ -23,35 +24,13 @@ public partial class BossRushSystem
         /// This will allow flexible checks instead of being hard-coded and static.
         /// The integer parameter is the type of the boss.
         /// </summary>
-        public Func<int, Rectangle> spawnOffset;
+        public Func<int, BossData, Rectangle> spawnOffset;
 
         /// <summary>
-        /// Multiplier for the boss's life.
-        /// Computed after the flat increase.
-        /// This also affects its minions.
+        /// Data structure containing the supposedly attributes modifications for the boss.
+        /// This will be used to adjust the stats of the boss when it spawns.
         /// </summary>
-        public float lifeMultiplier;
-
-        /// <summary>
-        /// Multiplier for the boss's damage.
-        /// Computed after the flat increase.
-        /// This also affects its minions.
-        /// </summary>
-        public float damageMultiplier;
-
-        /// <summary>
-        /// Flat increase for the boss's life.
-        /// Computed before the multiplier.
-        /// This also affects its minions.
-        /// </summary>
-        public int lifeFlatIncrease;
-
-        /// <summary>
-        /// Flat increase for the boss's damage.
-        /// Computed before the multiplier.
-        /// This also affects its minions.
-        /// </summary>
-        public int damageFlatIncrease;
+        public ModifiedAttributes modifiedAttributes;
 
         /// <summary>
         /// Time requirement for the boss to work properly.
@@ -72,27 +51,20 @@ public partial class BossRushSystem
         /// <summary>
         /// Constructor for BossData.
         /// </summary>
-        /// <param name="type">Types of bosses</param>
+        /// <param name="types">Types of bosses</param>
         /// <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
-        /// <param name="lifeMultiplier">Life multiplied when the boss spawns</param>
-        /// <param name="damageMultiplier">Damage multipled when the boss spawns</param>
-        /// <param name="lifeFlatIncrease">Life added when the boss spawns</param>
-        /// <param name="damageFlatIncrease">Damage added when the boss spawns</param>
+        /// <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
         /// <param name="timeContext">Refer to TimeContext struct for more details</param>
-        /// <param name="placeContext">Refer to PlaceContext struct for more details</param>
-        public BossData(List<int> type, Func<int, Rectangle> spawnOffset = null,
-                        float lifeMultiplier = 1f, float damageMultiplier = 1f,
-                        int lifeFlatIncrease = 0, int damageFlatIncrease = 0,
-                        TimeContext? timeContext = null, PlaceContext? placeContext = null)
+        /// <param name="placeContexts">Refer to PlaceContext struct for more details</param>
+        public BossData(List<int> types, Func<int, BossData, Rectangle> spawnOffset = null,
+                        ModifiedAttributes modifiedAttributes = new(),
+                        TimeContext? timeContext = null, List<PlaceContext> placeContexts = null)
         {
-            this.type = type;
-            this.spawnOffset = spawnOffset ?? ((_) => new(0, 0, 0, 0));
-            this.lifeMultiplier = lifeMultiplier;
-            this.damageMultiplier = damageMultiplier;
-            this.lifeFlatIncrease = lifeFlatIncrease;
-            this.damageFlatIncrease = damageFlatIncrease;
+            this.types = types;
+            this.spawnOffset = spawnOffset ?? ((_, _) => new(0, 0, 0, 0));
+            this.modifiedAttributes = modifiedAttributes;
             this.timeContext = timeContext;
-            this.placeContext = placeContext;
+            placeContext = placeContexts?[Main.rand.Next(placeContexts.Count)];
         }
 
         /// <summary>
@@ -103,7 +75,7 @@ public partial class BossRushSystem
         /// <returns>A random location</returns>
         public Vector2 RandomSpawnLocation(int type)
         {
-            Vector2 chosenOffset = Util.ChooseRandomPointInRectangle(spawnOffset(type));
+            Vector2 chosenOffset = Util.ChooseRandomPointInRectangle(spawnOffset(type, this));
             return Util.RoundOff(chosenOffset);
         }
     }
