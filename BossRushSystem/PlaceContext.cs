@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using static BossRush.BossRush;
+using BR = BossRush.BossRush;
 
 namespace BossRush
 {
@@ -23,13 +23,21 @@ namespace BossRush
         /// The initial position will be the center of this rectangle.
         /// A random location will be chosen in the rectangle so that players will not be cramped in one spot.
         /// </summary>
-        private Rectangle? teleportRange;
+        public Rectangle? teleportRange;
+
+        /// <summary>
+        /// Function generally used to force the biome around the player.
+        /// Do note that due to Terraria's biome system, this can be finicky.
+        /// It wil not always work and it's better to teleport players into the real biome.
+        /// This always works for corruption and crimson, however.
+        /// </summary>
+        public Action<Player> forceBiomeFunction;
 
         /// <summary>
         /// Custom implementation for the place context.
         /// This is used for more dynamic and flexible implementation where static data will not do.
         /// </summary>
-        private Func<Player, Rectangle> customImplementation;
+        private readonly Func<Player, Rectangle> customImplementation;
 
         /// <summary>
         /// Shortcut for the left side of the Underworld.
@@ -67,7 +75,11 @@ namespace BossRush
         /// Length of the rectangle from the center to the edge
         /// This is not a circle
         /// </param>
-        public PlaceContext(Vector2 initialPosition, int radius)
+        /// <param name="forceBiome">
+        /// Implementation for forcing the biome
+        /// (Player parameter is the affected one of the forcing)
+        /// </param>
+        public PlaceContext(Vector2 initialPosition, int radius, Action<Player> forceBiome = null)
         {
             customImplementation = null;
             this.initialPosition = Util.RoundOff(initialPosition);
@@ -76,6 +88,7 @@ namespace BossRush
             int y = (int)valuePosition.Y - radius;
             int roundedDiameter = Util.RoundOff(radius * 2);
             teleportRange = new(x, y, roundedDiameter, roundedDiameter);
+            forceBiomeFunction = forceBiome;
         }
 
         /// <summary>
@@ -84,13 +97,35 @@ namespace BossRush
         /// </summary>
         /// <param name="implementation">
         /// Custom implementation
-        /// (Player parameter is is the player being teleported)
+        /// (Player parameter is the player being teleported)
         /// </param>
-        public PlaceContext(Func<Player, Rectangle> implementation)
+        /// <param name="forceBiome">
+        /// Implementation for forcing the biome
+        /// (Player parameter is the affected one of the forcing)
+        /// </param>
+        public PlaceContext(Func<Player, Rectangle> implementation, Action<Player> forceBiome = null)
         {
             customImplementation = implementation;
             initialPosition = null;
             teleportRange = null;
+            forceBiomeFunction = forceBiome;
+        }
+
+        /// <summary>
+        /// Constructor for PlaceContext.
+        /// This constructor is for only setting the forcing of a biome into players.
+        /// No teleportation will happen here.
+        /// </summary>
+        /// <param name="forceBiome">
+        /// Implementation for forcing the biome
+        /// (Player parameter is the affected one of the forcing)
+        /// </param>
+        public PlaceContext(Action<Player> forceBiome)
+        {
+            customImplementation = null;
+            initialPosition = null;
+            teleportRange = null;
+            forceBiomeFunction = forceBiome;
         }
 
         /// <summary>
@@ -98,21 +133,24 @@ namespace BossRush
         /// </summary>
         public void TeleportPlayers()
         {
-            foreach (var player in Main.ActivePlayers)
+            if (WillPlayersTeleport())
             {
-                if (player.active)
+                foreach (var player in Main.ActivePlayers)
                 {
-                    Vector2 position = Util.RoundOff(Util.ChooseRandomPointInRectangle(UseImplementation(player)));
-                    if (Main.netMode == NetmodeID.SinglePlayer)
+                    if (player.active)
                     {
-                        player.Teleport(position);
-                    }
-                    else if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket packet = BossRush.I.GetPacket();
-                        packet.Write((byte)PacketType.Teleport);
-                        packet.WriteVector2(position);
-                        packet.Send(player.whoAmI);
+                        Vector2 position = Util.RoundOff(Util.ChooseRandomPointInRectangle(UseImplementation(player)));
+                        if (Main.netMode == NetmodeID.SinglePlayer)
+                        {
+                            player.Teleport(position);
+                        }
+                        else if (Main.netMode == NetmodeID.Server)
+                        {
+                            ModPacket packet = BR.I.GetPacket();
+                            packet.Write((byte)BR.PacketType.Teleport);
+                            packet.WriteVector2(position);
+                            packet.Send(player.whoAmI);
+                        }
                     }
                 }
             }
@@ -133,6 +171,15 @@ namespace BossRush
             {
                 return customImplementation(player);
             }
+        }
+
+        /// <summary>
+        /// Check whether the PlaceContext object will teleport players.
+        /// </summary>
+        /// <returns>True or False</returns>
+        private bool WillPlayersTeleport()
+        {
+            return (initialPosition != null && teleportRange != null) || customImplementation != null;
         }
     }
 }

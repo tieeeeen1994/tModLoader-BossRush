@@ -29,30 +29,7 @@ public class BossRushPlayer : ModPlayer
     {
         if (BossRushSystem.IsBossRushActive())
         {
-            NPC boss = BossRushSystem.I.referenceBoss;
-            if (boss != null && boss.active)
-            {
-                switch (boss.type)
-                {
-                    case NPCID.EaterofWorldsHead:
-                        Player.ZoneCorrupt = true;
-                        break;
-
-                    case NPCID.BrainofCthulhu:
-                        Player.ZoneCrimson = true;
-                        break;
-
-                    case NPCID.QueenBee:
-                    case NPCID.Plantera:
-                    case NPCID.Golem:
-                        Player.ZoneJungle = true;
-                        break;
-
-                    case NPCID.DukeFishron:
-                        Player.ZoneBeach = true;
-                        break;
-                }
-            }
+            BossRushSystem.I.currentBossData?.placeContext?.forceBiomeFunction(Player);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -43,6 +44,11 @@ public partial class BossRushSystem : ModSystem
     public List<NPC> currentBoss = null;
 
     /// <summary>
+    /// Pertains to the BossData object provided for the current boss fromn the queue.
+    /// </summary>
+    public BossData? currentBossData = null;
+
+    /// <summary>
     /// Just a reference to the boss of the current stage.
     /// This field is equal to currentBoss.First().
     /// This field exists for performance reasons.
@@ -62,7 +68,7 @@ public partial class BossRushSystem : ModSystem
     /// Contains the queue of bosses to be spawned.
     /// Each entry is one boss rush stage, and a boss rush stage can contain multiple entities.
     /// </summary>
-    private Queue<BossData> bossQueue = [];
+    private readonly Queue<BossData> bossQueue = [];
 
     /// <summary>
     /// Flag for determining of all players are dead within a boss rush stage.
@@ -198,12 +204,20 @@ public partial class BossRushSystem : ModSystem
             {
                 int sign = Util.RandomSign();
                 return new(500 * sign, 500, 200 * sign, -1000);
-            }
+            },
+            placeContexts: [new(player => player.ZoneCrimson = true)]
         ));
 
+        Action<Player> forceJungle = (player) =>
+        {
+            player.ZoneJungle = true;
+            player.ZoneDirtLayerHeight = true;
+            player.ZoneRockLayerHeight = true;
+        };
         bossQueue.Enqueue(new([NPCID.QueenBee],
                               spawnOffset: (_, _) => new(-1000, -1000, 2000, -200),
-                              timeContext: TimeContext.Noon));
+                              timeContext: TimeContext.Noon,
+                              placeContexts: [new(forceJungle)]));
 
         bossQueue.Enqueue(new(
             [NPCID.SkeletronHead],
@@ -276,7 +290,8 @@ public partial class BossRushSystem : ModSystem
 
         bossQueue.Enqueue(new([NPCID.Plantera],
                               spawnOffset: (_, _) => new(-1000, 1500, 2000, 500),
-                              timeContext: TimeContext.Noon));
+                              timeContext: TimeContext.Noon,
+                              placeContexts: [new(forceJungle)]));
 
         bossQueue.Enqueue(new(
             [NPCID.Golem],
@@ -284,7 +299,8 @@ public partial class BossRushSystem : ModSystem
             {
                 int sign = Util.RandomSign();
                 return new(500 * sign, 0, -200 * sign, -500);
-            }
+            },
+            placeContexts: [new(player => player.ZoneLihzhardTemple = true)]
         ));
 
         bossQueue.Enqueue(new(
@@ -293,7 +309,8 @@ public partial class BossRushSystem : ModSystem
             {
                 int sign = Util.RandomSign();
                 return new(300 * sign, 50, -100 * sign, -50);
-            }
+            },
+            placeContexts: [new(player => player.ZoneBeach = true)]
         ));
 
         bossQueue.Enqueue(new([NPCID.HallowBoss],
@@ -319,6 +336,7 @@ public partial class BossRushSystem : ModSystem
     {
         state = States.Off;
         currentBoss = null;
+        currentBossData = null;
         referenceBoss = null;
         bossQueue.Clear();
         allDeadEndTimer = 0;
@@ -333,8 +351,8 @@ public partial class BossRushSystem : ModSystem
     /// </summary>
     private void SpawnNextBoss()
     {
-        BossData nextBoss = bossQueue.Peek();
-        List<int> npcIndex = SpawnBoss(nextBoss);
+        currentBossData = bossQueue.Peek();
+        List<int> npcIndex = SpawnBoss(currentBossData.Value);
         currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
         referenceBoss = currentBoss.First();
         bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
