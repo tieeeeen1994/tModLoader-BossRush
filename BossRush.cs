@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
@@ -63,6 +64,7 @@ public class BossRush : Mod
         On_NPC.NPCLoot_DropMoney += NPCLoot_DropMoney;
         On_NPC.DoDeathEvents_DropBossPotionsAndHearts += DropBossPotionsAndHearts;
         On_NPC.NewNPC += NewNPC;
+        On_NPC.CreateBrickBoxForWallOfFlesh += CreateBrickBoxForWallOfFlesh;
     }
 
     /// <summary>
@@ -169,6 +171,14 @@ public class BossRush : Mod
         if (BossRushSystem.IsBossRushOff())
         {
             orig(self, ref typeName);
+        }
+    }
+
+    private void CreateBrickBoxForWallOfFlesh(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
+    {
+        if (BossRushSystem.IsBossRushOff())
+        {
+            orig(self);
         }
     }
 
