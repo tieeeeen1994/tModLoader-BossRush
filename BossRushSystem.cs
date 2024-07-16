@@ -244,8 +244,12 @@ public partial class BossRushSystem : ModSystem
             timeContext: TimeContext.Night
         ));
 
-        // bossQueue.Enqueue(new(NPCID.EaterofWorldsHead,
-        //                       spawnOffsets: [new(-1000, 1000, 2000, 500)]));
+        bossQueue.Enqueue(new(
+            [NPCID.EaterofWorldsHead],
+            subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail, NPCID.EaterofWorldsHead],
+            spawnOffset: (_, _) => new(-1000, 1000, 2000, 500),
+            placeContexts: [new(player => player.ZoneCorrupt = true)]
+        ));
 
         bossQueue.Enqueue(new(
             [NPCID.BrainofCthulhu],
@@ -334,7 +338,7 @@ public partial class BossRushSystem : ModSystem
                               timeContext: TimeContext.Night));
 
         bossQueue.Enqueue(new([NPCID.SkeletronPrime],
-                              spawnOffset: (_, _) => new(-1000, -1200, 2000, -300),
+                              spawnOffset: (_, _) => new(-1000, -800, 2000, -200),
                               timeContext: TimeContext.Night));
 
         bossQueue.Enqueue(new([NPCID.Plantera],
