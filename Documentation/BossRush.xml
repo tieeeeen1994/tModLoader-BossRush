@@ -138,23 +138,23 @@
             </summary>
             <returns>True or False</returns>
         </member>
-        <member name="F:BossRush.BossRushSystem.state">
+        <member name="P:BossRush.BossRushSystem.state">
             <summary>
             Current state of the Boss Rush System.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.currentBoss">
+        <member name="P:BossRush.BossRushSystem.currentBoss">
             <summary>
             Pertains to the current boss of a stage. This contains all the entities of the boss.
             e.g. The Twins will contain Retinazer and Spazmatism.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.currentBossData">
+        <member name="P:BossRush.BossRushSystem.currentBossData">
             <summary>
             Pertains to the BossData object provided for the current boss fromn the queue.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.referenceBoss">
+        <member name="P:BossRush.BossRushSystem.referenceBoss">
             <summary>
             Just a reference to the boss of the current stage.
             This field is equal to currentBoss.First().
@@ -163,7 +163,7 @@
             e.g.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.bossDefeated">
+        <member name="P:BossRush.BossRushSystem.bossDefeated">
             <summary>
             Contains trackers for the bosses if they were truly defeated or not.
             Bosses are considered defeated if they are killed by the player and supposed loot is to be dropped.
@@ -309,12 +309,12 @@
             Contains information about the boss in Boss Rush mode.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.types">
+        <member name="P:BossRush.BossRushSystem.BossData.types">
             <summary>
             List of types of entities to be spawned.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.subTypes">
+        <member name="P:BossRush.BossRushSystem.BossData.subTypes">
             <summary>
             List of types of entities that the boss will soon spawn.
             At times, bosses spawns minions or other entities.
@@ -325,7 +325,7 @@
             King Slime and all Blue Slimes must be defeated first.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.spawnOffset">
+        <member name="P:BossRush.BossRushSystem.BossData.spawnOffset">
             <summary>
             Offset to be used for spawning. The center here will be the target player's Center.
             Use offsets to spawn the boss in a random location in the specified rectangle.
@@ -334,20 +334,20 @@
             The integer parameter is the type of the boss.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.modifiedAttributes">
+        <member name="P:BossRush.BossRushSystem.BossData.modifiedAttributes">
             <summary>
             Data structure containing the supposedly attributes modifications for the boss.
             This will be used to adjust the stats of the boss when it spawns.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.timeContext">
+        <member name="P:BossRush.BossRushSystem.BossData.timeContext">
             <summary>
             Time requirement for the boss to work properly.
             Time will change according to the context when the boss is spawned.
             If no context is provided, time will not change.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.BossData.placeContext">
+        <member name="P:BossRush.BossRushSystem.BossData.placeContext">
             <summary>
             Place requirement for the boss to work properly.
             Players will be teleported to the specified location before the boss is spawned.
@@ -380,28 +380,28 @@
             Contains information about the modifications to the stats of the boss.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.lifeMultiplier">
+        <member name="P:BossRush.BossRushSystem.ModifiedAttributes.lifeMultiplier">
             <summary>
             Multiplier for the boss's life.
             Computed after the flat increase.
             This also affects its minions.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.damageMultiplier">
+        <member name="P:BossRush.BossRushSystem.ModifiedAttributes.damageMultiplier">
             <summary>
             Multiplier for the boss's damage.
             Computed after the flat increase.
             This also affects its minions.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.lifeFlatIncrease">
+        <member name="P:BossRush.BossRushSystem.ModifiedAttributes.lifeFlatIncrease">
             <summary>
             Flat increase for the boss's life.
             Computed before the multiplier.
             This also affects its minions.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.ModifiedAttributes.damageFlatIncrease">
+        <member name="P:BossRush.BossRushSystem.ModifiedAttributes.damageFlatIncrease">
             <summary>
             Flat increase for the boss's damage.
             Computed before the multiplier.
@@ -423,13 +423,13 @@
             This is used in BossData struct.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.TimeContext.time">
+        <member name="P:BossRush.BossRushSystem.TimeContext.time">
             <summary>
             The time of day to be set.
             Values should be similar as to how Terraria handles time.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.TimeContext.dayTime">
+        <member name="P:BossRush.BossRushSystem.TimeContext.dayTime">
             <summary>
             Whether it is day time or night time.
             Values should be similar as to how Terraria handles time.
@@ -468,19 +468,19 @@
             This is used in BossData struct.
             </summary>
         </member>
-        <member name="F:BossRush.PlaceContext.initialPosition">
+        <member name="P:BossRush.PlaceContext.initialPosition">
             <summary>
             The initial position where players will be teleported.
             </summary>
         </member>
-        <member name="F:BossRush.PlaceContext.teleportRange">
+        <member name="P:BossRush.PlaceContext.teleportRange">
             <summary>
             The range where players will be teleported based on the initial position.
             The initial position will be the center of this rectangle.
             A random location will be chosen in the rectangle so that players will not be cramped in one spot.
             </summary>
         </member>
-        <member name="F:BossRush.PlaceContext.forceBiomeFunction">
+        <member name="P:BossRush.PlaceContext.forceBiomeFunction">
             <summary>
             Function generally used to force the biome around the player.
             Do note that due to Terraria's biome system, this can be finicky.
