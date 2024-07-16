@@ -15,12 +15,12 @@ public partial class BossRushSystem
         /// The time of day to be set.
         /// Values should be similar as to how Terraria handles time.
         /// </summary>
-        public double time;
+        public double time { get; private set; }
         /// <summary>
         /// Whether it is day time or night time.
         /// Values should be similar as to how Terraria handles time.
         /// </summary>
-        public bool dayTime;
+        public bool dayTime { get; private set; }
 
         /// <summary>
         /// Returns the TimeContext for the beginning of a day.

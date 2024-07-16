@@ -15,7 +15,7 @@ public partial class BossRushSystem
         /// <summary>
         /// List of types of entities to be spawned.
         /// </summary>
-        public List<int> types;
+        public List<int> types { get; private set; }
 
         /// <summary>
         /// List of types of entities that the boss will soon spawn.
@@ -26,7 +26,7 @@ public partial class BossRushSystem
         /// then before Boss Rush can continue to the next stage,
         /// King Slime and all Blue Slimes must be defeated first.
         /// </summary>
-        public List<int> subTypes;
+        public List<int> subTypes { get; private set; }
 
         /// <summary>
         /// Offset to be used for spawning. The center here will be the target player's Center.
@@ -35,20 +35,20 @@ public partial class BossRushSystem
         /// This will allow flexible checks instead of being hard-coded and static.
         /// The integer parameter is the type of the boss.
         /// </summary>
-        public Func<int, BossData, Rectangle> spawnOffset;
+        public Func<int, BossData, Rectangle> spawnOffset { get; private set; }
 
         /// <summary>
         /// Data structure containing the supposedly attributes modifications for the boss.
         /// This will be used to adjust the stats of the boss when it spawns.
         /// </summary>
-        public ModifiedAttributes modifiedAttributes;
+        public ModifiedAttributes modifiedAttributes { get; private set; }
 
         /// <summary>
         /// Time requirement for the boss to work properly.
         /// Time will change according to the context when the boss is spawned.
         /// If no context is provided, time will not change.
         /// </summary>
-        public TimeContext? timeContext;
+        public TimeContext? timeContext { get; private set; }
 
         /// <summary>
         /// Place requirement for the boss to work properly.
@@ -57,7 +57,7 @@ public partial class BossRushSystem
         /// This contains a list so that there can be multiple places the boss fight can happen.
         /// A good example of this is Wall of Flesh. It can be fought on either side of the world.
         /// </summary>
-        public PlaceContext? placeContext;
+        public PlaceContext? placeContext { get; private set; }
 
         /// <summary>
         /// Constructor for BossData.

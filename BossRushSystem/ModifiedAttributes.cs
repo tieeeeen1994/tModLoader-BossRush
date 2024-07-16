@@ -13,28 +13,28 @@ public partial class BossRushSystem
         /// Computed after the flat increase.
         /// This also affects its minions.
         /// </summary>
-        public float lifeMultiplier;
+        public float lifeMultiplier { get; private set; }
 
         /// <summary>
         /// Multiplier for the boss's damage.
         /// Computed after the flat increase.
         /// This also affects its minions.
         /// </summary>
-        public float damageMultiplier;
+        public float damageMultiplier { get; private set; }
 
         /// <summary>
         /// Flat increase for the boss's life.
         /// Computed before the multiplier.
         /// This also affects its minions.
         /// </summary>
-        public int lifeFlatIncrease;
+        public int lifeFlatIncrease { get; private set; }
 
         /// <summary>
         /// Flat increase for the boss's damage.
         /// Computed before the multiplier.
         /// This also affects its minions.
         /// </summary>
-        public int damageFlatIncrease;
+        public int damageFlatIncrease { get; private set; }
 
         /// <summary>
         /// Constructor for ModifiedAttributes.

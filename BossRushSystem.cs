@@ -35,18 +35,18 @@ public partial class BossRushSystem : ModSystem
     /// <summary>
     /// Current state of the Boss Rush System.
     /// </summary>
-    public States state = States.Off;
+    public States state { get; private set; } = States.Off;
 
     /// <summary>
     /// Pertains to the current boss of a stage. This contains all the entities of the boss.
     /// e.g. The Twins will contain Retinazer and Spazmatism.
     /// </summary>
-    public List<NPC> currentBoss = null;
+    public List<NPC> currentBoss { get; private set; } = null;
 
     /// <summary>
     /// Pertains to the BossData object provided for the current boss fromn the queue.
     /// </summary>
-    public BossData? currentBossData = null;
+    public BossData? currentBossData { get; private set; } = null;
 
     /// <summary>
     /// Just a reference to the boss of the current stage.
@@ -55,14 +55,14 @@ public partial class BossRushSystem : ModSystem
     /// Use this if checks are needed for the boss, but only one entity is needed to confirm the current boss.
     /// e.g.
     /// </summary>
-    public NPC referenceBoss = null;
+    public NPC referenceBoss { get; private set; } = null;
 
     /// <summary>
     /// Contains trackers for the bosses if they were truly defeated or not.
     /// Bosses are considered defeated if they are killed by the player and supposed loot is to be dropped.
     /// Boss Rush mod disables loot drops for enemies and instead uses that as a tracker.
     /// </summary>
-    public Dictionary<NPC, bool> bossDefeated = null;
+    public Dictionary<NPC, bool> bossDefeated { get; private set; } = null;
 
     /// <summary>
     /// Contains the queue of bosses to be spawned.

@@ -16,14 +16,14 @@ namespace BossRush
         /// <summary>
         /// The initial position where players will be teleported.
         /// </summary>
-        public Vector2? initialPosition;
+        public Vector2? initialPosition { get; private set; }
 
         /// <summary>
         /// The range where players will be teleported based on the initial position.
         /// The initial position will be the center of this rectangle.
         /// A random location will be chosen in the rectangle so that players will not be cramped in one spot.
         /// </summary>
-        public Rectangle? teleportRange;
+        public Rectangle? teleportRange { get; private set; }
 
         /// <summary>
         /// Function generally used to force the biome around the player.
@@ -31,7 +31,7 @@ namespace BossRush
         /// It wil not always work and it's better to teleport players into the real biome.
         /// This always works for corruption and crimson, however.
         /// </summary>
-        public Action<Player> forceBiomeFunction;
+        public Action<Player> forceBiomeFunction { get; private set; }
 
         /// <summary>
         /// Custom implementation for the place context.

@@ -6,6 +6,7 @@ using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using BR = BossRush.BossRush;
 
 namespace BossRush;
 
@@ -29,8 +30,8 @@ public static class Util
                 }
                 else if (Main.netMode == NetmodeID.Server)
                 {
-                    ModPacket packet = BossRush.I.GetPacket();
-                    packet.Write((byte)BossRush.PacketType.SpawnPlayer);
+                    ModPacket packet = BR.I.GetPacket();
+                    packet.Write((byte)BR.PacketType.SpawnPlayer);
                     packet.Send(player.whoAmI);
                 }
             }
