@@ -131,18 +131,12 @@ public class BossRush : Mod
     /// <summary>
     /// Detour for NPC.NPCLoot_DropItems.
     /// Removes item drops when Boss Rush is active.
-    /// It is instead used as a tracker for boss defeat when Boss Rush is active.
     /// </summary>
     private void NPCLoot_DropItems(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
         {
             orig(self, closestPlayer);
-        }
-        else if (BossRushSystem.IsBossRushActive() &&
-                 BossRushSystem.I.currentBoss.Exists(boss => boss == self))
-        {
-            BossRushSystem.I.bossDefeated[self] = true;
         }
     }
 

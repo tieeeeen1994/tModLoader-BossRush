@@ -1,5 +1,5 @@
 ﻿using Terraria;
-using Terraria.ID;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 
 namespace BossRush;
@@ -18,7 +18,7 @@ public class BossRushPlayer : ModPlayer
     {
         if (BossRushSystem.IsBossRushActive())
         {
-            Player.respawnTimer = 10 * Main.frameRate;
+            Player.respawnTimer = Util.SecondsInFrames(10);
         }
     }
 
@@ -29,7 +29,30 @@ public class BossRushPlayer : ModPlayer
     {
         if (BossRushSystem.IsBossRushActive())
         {
-            BossRushSystem.I.currentBossData?.placeContext?.forceBiomeFunction(Player);
+            BossRushSystem.I.currentBossData?.placeContext?.forceBiomeFunction?.Invoke(Player);
+        }
+    }
+
+    /// <summary>
+    /// When a player dies in Boss Rush mode, track the death.
+    /// </summary>
+    public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
+    {
+        if (BossRushSystem.IsBossRushActive())
+        {
+            BossRushSystem.I.TrackPlayerDeaths();
+        }
+    }
+
+    /// <summary>
+    /// When a player disconnects in Boss Rush mode, check for other players if they are still alive.
+    /// </summary>
+    public override void PlayerDisconnect()
+    {
+        if (BossRushSystem.IsBossRushActive())
+        {
+            Player.active = false;
+            BossRushSystem.I.TrackPlayerDeaths();
         }
     }
 }

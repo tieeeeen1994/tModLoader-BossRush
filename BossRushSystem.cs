@@ -89,12 +89,6 @@ public partial class BossRushSystem : ModSystem
     private int prepareTimer = 0;
 
     /// <summary>
-    /// A timer for performance reasons. States.Run is a heavy task, so the timer is used to lessen the load.
-    /// Only execute the code in States.Run every time the timer hits the threshold.
-    /// </summary>
-    private int performanceTimer = 0;
-
-    /// <summary>
     /// Main code for the Boss Rush System. Runs every in-game frame.
     /// </summary>
     public override void PostUpdateWorld()
@@ -107,7 +101,7 @@ public partial class BossRushSystem : ModSystem
                 break;
 
             case States.Prepare:
-                if (++prepareTimer >= Util.SecondsInFrames(.3f))
+                if (++prepareTimer >= Util.SecondsInFrames(.5f))
                 {
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
@@ -124,12 +118,7 @@ public partial class BossRushSystem : ModSystem
                 break;
 
             case States.Run:
-                TrackPlayerDeaths();
-                if (++performanceTimer >= Util.SecondsInFrames(.05f))
-                {
-                    performanceTimer = 0;
-                    CheckBossAndPlayerCondition();
-                }
+                CheckPlayerCondition();
                 break;
 
             case States.End:
@@ -165,6 +154,66 @@ public partial class BossRushSystem : ModSystem
                 Util.CleanAllEnemies();
                 state = States.End;
                 break;
+        }
+    }
+
+    /// <summary>
+    /// Main code for States.Run.
+    /// The code lives in BossAndSlaves.OnKill for performance reasons.
+    /// The code triggers when an enemy in the currentBoss list is killed.
+    /// </summary>
+    public void CheckBossCondition()
+    {
+        if (!allDead)
+        {
+            if (IsBossDespawned())
+            {
+                Util.CleanAllEnemies(currentBoss);
+                state = States.Prepare;
+            }
+            else if (IsBossDefeated())
+            {
+                Util.SpawnDeadPlayers();
+                allDead = false;
+                bossQueue.Dequeue();
+                state = States.Prepare;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Main code for States.Run.
+    /// The code lives in BossRushPlayer.Kill and BossRushPlayer.PlayerDisconnect for performance reasons.
+    /// The code triggers when a player is killed or disconnects.
+    /// </summary>
+    public void CheckPlayerCondition()
+    {
+        if (allDead)
+        {
+            if (IsBossGone() || ++allDeadEndTimer >= Util.SecondsInFrames(10))
+            {
+                state = States.End;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Tracks the deaths of all players. Does not return anything.
+    /// It automatically assigns allDead variable upon running the method.
+    /// </summary>
+    public void TrackPlayerDeaths()
+    {
+        if (!allDead)
+        {
+            foreach (var player in Main.ActivePlayers)
+            {
+                if (!player.dead)
+                {
+                    return;
+                }
+            }
+            allDead = true;
+            Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.Failure"));
         }
     }
 
@@ -343,7 +392,6 @@ public partial class BossRushSystem : ModSystem
         allDead = false;
         prepareTimer = 0;
         bossDefeated = null;
-        performanceTimer = 0;
     }
 
     /// <summary>
@@ -356,26 +404,6 @@ public partial class BossRushSystem : ModSystem
         currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
         referenceBoss = currentBoss.First();
         bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
-    }
-
-    /// <summary>
-    /// Tracks the deaths of all players. Does not return anything.
-    /// It automatically assigns allDead variable upon running the method.
-    /// </summary>
-    private void TrackPlayerDeaths()
-    {
-        if (!allDead)
-        {
-            foreach (var player in Main.ActivePlayers)
-            {
-                if (!player.dead)
-                {
-                    return;
-                }
-            }
-            allDead = true;
-            Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.Failure"));
-        }
     }
 
     /// <summary>
@@ -407,32 +435,6 @@ public partial class BossRushSystem : ModSystem
     {
         return currentBoss == null || bossDefeated == null ||
                currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
-    }
-
-    /// <summary>
-    /// Main code for States.Run.
-    /// </summary>
-    private void CheckBossAndPlayerCondition()
-    {
-        if (allDead)
-        {
-            if (IsBossGone() || ++allDeadEndTimer >= Util.SecondsInFrames(10))
-            {
-                state = States.End;
-            }
-        }
-        else if (IsBossDespawned())
-        {
-            Util.CleanAllEnemies(currentBoss);
-            state = States.Prepare;
-        }
-        else if (IsBossDefeated())
-        {
-            Util.SpawnDeadPlayers();
-            allDead = false;
-            bossQueue.Dequeue();
-            state = States.Prepare;
-        }
     }
 
     /// <summary>

@@ -73,7 +73,7 @@ namespace BossRush
         /// <param name="initialPosition">Position where players are teleported</param>
         /// <param name="radius">
         /// Length of the rectangle from the center to the edge
-        /// This is not a circle
+        /// (This is not a circle)
         /// </param>
         /// <param name="forceBiome">
         /// Implementation for forcing the biome

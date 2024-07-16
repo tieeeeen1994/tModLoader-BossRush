@@ -61,7 +61,7 @@ public static class Util
     /// <returns>Rounded off value</returns>
     public static int RoundOff(float value)
     {
-        return (int)MathF.Round(value, 0, MidpointRounding.AwayFromZero);
+        return (int)MathF.Round(value, 0, MidpointRounding.ToEven);
     }
 
     /// <summary>

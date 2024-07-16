@@ -18,6 +18,17 @@ public partial class BossRushSystem
         public List<int> types;
 
         /// <summary>
+        /// List of types of entities that the boss will soon spawn.
+        /// At times, bosses spawns minions or other entities.
+        /// These entities might need to be checked as well to truly defeat the boss in the stage.
+        /// Enemies included in the list will be added to the BossRushSystem.currentBoss List when they spawn.
+        /// e.g. If NPCID.BlueSLime is added in subTypes,
+        /// then before Boss Rush can continue to the next stage,
+        /// King Slime and all Blue Slimes must be defeated first.
+        /// </summary>
+        public List<int> subTypes;
+
+        /// <summary>
         /// Offset to be used for spawning. The center here will be the target player's Center.
         /// Use offsets to spawn the boss in a random location in the specified rectangle.
         /// The field is a Func so that it runs the logic when the check is needed.
@@ -52,15 +63,18 @@ public partial class BossRushSystem
         /// Constructor for BossData.
         /// </summary>
         /// <param name="types">Types of bosses</param>
+        /// <param name="subTypes">Types of minions related to the boss to be included as win condition</param>
         /// <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
         /// <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
         /// <param name="timeContext">Refer to TimeContext struct for more details</param>
         /// <param name="placeContexts">Refer to PlaceContext struct for more details</param>
-        public BossData(List<int> types, Func<int, BossData, Rectangle> spawnOffset = null,
+        public BossData(List<int> types, List<int> subTypes = null,
+                        Func<int, BossData, Rectangle> spawnOffset = null,
                         ModifiedAttributes modifiedAttributes = new(),
                         TimeContext? timeContext = null, List<PlaceContext> placeContexts = null)
         {
             this.types = types;
+            this.subTypes = subTypes ?? [];
             this.spawnOffset = spawnOffset ?? ((_, _) => new(0, 0, 0, 0));
             this.modifiedAttributes = modifiedAttributes;
             this.timeContext = timeContext;

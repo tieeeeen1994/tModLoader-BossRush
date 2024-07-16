@@ -18,8 +18,6 @@
             <summary>
             Handles the packet sent from the server or client.
             </summary>
-            <param name="reader"></param>
-            <param name="whoAmI"></param>
         </member>
         <member name="M:BossRush.BossRush.Load">
             <summary>
@@ -49,7 +47,6 @@
             <summary>
             Detour for NPC.NPCLoot_DropItems.
             Removes item drops when Boss Rush is active.
-            It is instead used as a tracker for boss defeat when Boss Rush is active.
             </summary>
         </member>
         <member name="M:BossRush.BossRush.NPCLoot_DropHeals(Terraria.On_NPC.orig_NPCLoot_DropHeals,Terraria.NPC,Terraria.Player)">
@@ -63,6 +60,18 @@
             <summary>
             Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
             Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.CreateBrickBoxForWallOfFlesh(Terraria.On_NPC.orig_CreateBrickBoxForWallOfFlesh,Terraria.NPC)">
+            <summary>
+            Detour for NPC.CreateBrickBoxForWallOfFlesh.
+            Disables the creation of bricks when Wall of Flesh is defeated in Boss Rush mode.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRush.TriggerLunarApocalypse(Terraria.On_WorldGen.orig_TriggerLunarApocalypse)">
+            <summary>
+            Detour for WorldGen.TriggerLunarApocalypse.
+            Prevents the pillars from spawning when Boss Rush is active.
             </summary>
         </member>
         <member name="T:BossRush.BossRush.PacketType">
@@ -97,6 +106,16 @@
             Necessary to make the boss work. It forces the biome to prevent the boss from despawning.
             </summary>
         </member>
+        <member name="M:BossRush.BossRushPlayer.Kill(System.Double,System.Int32,System.Boolean,Terraria.DataStructures.PlayerDeathReason)">
+            <summary>
+            When a player dies in Boss Rush mode, track the death.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushPlayer.PlayerDisconnect">
+            <summary>
+            When a player disconnects in Boss Rush mode, check for other players if they are still alive.
+            </summary>
+        </member>
         <member name="T:BossRush.BossRushSystem">
             <summary>
             Main class for the Boss Rush System.
@@ -128,6 +147,11 @@
             <summary>
             Pertains to the current boss of a stage. This contains all the entities of the boss.
             e.g. The Twins will contain Retinazer and Spazmatism.
+            </summary>
+        </member>
+        <member name="F:BossRush.BossRushSystem.currentBossData">
+            <summary>
+            Pertains to the BossData object provided for the current boss fromn the queue.
             </summary>
         </member>
         <member name="F:BossRush.BossRushSystem.referenceBoss">
@@ -170,12 +194,6 @@
             It just adds pauses in between bosses upon being defeated and spawning a new one.
             </summary>
         </member>
-        <member name="F:BossRush.BossRushSystem.performanceTimer">
-            <summary>
-            A timer for performance reasons. States.Run is a heavy task, so the timer is used to lessen the load.
-            Only execute the code in States.Run every time the timer hits the threshold.
-            </summary>
-        </member>
         <member name="M:BossRush.BossRushSystem.PostUpdateWorld">
             <summary>
             Main code for the Boss Rush System. Runs every in-game frame.
@@ -192,6 +210,26 @@
             Method mainly used for the item that activates Boss Rush mode.
             </summary>
         </member>
+        <member name="M:BossRush.BossRushSystem.CheckBossCondition">
+            <summary>
+            Main code for States.Run.
+            The code lives in BossAndSlaves.OnKill for performance reasons.
+            The code triggers when an enemy in the currentBoss list is killed.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.CheckPlayerCondition">
+            <summary>
+            Main code for States.Run.
+            The code lives in BossRushPlayer.Kill and BossRushPlayer.PlayerDisconnect for performance reasons.
+            The code triggers when a player is killed or disconnects.
+            </summary>
+        </member>
+        <member name="M:BossRush.BossRushSystem.TrackPlayerDeaths">
+            <summary>
+            Tracks the deaths of all players. Does not return anything.
+            It automatically assigns allDead variable upon running the method.
+            </summary>
+        </member>
         <member name="M:BossRush.BossRushSystem.InitializeSystem">
             <summary>
             Initializes the Boss Rush System. This is where bosses are queued using BossData struct.
@@ -206,12 +244,6 @@
         <member name="M:BossRush.BossRushSystem.SpawnNextBoss">
             <summary>
             Spawns the next boss in the queue.
-            </summary>
-        </member>
-        <member name="M:BossRush.BossRushSystem.TrackPlayerDeaths">
-            <summary>
-            Tracks the deaths of all players. Does not return anything.
-            It automatically assigns allDead variable upon running the method.
             </summary>
         </member>
         <member name="M:BossRush.BossRushSystem.IsBossGone">
@@ -234,11 +266,6 @@
             The boss is considered despawned if it is becomes inactive while the tracker has not marked it as defeated.
             </summary>
             <returns>True or False</returns>
-        </member>
-        <member name="M:BossRush.BossRushSystem.CheckBossAndPlayerCondition">
-            <summary>
-            Main code for States.Run.
-            </summary>
         </member>
         <member name="M:BossRush.BossRushSystem.SpawnBoss(BossRush.BossRushSystem.BossData)">
             <summary>
@@ -287,6 +314,17 @@
             List of types of entities to be spawned.
             </summary>
         </member>
+        <member name="F:BossRush.BossRushSystem.BossData.subTypes">
+            <summary>
+            List of types of entities that the boss will soon spawn.
+            At times, bosses spawns minions or other entities.
+            These entities might need to be checked as well to truly defeat the boss in the stage.
+            Enemies included in the list will be added to the BossRushSystem.currentBoss List when they spawn.
+            e.g. If NPCID.BlueSLime is added in subTypes,
+            then before Boss Rush can continue to the next stage,
+            King Slime and all Blue Slimes must be defeated first.
+            </summary>
+        </member>
         <member name="F:BossRush.BossRushSystem.BossData.spawnOffset">
             <summary>
             Offset to be used for spawning. The center here will be the target player's Center.
@@ -318,11 +356,12 @@
             A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},BossRush.BossRushSystem.ModifiedAttributes,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},BossRush.BossRushSystem.ModifiedAttributes,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
             <param name="types">Types of bosses</param>
+            <param name="subTypes">Types of minions related to the boss to be included as win condition</param>
             <param name="spawnOffset">Spawn offset for bosses to spawn (integer parameter is boss type)</param>
             <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
@@ -441,6 +480,14 @@
             A random location will be chosen in the rectangle so that players will not be cramped in one spot.
             </summary>
         </member>
+        <member name="F:BossRush.PlaceContext.forceBiomeFunction">
+            <summary>
+            Function generally used to force the biome around the player.
+            Do note that due to Terraria's biome system, this can be finicky.
+            It wil not always work and it's better to teleport players into the real biome.
+            This always works for corruption and crimson, however.
+            </summary>
+        </member>
         <member name="F:BossRush.PlaceContext.customImplementation">
             <summary>
             Custom implementation for the place context.
@@ -457,7 +504,7 @@
             Shortcut for the right side of the Underworld.
             </summary>
         </member>
-        <member name="M:BossRush.PlaceContext.#ctor(Microsoft.Xna.Framework.Vector2,System.Int32)">
+        <member name="M:BossRush.PlaceContext.#ctor(Microsoft.Xna.Framework.Vector2,System.Int32,System.Action{Terraria.Player})">
             <summary>
             Constructor for PlaceContext.
             The rectangle here is only statically created.
@@ -466,17 +513,36 @@
             <param name="initialPosition">Position where players are teleported</param>
             <param name="radius">
             Length of the rectangle from the center to the edge
-            This is not a circle
+            (This is not a circle)
+            </param>
+            <param name="forceBiome">
+            Implementation for forcing the biome
+            (Player parameter is the affected one of the forcing)
             </param>
         </member>
-        <member name="M:BossRush.PlaceContext.#ctor(System.Func{Terraria.Player,Microsoft.Xna.Framework.Rectangle})">
+        <member name="M:BossRush.PlaceContext.#ctor(System.Func{Terraria.Player,Microsoft.Xna.Framework.Rectangle},System.Action{Terraria.Player})">
             <summary>
             Constructor for PlaceContext.
             This constructor is used for a more dynamic approach.
             </summary>
             <param name="implementation">
             Custom implementation
-            (Player parameter is is the player being teleported)
+            (Player parameter is the player being teleported)
+            </param>
+            <param name="forceBiome">
+            Implementation for forcing the biome
+            (Player parameter is the affected one of the forcing)
+            </param>
+        </member>
+        <member name="M:BossRush.PlaceContext.#ctor(System.Action{Terraria.Player})">
+            <summary>
+            Constructor for PlaceContext.
+            This constructor is for only setting the forcing of a biome into players.
+            No teleportation will happen here.
+            </summary>
+            <param name="forceBiome">
+            Implementation for forcing the biome
+            (Player parameter is the affected one of the forcing)
             </param>
         </member>
         <member name="M:BossRush.PlaceContext.TeleportPlayers">
@@ -490,6 +556,12 @@
             </summary>
             <param name="player">Player being teleported</param>
             <returns>Rectangle for spawning the player</returns>
+        </member>
+        <member name="M:BossRush.PlaceContext.WillPlayersTeleport">
+            <summary>
+            Check whether the PlaceContext object will teleport players.
+            </summary>
+            <returns>True or False</returns>
         </member>
         <member name="T:BossRush.Items.BossRushItem">
             <summary>
@@ -524,6 +596,17 @@
         <member name="M:BossRush.NPCs.BossAndSlaves.SetDefaults(Terraria.NPC)">
             <summary>
             Sets the defaults for the NPC when it spawns during Boss Rush.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.BossAndSlaves.OnSpawn(Terraria.NPC,Terraria.DataStructures.IEntitySource)">
+            <summary>
+            This hook is used for adding BossData.subTypes into the BossRushSystem.currentBoss list.
+            </summary>
+        </member>
+        <member name="M:BossRush.NPCs.BossAndSlaves.OnKill(Terraria.NPC)">
+            <summary>
+            Triggers the boss-related main code for States.Run in the system.
+            In this context, it checks whether all bosses are defeated.
             </summary>
         </member>
         <member name="T:BossRush.NPCs.RandomMobs">
