@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
@@ -22,8 +21,6 @@ public class BossRush : Mod
     /// <summary>
     /// Handles the packet sent from the server or client.
     /// </summary>
-    /// <param name="reader"></param>
-    /// <param name="whoAmI"></param>
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
         PacketType packetType = (PacketType)reader.ReadByte();
@@ -65,6 +62,7 @@ public class BossRush : Mod
         On_NPC.DoDeathEvents_DropBossPotionsAndHearts += DropBossPotionsAndHearts;
         On_NPC.NewNPC += NewNPC;
         On_NPC.CreateBrickBoxForWallOfFlesh += CreateBrickBoxForWallOfFlesh;
+        On_WorldGen.TriggerLunarApocalypse += TriggerLunarApocalypse;
     }
 
     /// <summary>
@@ -174,11 +172,27 @@ public class BossRush : Mod
         }
     }
 
+    /// <summary>
+    /// Detour for NPC.CreateBrickBoxForWallOfFlesh.
+    /// Disables the creation of bricks when Wall of Flesh is defeated in Boss Rush mode.
+    /// </summary>
     private void CreateBrickBoxForWallOfFlesh(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
     {
         if (BossRushSystem.IsBossRushOff())
         {
             orig(self);
+        }
+    }
+
+    /// <summary>
+    /// Detour for WorldGen.TriggerLunarApocalypse.
+    /// Prevents the pillars from spawning when Boss Rush is active.
+    /// </summary>
+    private void TriggerLunarApocalypse(On_WorldGen.orig_TriggerLunarApocalypse orig)
+    {
+        if (BossRushSystem.IsBossRushOff())
+        {
+            orig();
         }
     }
 
