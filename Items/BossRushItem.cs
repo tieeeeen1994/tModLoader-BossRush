@@ -24,6 +24,7 @@ public class BossRushItem : ModItem
         Item.useTime = Item.useAnimation = 60;
         Item.UseSound = SoundID.Roar;
         Item.autoReuse = false;
+        Item.createTile = -1;
     }
 
     /// <summary>
