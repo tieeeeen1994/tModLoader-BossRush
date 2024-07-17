@@ -70,13 +70,13 @@ public partial class BossRushSystem
         /// <param name="placeContexts">Refer to PlaceContext struct for more details</param>
         public BossData(List<int> types, List<int> subTypes = null,
                         Func<int, BossData, Rectangle> spawnOffset = null,
-                        ModifiedAttributes modifiedAttributes = new(),
+                        ModifiedAttributes? modifiedAttributes = null,
                         TimeContext? timeContext = null, List<PlaceContext> placeContexts = null)
         {
             this.types = types;
             this.subTypes = subTypes ?? [];
             this.spawnOffset = spawnOffset ?? ((_, _) => new(0, 0, 0, 0));
-            this.modifiedAttributes = modifiedAttributes;
+            this.modifiedAttributes = modifiedAttributes ?? new();
             this.timeContext = timeContext;
             placeContext = placeContexts?[Main.rand.Next(placeContexts.Count)];
         }

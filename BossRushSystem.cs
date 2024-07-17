@@ -231,7 +231,8 @@ public partial class BossRushSystem : ModSystem
             {
                 int sign = Util.RandomSign();
                 return new(1000 * sign, -700, 200 * sign, -200);
-            }
+            },
+            modifiedAttributes: new(100, 2, 100, 24)
         ));
 
         bossQueue.Enqueue(new(
@@ -241,7 +242,8 @@ public partial class BossRushSystem : ModSystem
                 int sign = Util.RandomSign();
                 return new(1000 * sign, 1000, 200 * sign, -2000);
             },
-            timeContext: TimeContext.Night
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(5, 5, 0, 100)
         ));
 
         bossQueue.Enqueue(new(

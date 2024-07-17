@@ -356,7 +356,7 @@
             A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},BossRush.BossRushSystem.ModifiedAttributes,System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},System.Nullable{BossRush.BossRushSystem.ModifiedAttributes},System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
             <summary>
             Constructor for BossData.
             </summary>
@@ -408,9 +408,16 @@
             This also affects its minions.
             </summary>
         </member>
+        <member name="M:BossRush.BossRushSystem.ModifiedAttributes.#ctor">
+            <summary>
+            Constructor for ModifiedAttributes.
+            Use this for no modifications.
+            </summary>
+        </member>
         <member name="M:BossRush.BossRushSystem.ModifiedAttributes.#ctor(System.Single,System.Single,System.Int32,System.Int32)">
             <summary>
             Constructor for ModifiedAttributes.
+            Use this to modify the stats of the boss.
             </summary>
             <param name="lifeMultiplier">Multiplier to life</param>
             <param name="damageMultiplier">Multiplier to damage</param>

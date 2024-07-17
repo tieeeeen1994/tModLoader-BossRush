@@ -21,11 +21,12 @@ public class BossAndSlaves : GlobalNPC
     /// <summary>
     /// Sets the defaults for the NPC when it spawns during Boss Rush.
     /// </summary>
-    public override void SetDefaults(NPC entity)
+    public override void SetDefaults(NPC npc)
     {
-        if (BRS.IsBossRushActive())
+        if (BRS.IsBossRushActive() && BRS.I.currentBossData?.modifiedAttributes is { } attributes)
         {
-            entity.lifeMax = Util.RoundOff(entity.lifeMax * .3f);
+            npc.lifeMax = Util.RoundOff((npc.lifeMax + attributes.lifeFlatIncrease) * attributes.lifeMultiplier);
+            npc.damage = Util.RoundOff((npc.damage + attributes.damageFlatIncrease) * attributes.damageMultiplier);
         }
     }
 

@@ -38,6 +38,19 @@ public partial class BossRushSystem
 
         /// <summary>
         /// Constructor for ModifiedAttributes.
+        /// Use this for no modifications.
+        /// </summary>
+        public ModifiedAttributes()
+        {
+            lifeMultiplier = 1f;
+            damageMultiplier = 1f;
+            lifeFlatIncrease = 0;
+            damageFlatIncrease = 0;
+        }
+
+        /// <summary>
+        /// Constructor for ModifiedAttributes.
+        /// Use this to modify the stats of the boss.
         /// </summary>
         /// <param name="lifeMultiplier">Multiplier to life</param>
         /// <param name="damageMultiplier">Multiplier to damage</param>
