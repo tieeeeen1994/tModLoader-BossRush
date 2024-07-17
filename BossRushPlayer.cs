@@ -20,6 +20,7 @@ public class BossRushPlayer : ModPlayer
         {
             Player.respawnTimer = Util.SecondsInFrames(10);
         }
+        Player.respawnTimer = 0;
     }
 
     /// <summary>

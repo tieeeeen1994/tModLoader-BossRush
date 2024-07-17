@@ -356,7 +356,7 @@
             A good example of this is Wall of Flesh. It can be fought on either side of the world.
             </summary>
         </member>
-        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},System.Nullable{BossRush.BossRushSystem.ModifiedAttributes},System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext})">
+        <member name="M:BossRush.BossRushSystem.BossData.#ctor(System.Collections.Generic.List{System.Int32},System.Collections.Generic.List{System.Int32},System.Func{System.Int32,BossRush.BossRushSystem.BossData,Microsoft.Xna.Framework.Rectangle},System.Nullable{BossRush.BossRushSystem.ModifiedAttributes},System.Nullable{BossRush.BossRushSystem.TimeContext},System.Collections.Generic.List{BossRush.PlaceContext},System.Action{Terraria.NPC})">
             <summary>
             Constructor for BossData.
             </summary>
@@ -366,6 +366,7 @@
             <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
             <param name="timeContext">Refer to TimeContext struct for more details</param>
             <param name="placeContexts">Refer to PlaceContext struct for more details</param>
+            <param name="update">Code to be executed on the boss per frame</param>
         </member>
         <member name="M:BossRush.BossRushSystem.BossData.RandomSpawnLocation(System.Int32)">
             <summary>

@@ -75,6 +75,8 @@ public class BossRush : Mod
         On_NPC.NPCLoot_DropMoney -= NPCLoot_DropMoney;
         On_NPC.DoDeathEvents_DropBossPotionsAndHearts -= DropBossPotionsAndHearts;
         On_NPC.NewNPC -= NewNPC;
+        On_NPC.CreateBrickBoxForWallOfFlesh -= CreateBrickBoxForWallOfFlesh;
+        On_WorldGen.TriggerLunarApocalypse -= TriggerLunarApocalypse;
     }
 
     /// <summary>

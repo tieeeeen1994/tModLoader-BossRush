@@ -59,6 +59,8 @@ public partial class BossRushSystem
         /// </summary>
         public PlaceContext? placeContext { get; private set; }
 
+        public Action<NPC> update { get; private set; }
+
         /// <summary>
         /// Constructor for BossData.
         /// </summary>
@@ -68,10 +70,12 @@ public partial class BossRushSystem
         /// <param name="modifiedAttributes">Modifications to the stats of the boss and its minions</param>
         /// <param name="timeContext">Refer to TimeContext struct for more details</param>
         /// <param name="placeContexts">Refer to PlaceContext struct for more details</param>
+        /// <param name="update">Code to be executed on the boss per frame</param>
         public BossData(List<int> types, List<int> subTypes = null,
                         Func<int, BossData, Rectangle> spawnOffset = null,
                         ModifiedAttributes? modifiedAttributes = null,
-                        TimeContext? timeContext = null, List<PlaceContext> placeContexts = null)
+                        TimeContext? timeContext = null, List<PlaceContext> placeContexts = null,
+                        Action<NPC> update = null)
         {
             this.types = types;
             this.subTypes = subTypes ?? [];
@@ -79,6 +83,7 @@ public partial class BossRushSystem
             this.modifiedAttributes = modifiedAttributes ?? new();
             this.timeContext = timeContext;
             placeContext = placeContexts?[Main.rand.Next(placeContexts.Count)];
+            this.update = update;
         }
 
         /// <summary>

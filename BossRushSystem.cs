@@ -64,6 +64,8 @@ public partial class BossRushSystem : ModSystem
     /// </summary>
     public Dictionary<NPC, bool> bossDefeated { get; private set; } = null;
 
+    public Dictionary<string, object> currentBossAi { get; private set; } = null;
+
     /// <summary>
     /// Contains the queue of bosses to be spawned.
     /// Each entry is one boss rush stage, and a boss rush stage can contain multiple entities.
@@ -225,15 +227,15 @@ public partial class BossRushSystem : ModSystem
     {
         ResetSystem();
 
-        bossQueue.Enqueue(new(
-            [NPCID.KingSlime],
-            spawnOffset: (_, _) =>
-            {
-                int sign = Util.RandomSign();
-                return new(1000 * sign, -700, 200 * sign, -200);
-            },
-            modifiedAttributes: new(100, 2, 100, 24)
-        ));
+        // bossQueue.Enqueue(new(
+        //     [NPCID.KingSlime],
+        //     spawnOffset: (_, _) =>
+        //     {
+        //         int sign = Util.RandomSign();
+        //         return new(1000 * sign, -700, 200 * sign, -200);
+        //     },
+        //     modifiedAttributes: new(100, 2, 100, 24)
+        // ));
 
         bossQueue.Enqueue(new(
             [NPCID.EyeofCthulhu],
@@ -243,7 +245,18 @@ public partial class BossRushSystem : ModSystem
                 return new(1000 * sign, 1000, 200 * sign, -2000);
             },
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(5, 5, 0, 100)
+            modifiedAttributes: new(100, 8, 80, 0),
+            update: npc =>
+            {
+                if (currentBossAi.TryGetValue("bossForcedDamage", out object value))
+                {
+                    npc.damage = Util.RoundOff((int)value);
+                }
+                else
+                {
+                    currentBossAi["bossForcedDamage"] = npc.damage;
+                }
+            }
         ));
 
         bossQueue.Enqueue(new(
@@ -398,6 +411,7 @@ public partial class BossRushSystem : ModSystem
         allDead = false;
         prepareTimer = 0;
         bossDefeated = null;
+        currentBossAi = null;
     }
 
     /// <summary>
@@ -410,6 +424,7 @@ public partial class BossRushSystem : ModSystem
         currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
         referenceBoss = currentBoss.First();
         bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
+        currentBossAi = [];
     }
 
     /// <summary>

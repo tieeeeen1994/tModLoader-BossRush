@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 
@@ -10,6 +11,7 @@ namespace BossRush.NPCs;
 /// </summary>
 public class BossAndSlaves : GlobalNPC
 {
+
     /// <summary>
     /// Late instantiation for the NPC.
     /// </summary>
@@ -53,6 +55,14 @@ public class BossAndSlaves : GlobalNPC
         {
             BRS.I.bossDefeated[npc] = true;
             BRS.I.CheckBossCondition();
+        }
+    }
+
+    public override void AI(NPC npc)
+    {
+        if (BRS.IsBossRushActive() && BRS.I.currentBoss?.Contains(npc) == true)
+        {
+            BRS.I.currentBossData?.update?.Invoke(npc);
         }
     }
 }
