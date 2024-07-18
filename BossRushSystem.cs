@@ -158,54 +158,89 @@ public partial class BossRushSystem : ModSystem
 
     private void InitializeSystem()
     {
-        bossQueue.Enqueue(new(
-            [NPCID.KingSlime],
-            spawnOffset: (_, _) =>
-            {
-                int sign = Util.RandomSign();
-                return new(1000 * sign, -700, 200 * sign, -200);
-            },
-            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2,
-                                    lifeFlatIncrease: 80, damageFlatIncrease: 30),
-            update: (npc, ai) =>
-            {
-                if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
-                {
-                    ai["DefenseAdded"] = true;
-                    npc.defense *= 20;
-                }
-            }
-        ));
+        // bossQueue.Enqueue(new(
+        //    [NPCID.KingSlime],
+        //    spawnOffset: (_, _) =>
+        //    {
+        //        int sign = Util.RandomSign();
+        //        return new(1000 * sign, -700, 200 * sign, -200);
+        //    },
+        //    modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2,
+        //                            lifeFlatIncrease: 80, damageFlatIncrease: 30),
+        //    update: (npc, ai) =>
+        //    {
+        //        if (npc.type == NPCID.KingSlime && npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+        //        {
+        //            ai["DefenseAdded"] = true;
+        //            npc.defense *= 20;
+        //        }
+        //    }
+        // ));
 
-        bossQueue.Enqueue(new(
-            [NPCID.EyeofCthulhu],
-            spawnOffset: (_, _) =>
-            {
-                int sign = Util.RandomSign();
-                return new(1000 * sign, 1000, 200 * sign, -2000);
-            },
-            timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 8,
-                                    lifeFlatIncrease: 80, damageFlatIncrease: 4),
-            update: (npc, ai) =>
-            {
-                if (ai.TryGetValue("BossForcedDamage", out object value))
-                {
-                    npc.damage = (int)value;
-                }
-                else
-                {
-                    ai["BossForcedDamage"] = npc.damage;
-                }
-            }
-        ));
+        // bossQueue.Enqueue(new(
+        //    [NPCID.EyeofCthulhu],
+        //    spawnOffset: (_, _) =>
+        //    {
+        //        int sign = Util.RandomSign();
+        //        return new(1000 * sign, 1000, 200 * sign, -2000);
+        //    },
+        //    timeContext: TimeContext.Night,
+        //    modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 8,
+        //                            lifeFlatIncrease: 80, damageFlatIncrease: 4),
+        //    update: (npc, ai) =>
+        //    {
+        //        if (CurrentBoss.Contains(npc))
+        //        {
+        //            if (ai.TryGetValue("BossForcedDamage", out object value))
+        //            {
+        //                npc.damage = (int)value;
+        //            }
+        //            else
+        //            {
+        //                ai["BossForcedDamage"] = npc.damage;
+        //            }
+        //        }
+        //    }
+        // ));
 
-        bossQueue.Enqueue(new(
-            [NPCID.EaterofWorldsHead],
-            subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail, NPCID.EaterofWorldsHead],
-            spawnOffset: (_, _) => new(-1000, 1000, 2000, 500),
-            placeContexts: [new(player => player.ZoneCorrupt = true)]
-        ));
+        // bossQueue.Enqueue(new(
+        //     [NPCID.EaterofWorldsHead],
+        //     subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail, NPCID.EaterofWorldsHead],
+        //     spawnOffset: (_, _) => new(-1000, 1000, 2000, 500),
+        //     placeContexts: [new(player => player.ZoneCorrupt = true)],
+        //     modifiedAttributes: new(lifeMultiplier: 200, damageMultiplier: 9, defenseMultiplier: 50),
+        //     update: (npc, ai) =>
+        //     {
+        //         if (!ai.TryGetValue("SegmentDefenseTracker", out object value1))
+        //         {
+        //             value1 = new Dictionary<int, bool>();
+        //             ai["SegmentDefenseTracker"] = value1;
+        //         }
+        //         if (npc.type == NPCID.EaterofWorldsBody &&
+        //             npc.active && value1 is Dictionary<int, bool> bodyTracker)
+        //         {
+        //             if (!bodyTracker.TryGetValue(npc.whoAmI, out bool isDefended) && !isDefended)
+        //             {
+        //                 npc.defense = 0;
+        //                 bodyTracker[npc.whoAmI] = true;
+        //             }
+        //         }
+        //         if (!ai.TryGetValue("HeadHealthTracker", out object value2))
+        //         {
+        //             value2 = new Dictionary<int, bool>();
+        //             ai["HeadHealthTracker"] = value2;
+        //         }
+        //         if ((npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail) &&
+        //             npc.active && value2 is Dictionary<int, bool> headTracker)
+        //         {
+        //             if (!headTracker.TryGetValue(npc.whoAmI, out bool isTracked) && !isTracked)
+        //             {
+        //                 npc.life = npc.lifeMax;
+        //                 headTracker[npc.whoAmI] = true;
+        //             }
+        //         }
+        //     }
+        // ));
 
         bossQueue.Enqueue(new(
             [NPCID.BrainofCthulhu],
@@ -214,7 +249,8 @@ public partial class BossRushSystem : ModSystem
                 int sign = Util.RandomSign();
                 return new(500 * sign, 500, 200 * sign, -1000);
             },
-            placeContexts: [new(player => player.ZoneCrimson = true)]
+            placeContexts: [new(player => player.ZoneCrimson = true)],
+            modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 30, lifeFlatIncrease: 100)
         ));
 
         Action<Player> forceJungle = (player) =>

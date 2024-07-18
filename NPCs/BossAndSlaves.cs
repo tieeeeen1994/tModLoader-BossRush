@@ -38,7 +38,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void PostAI(NPC npc)
     {
-        if (BRS.IsBossRushActive() && BRS.I.CurrentBoss?.Contains(npc) == true && BRS.I.CurrentBossData is { } bossData)
+        if (BRS.IsBossRushActive() && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData is { } bossData)
         {
             bossData.Update.Invoke(npc, bossData.AI);
         }
