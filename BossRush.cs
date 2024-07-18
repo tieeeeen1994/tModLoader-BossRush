@@ -8,19 +8,10 @@ using Terraria.ModLoader;
 
 namespace BossRush;
 
-/// <summary>
-/// Mod class for Boss Rush.
-/// </summary>
 public class BossRush : Mod
 {
-    /// <summary>
-    /// Instance of the Boss Rush Mod.
-    /// </summary>
     public static BossRush I => ModContent.GetInstance<BossRush>();
 
-    /// <summary>
-    /// Handles the packet sent from the server or client.
-    /// </summary>
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
         PacketType packetType = (PacketType)reader.ReadByte();
@@ -49,11 +40,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Contains hooks and detours for the mod.
-    /// Repsonsible for disabling loot in Boss Rush mode and tracking boss defeat.
-    /// It also removes the pesky King Slime has awoken message included in NPC.NewNPC when Boss Rush is active.
-    /// </summary>
     public override void Load()
     {
         On_NPC.NPCLoot_DropHeals += NPCLoot_DropHeals;
@@ -65,9 +51,6 @@ public class BossRush : Mod
         On_WorldGen.TriggerLunarApocalypse += TriggerLunarApocalypse;
     }
 
-    /// <summary>
-    /// Unloads the hooks and detours for the mod.
-    /// </summary>
     public override void Unload()
     {
         On_NPC.NPCLoot_DropHeals -= NPCLoot_DropHeals;
@@ -79,10 +62,6 @@ public class BossRush : Mod
         On_WorldGen.TriggerLunarApocalypse -= TriggerLunarApocalypse;
     }
 
-    /// <summary>
-    /// Detour for NPC.NewNPC.
-    /// It only disables the King Slime has awoken message when Boss Rush is active.
-    /// </summary>
     private int NewNPC(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type,
                        int Start, float ai0, float ai1, float ai2, float ai3, int Target)
     {
@@ -110,6 +89,7 @@ public class BossRush : Mod
                 selected.target = Target;
                 return availableNPCSlot;
             }
+            // Code is the same except King Slime spawn message is removed here.
             return 200;
         }
         else
@@ -118,10 +98,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for NPC.NPCLoot_DropMoney.
-    /// Removes coin drops when Boss Rush is active.
-    /// </summary>
     private void NPCLoot_DropMoney(On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -130,10 +106,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for NPC.NPCLoot_DropItems.
-    /// Removes item drops when Boss Rush is active.
-    /// </summary>
     private void NPCLoot_DropItems(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -142,11 +114,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for NPC.NPCLoot_DropHeals.
-    /// Disables mana and heart drops when Boss Rush is active.
-    /// Statues should still work.
-    /// </summary>
     private void NPCLoot_DropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -155,10 +122,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for NPC.DoDeathEvents_DropBossPotionsAndHearts.
-    /// Disables the drops from the boss that drops many hearts and potions when Boss Rush is active.
-    /// </summary>
     private void DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig,
                                           NPC self, ref string typeName)
     {
@@ -168,10 +131,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for NPC.CreateBrickBoxForWallOfFlesh.
-    /// Disables the creation of bricks when Wall of Flesh is defeated in Boss Rush mode.
-    /// </summary>
     private void CreateBrickBoxForWallOfFlesh(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -180,10 +139,6 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Detour for WorldGen.TriggerLunarApocalypse.
-    /// Prevents the pillars from spawning when Boss Rush is active.
-    /// </summary>
     private void TriggerLunarApocalypse(On_WorldGen.orig_TriggerLunarApocalypse orig)
     {
         if (BossRushSystem.IsBossRushOff())
@@ -192,18 +147,5 @@ public class BossRush : Mod
         }
     }
 
-    /// <summary>
-    /// Packet types used in Boss Rush.
-    /// </summary>
-    public enum PacketType : byte
-    {
-        /// <summary>
-        /// Teleports a player to a specified position.
-        /// </summary>
-        Teleport,
-        /// <summary>
-        /// Revives a player from death.
-        /// </summary>
-        SpawnPlayer
-    }
+    public enum PacketType : byte { Teleport, SpawnPlayer }
 }

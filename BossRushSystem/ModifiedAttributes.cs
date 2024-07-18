@@ -2,67 +2,28 @@
 
 public partial class BossRushSystem
 {
-    /// <summary>
-    /// Contains information about the modifications to the stats of the boss.
-    /// </summary>
     public struct ModifiedAttributes
     {
+        public float LifeMultiplier { get; private set; }
+        public float DamageMultiplier { get; private set; }
+        public int LifeFlatIncrease { get; private set; }
+        public int DamageFlatIncrease { get; private set; }
 
-        /// <summary>
-        /// Multiplier for the boss's life.
-        /// Computed after the flat increase.
-        /// This also affects its minions.
-        /// </summary>
-        public float lifeMultiplier { get; private set; }
-
-        /// <summary>
-        /// Multiplier for the boss's damage.
-        /// Computed after the flat increase.
-        /// This also affects its minions.
-        /// </summary>
-        public float damageMultiplier { get; private set; }
-
-        /// <summary>
-        /// Flat increase for the boss's life.
-        /// Computed before the multiplier.
-        /// This also affects its minions.
-        /// </summary>
-        public int lifeFlatIncrease { get; private set; }
-
-        /// <summary>
-        /// Flat increase for the boss's damage.
-        /// Computed before the multiplier.
-        /// This also affects its minions.
-        /// </summary>
-        public int damageFlatIncrease { get; private set; }
-
-        /// <summary>
-        /// Constructor for ModifiedAttributes.
-        /// Use this for no modifications.
-        /// </summary>
         public ModifiedAttributes()
         {
-            lifeMultiplier = 1f;
-            damageMultiplier = 1f;
-            lifeFlatIncrease = 0;
-            damageFlatIncrease = 0;
+            LifeMultiplier = 1f;
+            DamageMultiplier = 1f;
+            LifeFlatIncrease = 0;
+            DamageFlatIncrease = 0;
         }
 
-        /// <summary>
-        /// Constructor for ModifiedAttributes.
-        /// Use this to modify the stats of the boss.
-        /// </summary>
-        /// <param name="lifeMultiplier">Multiplier to life</param>
-        /// <param name="damageMultiplier">Multiplier to damage</param>
-        /// <param name="lifeFlatIncrease">Flat increase to life</param>
-        /// <param name="damageFlatIncrease">Flat increase to damage</param>
         public ModifiedAttributes(float lifeMultiplier = 1f, float damageMultiplier = 1f,
                                   int lifeFlatIncrease = 0, int damageFlatIncrease = 0)
         {
-            this.lifeMultiplier = lifeMultiplier;
-            this.damageMultiplier = damageMultiplier;
-            this.lifeFlatIncrease = lifeFlatIncrease;
-            this.damageFlatIncrease = damageFlatIncrease;
+            LifeMultiplier = lifeMultiplier;
+            DamageMultiplier = damageMultiplier;
+            LifeFlatIncrease = lifeFlatIncrease;
+            DamageFlatIncrease = damageFlatIncrease;
         }
     }
 }

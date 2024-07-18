@@ -7,114 +7,46 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using BR = BossRush.BossRush;
 
 namespace BossRush;
 
-/// <summary>
-/// Main class for the Boss Rush System.
-/// </summary>
 public partial class BossRushSystem : ModSystem
 {
-    /// <summary>
-    /// Instance of the Boss Rush System.
-    /// </summary>
     public static BossRushSystem I => ModContent.GetInstance<BossRushSystem>();
-
-    /// <summary>
-    /// Checks if Boss Rush is active.
-    /// </summary>
-    /// <returns>True or False</returns>
-    public static bool IsBossRushActive() => I.state != States.Off;
-
-    /// <summary>
-    /// Checks if Boss Rush is inactive.
-    /// </summary>
-    /// <returns>True or False</returns>
-    public static bool IsBossRushOff() => I.state == States.Off;
-
-    /// <summary>
-    /// Current state of the Boss Rush System.
-    /// </summary>
-    public States state { get; private set; } = States.Off;
-
-    /// <summary>
-    /// Pertains to the current boss of a stage. This contains all the entities of the boss.
-    /// e.g. The Twins will contain Retinazer and Spazmatism.
-    /// </summary>
-    public List<NPC> currentBoss { get; private set; } = null;
-
-    /// <summary>
-    /// Pertains to the BossData object provided for the current boss fromn the queue.
-    /// </summary>
-    public BossData? currentBossData { get; private set; } = null;
-
-    /// <summary>
-    /// Just a reference to the boss of the current stage.
-    /// This field is equal to currentBoss.First().
-    /// This field exists for performance reasons.
-    /// Use this if checks are needed for the boss, but only one entity is needed to confirm the current boss.
-    /// e.g.
-    /// </summary>
-    public NPC referenceBoss { get; private set; } = null;
-
-    /// <summary>
-    /// Contains trackers for the bosses if they were truly defeated or not.
-    /// Bosses are considered defeated if they are killed by the player and supposed loot is to be dropped.
-    /// Boss Rush mod disables loot drops for enemies and instead uses that as a tracker.
-    /// </summary>
-    public Dictionary<NPC, bool> bossDefeated { get; private set; } = null;
-
-    public Dictionary<string, object> currentBossAi { get; private set; } = null;
-
-    /// <summary>
-    /// Contains the queue of bosses to be spawned.
-    /// Each entry is one boss rush stage, and a boss rush stage can contain multiple entities.
-    /// </summary>
+    public static bool IsBossRushActive() => I.State != States.Off;
+    public static bool IsBossRushOff() => I.State == States.Off;
+    public States State { get; private set; } = States.Off;
+    public List<NPC> CurrentBoss { get; private set; } = null;
+    public BossData? CurrentBossData { get; private set; } = null;
+    public Dictionary<NPC, bool> BossDefeated { get; private set; } = null;
     private readonly Queue<BossData> bossQueue = [];
-
-    /// <summary>
-    /// Flag for determining of all players are dead within a boss rush stage.
-    /// </summary>
     private bool allDead = false;
-
-    /// <summary>
-    /// A timer for fallback scenarios if all players are dead.
-    /// Boss Rush System only officially ends when all players are dead and all bosses have despawned.
-    /// This timer is a fallback in case the boss refuses to despawn.
-    /// </summary>
     private int allDeadEndTimer = 0;
-
-    /// <summary>
-    /// A timer for preparing the next boss.
-    /// It just adds pauses in between bosses upon being defeated and spawning a new one.
-    /// </summary>
     private int prepareTimer = 0;
 
-    /// <summary>
-    /// Main code for the Boss Rush System. Runs every in-game frame.
-    /// </summary>
     public override void PostUpdateWorld()
     {
-        switch (state)
+        switch (State)
         {
             case States.On:
                 InitializeSystem();
-                state = States.Prepare;
+                State = States.Prepare;
                 break;
 
             case States.Prepare:
-                if (++prepareTimer >= Util.SecondsInFrames(.5f))
+                if (++prepareTimer >= .5f.ToFrames())
                 {
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
                     {
                         Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.Win"));
-                        state = States.End;
+                        State = States.End;
                     }
                     else
                     {
                         SpawnNextBoss();
-                        state = States.Run;
+                        State = States.Run;
                     }
                 }
                 break;
@@ -129,80 +61,57 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
-    /// <summary>
-    /// When the world shuts down, the Boss Rush System will reset.
-    /// This will ensure that loading into the world again resets everything.
-    /// </summary>
-    public override void OnWorldUnload()
-    {
-        ResetSystem();
-    }
+    public override void OnWorldUnload() => ResetSystem();
 
-    /// <summary>
-    /// Method mainly used for the item that activates Boss Rush mode.
-    /// </summary>
     public void ToggleBossRush()
     {
-        switch (state)
+        switch (State)
         {
             case States.Off:
                 Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.BossRushActive"));
-                Util.CleanAllEnemies();
-                state = States.On;
+                CleanStage();
+                State = States.On;
                 break;
             case States.Prepare:
             case States.Run:
                 Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.PussyOut"));
-                Util.CleanAllEnemies();
-                state = States.End;
+                CleanStage();
+                State = States.End;
                 break;
         }
     }
 
-    /// <summary>
-    /// Main code for States.Run.
-    /// The code lives in BossAndSlaves.OnKill for performance reasons.
-    /// The code triggers when an enemy in the currentBoss list is killed.
-    /// </summary>
     public void CheckBossCondition()
     {
         if (!allDead)
         {
             if (IsBossDespawned())
             {
-                Util.CleanAllEnemies(currentBoss);
-                state = States.Prepare;
+                CleanStage(CurrentBoss);
+                State = States.Prepare;
             }
             else if (IsBossDefeated())
             {
-                Util.SpawnDeadPlayers();
+                ResurrectPlayers();
                 allDead = false;
                 bossQueue.Dequeue();
-                state = States.Prepare;
+                State = States.Prepare;
             }
         }
     }
 
-    /// <summary>
-    /// Main code for States.Run.
-    /// The code lives in BossRushPlayer.Kill and BossRushPlayer.PlayerDisconnect for performance reasons.
-    /// The code triggers when a player is killed or disconnects.
-    /// </summary>
     public void CheckPlayerCondition()
     {
         if (allDead)
         {
-            if (IsBossGone() || ++allDeadEndTimer >= Util.SecondsInFrames(10))
+            if (IsBossGone() || ++allDeadEndTimer >= 10.ToFrames())
             {
-                state = States.End;
+                allDeadEndTimer = 0;
+                State = States.End;
             }
         }
     }
 
-    /// <summary>
-    /// Tracks the deaths of all players. Does not return anything.
-    /// It automatically assigns allDead variable upon running the method.
-    /// </summary>
     public void TrackPlayerDeaths()
     {
         if (!allDead)
@@ -219,14 +128,28 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
-    /// <summary>
-    /// Initializes the Boss Rush System. This is where bosses are queued using BossData struct.
-    /// Refer to BossData struct for more details.
-    /// </summary>
+    private void ResurrectPlayers()
+    {
+        foreach (var player in Main.ActivePlayers)
+        {
+            if (player.dead)
+            {
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    player.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                }
+                else if (Main.netMode == NetmodeID.Server)
+                {
+                    ModPacket packet = BR.I.GetPacket();
+                    packet.Write((byte)BR.PacketType.SpawnPlayer);
+                    packet.Send(player.whoAmI);
+                }
+            }
+        }
+    }
+
     private void InitializeSystem()
     {
-        ResetSystem();
-
         // bossQueue.Enqueue(new(
         //     [NPCID.KingSlime],
         //     spawnOffset: (_, _) =>
@@ -246,15 +169,15 @@ public partial class BossRushSystem : ModSystem
             },
             timeContext: TimeContext.Night,
             modifiedAttributes: new(100, 8, 80, 0),
-            update: npc =>
+            update: (npc, ai) =>
             {
-                if (currentBossAi.TryGetValue("bossForcedDamage", out object value))
+                if (ai.TryGetValue("bossForcedDamage", out object value))
                 {
                     npc.damage = Util.RoundOff((int)value);
                 }
                 else
                 {
-                    currentBossAi["bossForcedDamage"] = npc.damage;
+                    ai["bossForcedDamage"] = npc.damage;
                 }
             }
         ));
@@ -302,7 +225,7 @@ public partial class BossRushSystem : ModSystem
             placeContexts: [PlaceContext.LeftUnderworld, PlaceContext.RightUnderworld],
             spawnOffset: (_, bossData) =>
             {
-                if (bossData.placeContext.Value.initialPosition.Value.X < Main.maxTilesX / 2)
+                if (bossData.PlaceContext.Value.InitialPosition.Value.X < Main.maxTilesX / 2)
                 {
                     return new(-500, 0, 0, 0);
                 }
@@ -397,76 +320,48 @@ public partial class BossRushSystem : ModSystem
         bossQueue.Enqueue(new([NPCID.MoonLordCore]));
     }
 
-    /// <summary>
-    /// Resets the system to default values.
-    /// </summary>
     private void ResetSystem()
     {
-        state = States.Off;
-        currentBoss = null;
-        currentBossData = null;
-        referenceBoss = null;
+        State = States.Off;
+        CurrentBoss = null;
+        CurrentBossData = null;
         bossQueue.Clear();
         allDeadEndTimer = 0;
         allDead = false;
         prepareTimer = 0;
-        bossDefeated = null;
-        currentBossAi = null;
+        BossDefeated = null;
     }
 
-    /// <summary>
-    /// Spawns the next boss in the queue.
-    /// </summary>
     private void SpawnNextBoss()
     {
-        currentBossData = bossQueue.Peek();
-        List<int> npcIndex = SpawnBoss(currentBossData.Value);
-        currentBoss = npcIndex.ConvertAll(element => Main.npc[element]);
-        referenceBoss = currentBoss.First();
-        bossDefeated = currentBoss.ToDictionary(boss => boss, _ => false);
-        currentBossAi = [];
+        CurrentBossData = bossQueue.Peek();
+        CurrentBoss = Spawn(CurrentBossData.Value);
+        BossDefeated = CurrentBoss.ToDictionary(boss => boss, _ => false);
     }
 
-    /// <summary>
-    /// Checks if the boss is gone.
-    /// The boss is considered gone if it is despawned or defeated.
-    /// </summary>
-    /// <returns>True or False</returns>
-    private bool IsBossGone()
+    private void CleanStage(IEnumerable<NPC> npcs = null)
     {
-        return IsBossDespawned() || IsBossDefeated();
+        npcs ??= Main.npc;
+        foreach (var npc in npcs)
+        {
+            if (!npc.friendly)
+            {
+                npc.active = false;
+            }
+        }
     }
 
-    /// <summary>
-    /// Checks if the boss is defeated.
-    /// The boss is considered defeated if all entities are defeated.
-    /// </summary>
-    /// <returns>True or False</returns>
-    private bool IsBossDefeated()
-    {
-        return !bossDefeated.ContainsValue(false);
-    }
+    private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
 
-    /// <summary>
-    /// Checks if the boss is despawned.
-    /// The boss is considered despawned if it is becomes inactive while the tracker has not marked it as defeated.
-    /// </summary>
-    /// <returns>True or False</returns>
-    private bool IsBossDespawned()
-    {
-        return currentBoss == null || bossDefeated == null ||
-               currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
-    }
+    private bool IsBossDefeated() => !BossDefeated.ContainsValue(false);
 
-    /// <summary>
-    /// Method of spawning in Boss Rush mode.
-    /// </summary>
-    /// <param name="data">Refer to BossData struct for more details</param>
-    /// <returns>List of indices to be used in Main.npc</returns>
-    private List<int> SpawnBoss(BossData data)
+    private bool IsBossDespawned() => CurrentBoss == null || BossDefeated == null ||
+                                      CurrentBoss.Any(boss => !BossDefeated[boss] && !boss.active);
+
+    private List<NPC> Spawn(BossData data)
     {
-        data.timeContext?.ChangeTime();
-        data.placeContext?.TeleportPlayers();
+        data.TimeContext?.ChangeTime();
+        data.PlaceContext?.TeleportPlayers();
 
         List<Player> potentialTargetPlayers = [];
         float highestAggro = float.MinValue;
@@ -486,45 +381,21 @@ public partial class BossRushSystem : ModSystem
         }
 
         Player target = Main.rand.Next(potentialTargetPlayers);
-        List<int> spawnedBossIndex = [];
+        List<NPC> spawnedBosses = [];
 
-        foreach (var type in data.types)
+        foreach (var type in data.Types)
         {
             Vector2 offsetValue = data.RandomSpawnLocation(type);
             int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
             int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
 
             // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-            spawnedBossIndex.Add(NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1));
+            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1);
+            spawnedBosses.Add(Main.npc[npcIndex]);
         }
 
-        return spawnedBossIndex;
+        return spawnedBosses;
     }
 
-    /// <summary>
-    /// States of the Boss Rush System.
-    /// </summary>
-    public enum States
-    {
-        /// <summary>
-        /// Boss Rush is inactive.
-        /// </summary>
-        Off,
-        /// <summary>
-        /// Boss Rush is initializing.
-        /// </summary>
-        On,
-        /// <summary>
-        /// Boss Rush is preparing the next boss.
-        /// </summary>
-        Prepare,
-        /// <summary>
-        /// Boss Rush is checking for player and boss conditions.
-        /// </summary>
-        Run,
-        /// <summary>
-        /// Boss Rush is ending.
-        /// </summary>
-        End
-    }
+    public enum States : byte { Off, On, Prepare, Run, End }
 }
