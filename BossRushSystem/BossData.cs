@@ -17,10 +17,9 @@ public partial class BossRushSystem
         public TimeContext? TimeContext { get; private set; }
         public PlaceContext? PlaceContext { get; private set; }
         public Action<NPC, Dictionary<string, object>> Update { get; private set; }
-        public readonly Dictionary<string, object> AI => _ai.ToDictionary();
+        public Dictionary<string, object> AI { get; private set; }
         private readonly List<int> _types;
         private readonly List<int> _subTypes;
-        private readonly Dictionary<string, object> _ai;
 
         public BossData(List<int> types, List<int> subTypes = null,
                         Func<int, BossData, Rectangle> spawnOffset = null,
@@ -35,7 +34,7 @@ public partial class BossRushSystem
             TimeContext = timeContext;
             PlaceContext = placeContexts?[Main.rand.Next(placeContexts.Count)];
             Update = update ?? ((_, _) => { });
-            _ai = [];
+            AI = [];
         }
 
         public readonly Vector2 RandomSpawnLocation(int type)

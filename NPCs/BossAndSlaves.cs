@@ -24,8 +24,7 @@ public class BossAndSlaves : GlobalNPC
         if (BRS.IsBossRushActive() && BRS.I.CurrentBoss != null &&
             BRS.I.CurrentBossData?.SubTypes?.Contains(npc.type) == true)
         {
-            BRS.I.CurrentBoss.Add(npc);
-            BRS.I.BossDefeated.Add(npc, false);
+            BRS.I.DynamicAddBoss(npc);
         }
     }
 
@@ -33,8 +32,7 @@ public class BossAndSlaves : GlobalNPC
     {
         if (BRS.IsBossRushActive() && BRS.I.State == BRS.States.Run && BRS.I.CurrentBoss.Contains(npc))
         {
-            BRS.I.BossDefeated[npc] = true;
-            BRS.I.CheckBossCondition();
+            BRS.I.MarkBossDefeat(npc);
         }
     }
 

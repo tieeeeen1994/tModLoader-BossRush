@@ -19,10 +19,9 @@ public partial class BossRushSystem : ModSystem
     public States State { get; private set; } = States.Off;
     public List<NPC> CurrentBoss => _currentBoss?.ToList();
     public BossData? CurrentBossData { get; private set; } = null;
-    public Dictionary<NPC, bool> BossDefeated => _bossDefeated.ToDictionary();
     private readonly Queue<BossData> bossQueue = [];
     private List<NPC> _currentBoss = null;
-    private Dictionary<NPC, bool> _bossDefeated = null;
+    private Dictionary<NPC, bool> bossDefeated = null;
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
@@ -83,25 +82,6 @@ public partial class BossRushSystem : ModSystem
         }
     }
 
-    public void CheckBossCondition()
-    {
-        if (!allDead)
-        {
-            if (IsBossDespawned())
-            {
-                CleanStage(_currentBoss);
-                State = States.Prepare;
-            }
-            else if (IsBossDefeated())
-            {
-                ResurrectPlayers();
-                allDead = false;
-                bossQueue.Dequeue();
-                State = States.Prepare;
-            }
-        }
-    }
-
     public void CheckPlayerCondition()
     {
         if (allDead)
@@ -127,6 +107,32 @@ public partial class BossRushSystem : ModSystem
             }
             allDead = true;
             Util.NewText(Language.GetTextValue("Mods.BossRush.Messages.Failure"));
+        }
+    }
+
+    public void DynamicAddBoss(NPC boss)
+    {
+        _currentBoss.Add(boss);
+        bossDefeated.Add(boss, false);
+    }
+
+    public void MarkBossDefeat(NPC boss)
+    {
+        bossDefeated[boss] = true;
+        if (!allDead)
+        {
+            if (IsBossDespawned())
+            {
+                CleanStage(_currentBoss);
+                State = States.Prepare;
+            }
+            else if (IsBossDefeated())
+            {
+                ResurrectPlayers();
+                allDead = false;
+                bossQueue.Dequeue();
+                State = States.Prepare;
+            }
         }
     }
 
@@ -159,8 +165,16 @@ public partial class BossRushSystem : ModSystem
                 int sign = Util.RandomSign();
                 return new(1000 * sign, -700, 200 * sign, -200);
             },
-            modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 2,
-                                    lifeFlatIncrease: 100, damageFlatIncrease: 24)
+            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2,
+                                    lifeFlatIncrease: 80, damageFlatIncrease: 30),
+            update: (npc, ai) =>
+            {
+                if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+                {
+                    ai["DefenseAdded"] = true;
+                    npc.defense *= 20;
+                }
+            }
         ));
 
         bossQueue.Enqueue(new(
@@ -175,13 +189,13 @@ public partial class BossRushSystem : ModSystem
                                     lifeFlatIncrease: 80, damageFlatIncrease: 4),
             update: (npc, ai) =>
             {
-                if (ai.TryGetValue("bossForcedDamage", out object value))
+                if (ai.TryGetValue("BossForcedDamage", out object value))
                 {
                     npc.damage = (int)value;
                 }
                 else
                 {
-                    ai["bossForcedDamage"] = ;
+                    ai["BossForcedDamage"] = npc.damage;
                 }
             }
         ));
@@ -333,14 +347,14 @@ public partial class BossRushSystem : ModSystem
         allDeadEndTimer = 0;
         allDead = false;
         prepareTimer = 0;
-        _bossDefeated = null;
+        bossDefeated = null;
     }
 
     private void SpawnNextBoss()
     {
         CurrentBossData = bossQueue.Peek();
         _currentBoss = Spawn(CurrentBossData.Value);
-        _bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
+        bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
     }
 
     private void CleanStage(IEnumerable<NPC> npcs = null)
@@ -357,10 +371,10 @@ public partial class BossRushSystem : ModSystem
 
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
 
-    private bool IsBossDefeated() => !_bossDefeated.ContainsValue(false);
+    private bool IsBossDefeated() => !bossDefeated.ContainsValue(false);
 
-    private bool IsBossDespawned() => _currentBoss == null || _bossDefeated == null ||
-                                      _currentBoss.Any(boss => !_bossDefeated[boss] && !boss.active);
+    private bool IsBossDespawned() => _currentBoss == null || bossDefeated == null ||
+                                      _currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
 
     private List<NPC> Spawn(BossData data)
     {
