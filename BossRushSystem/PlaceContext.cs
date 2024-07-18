@@ -54,7 +54,7 @@ namespace BossRush
             ForceBiomeFunction = forceBiome;
         }
 
-        public void TeleportPlayers()
+        public readonly void TeleportPlayers()
         {
             if (WillPlayersTeleport())
             {
@@ -79,11 +79,12 @@ namespace BossRush
             }
         }
 
-        private Rectangle UseImplementation(Player player) => customImplementation == null ?
-                                                              TeleportRange.Value :
-                                                              customImplementation(player);
+        private readonly Rectangle UseImplementation(Player player)
+        {
+            return customImplementation == null ? TeleportRange.Value : customImplementation(player);
+        }
 
-        private bool WillPlayersTeleport() => (InitialPosition != null && TeleportRange != null) ||
-                                              customImplementation != null;
+        private readonly bool WillPlayersTeleport() => (InitialPosition != null && TeleportRange != null) ||
+                                                        customImplementation != null;
     }
 }

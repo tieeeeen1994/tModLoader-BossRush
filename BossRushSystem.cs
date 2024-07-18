@@ -17,10 +17,12 @@ public partial class BossRushSystem : ModSystem
     public static bool IsBossRushActive() => I.State != States.Off;
     public static bool IsBossRushOff() => I.State == States.Off;
     public States State { get; private set; } = States.Off;
-    public List<NPC> CurrentBoss { get; private set; } = null;
+    public List<NPC> CurrentBoss => _currentBoss?.ToList();
     public BossData? CurrentBossData { get; private set; } = null;
-    public Dictionary<NPC, bool> BossDefeated { get; private set; } = null;
+    public Dictionary<NPC, bool> BossDefeated => _bossDefeated.ToDictionary();
     private readonly Queue<BossData> bossQueue = [];
+    private List<NPC> _currentBoss = null;
+    private Dictionary<NPC, bool> _bossDefeated = null;
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
@@ -87,7 +89,7 @@ public partial class BossRushSystem : ModSystem
         {
             if (IsBossDespawned())
             {
-                CleanStage(CurrentBoss);
+                CleanStage(_currentBoss);
                 State = States.Prepare;
             }
             else if (IsBossDefeated())
@@ -323,20 +325,20 @@ public partial class BossRushSystem : ModSystem
     private void ResetSystem()
     {
         State = States.Off;
-        CurrentBoss = null;
+        _currentBoss = null;
         CurrentBossData = null;
         bossQueue.Clear();
         allDeadEndTimer = 0;
         allDead = false;
         prepareTimer = 0;
-        BossDefeated = null;
+        _bossDefeated = null;
     }
 
     private void SpawnNextBoss()
     {
         CurrentBossData = bossQueue.Peek();
-        CurrentBoss = Spawn(CurrentBossData.Value);
-        BossDefeated = CurrentBoss.ToDictionary(boss => boss, _ => false);
+        _currentBoss = Spawn(CurrentBossData.Value);
+        _bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
     }
 
     private void CleanStage(IEnumerable<NPC> npcs = null)
@@ -353,10 +355,10 @@ public partial class BossRushSystem : ModSystem
 
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
 
-    private bool IsBossDefeated() => !BossDefeated.ContainsValue(false);
+    private bool IsBossDefeated() => !_bossDefeated.ContainsValue(false);
 
-    private bool IsBossDespawned() => CurrentBoss == null || BossDefeated == null ||
-                                      CurrentBoss.Any(boss => !BossDefeated[boss] && !boss.active);
+    private bool IsBossDespawned() => _currentBoss == null || _bossDefeated == null ||
+                                      _currentBoss.Any(boss => !_bossDefeated[boss] && !boss.active);
 
     private List<NPC> Spawn(BossData data)
     {

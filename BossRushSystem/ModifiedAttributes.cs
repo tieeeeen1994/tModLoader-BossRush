@@ -25,5 +25,14 @@ public partial class BossRushSystem
             LifeFlatIncrease = lifeFlatIncrease;
             DamageFlatIncrease = damageFlatIncrease;
         }
+
+        public readonly int ComputeLife(int life) => ComputeStat(life, LifeFlatIncrease, LifeMultiplier);
+
+        public readonly int ComputeDamage(int damage) => ComputeStat(damage, DamageFlatIncrease, DamageMultiplier);
+
+        private readonly int ComputeStat(int baseStat, int flat, float multiplier)
+        {
+            return Util.RoundOff((baseStat + flat) * multiplier);
+        }
     }
 }

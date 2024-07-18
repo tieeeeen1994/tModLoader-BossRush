@@ -13,8 +13,8 @@ public class BossAndSlaves : GlobalNPC
     {
         if (BRS.IsBossRushActive() && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
         {
-            npc.lifeMax = Util.RoundOff((npc.lifeMax + attributes.LifeFlatIncrease) * attributes.LifeMultiplier);
-            npc.damage = Util.RoundOff((npc.damage + attributes.DamageFlatIncrease) * attributes.DamageMultiplier);
+            npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
+            npc.damage = attributes.ComputeDamage(npc.damage);
         }
     }
 
