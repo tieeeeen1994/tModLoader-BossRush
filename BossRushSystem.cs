@@ -152,15 +152,16 @@ public partial class BossRushSystem : ModSystem
 
     private void InitializeSystem()
     {
-        // bossQueue.Enqueue(new(
-        //     [NPCID.KingSlime],
-        //     spawnOffset: (_, _) =>
-        //     {
-        //         int sign = Util.RandomSign();
-        //         return new(1000 * sign, -700, 200 * sign, -200);
-        //     },
-        //     modifiedAttributes: new(100, 2, 100, 24)
-        // ));
+        bossQueue.Enqueue(new(
+            [NPCID.KingSlime],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, -700, 200 * sign, -200);
+            },
+            modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 2,
+                                    lifeFlatIncrease: 100, damageFlatIncrease: 24)
+        ));
 
         bossQueue.Enqueue(new(
             [NPCID.EyeofCthulhu],
@@ -170,16 +171,17 @@ public partial class BossRushSystem : ModSystem
                 return new(1000 * sign, 1000, 200 * sign, -2000);
             },
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(100, 8, 80, 0),
+            modifiedAttributes: new(lifeMultiplier: 100, damageMultiplier: 8,
+                                    lifeFlatIncrease: 80, damageFlatIncrease: 4),
             update: (npc, ai) =>
             {
                 if (ai.TryGetValue("bossForcedDamage", out object value))
                 {
-                    npc.damage = Util.RoundOff((int)value);
+                    npc.damage = (int)value;
                 }
                 else
                 {
-                    ai["bossForcedDamage"] = npc.damage;
+                    ai["bossForcedDamage"] = ;
                 }
             }
         ));

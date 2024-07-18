@@ -15,6 +15,7 @@ public class BossAndSlaves : GlobalNPC
         {
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
+            npc.defense = attributes.ComputeDefense(npc.defense);
         }
     }
 
@@ -37,7 +38,7 @@ public class BossAndSlaves : GlobalNPC
         }
     }
 
-    public override void AI(NPC npc)
+    public override void PostAI(NPC npc)
     {
         if (BRS.IsBossRushActive() && BRS.I.CurrentBoss?.Contains(npc) == true && BRS.I.CurrentBossData is { } bossData)
         {
