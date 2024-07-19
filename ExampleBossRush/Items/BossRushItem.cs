@@ -3,7 +3,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace BossRush.Items;
+namespace ExampleBossRush.Items;
 
 public class BossRushItem : ModItem
 {
@@ -31,7 +31,8 @@ public class BossRushItem : ModItem
         }
         if (Main.netMode != NetmodeID.MultiplayerClient)
         {
-            BossRushSystem.I.ToggleBossRush();
+            var exampleBossRushSystem = ModContent.GetInstance<ExampleBossRushSystem>();
+            exampleBossRushSystem.ToggleBossRush();
         }
 
         return true;

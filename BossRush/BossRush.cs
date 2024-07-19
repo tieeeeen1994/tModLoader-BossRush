@@ -65,7 +65,7 @@ public class BossRush : Mod
     private int NewNPC(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type,
                        int Start, float ai0, float ai1, float ai2, float ai3, int Target)
     {
-        if (BossRushSystem.IsBossRushActive() && Type == NPCID.KingSlime)
+        if (BossRushSystem.I.IsBossRushActive && Type == NPCID.KingSlime)
         {
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
             MethodInfo method = typeof(NPC).GetMethod("GetAvailableNPCSlot", flags);
@@ -100,7 +100,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropMoney(On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -108,7 +108,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropItems(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -116,7 +116,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -125,7 +125,7 @@ public class BossRush : Mod
     private void DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig,
                                           NPC self, ref string typeName)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig(self, ref typeName);
         }
@@ -133,7 +133,7 @@ public class BossRush : Mod
 
     private void CreateBrickBoxForWallOfFlesh(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig(self);
         }
@@ -141,7 +141,7 @@ public class BossRush : Mod
 
     private void TriggerLunarApocalypse(On_WorldGen.orig_TriggerLunarApocalypse orig)
     {
-        if (BossRushSystem.IsBossRushOff())
+        if (BossRushSystem.I.IsBossRushOff)
         {
             orig();
         }

@@ -1,0 +1,4 @@
+displayName = Example Boss Rush
+author = tieeeeen1994
+version = 0.1
+modReferences = BossRush

@@ -11,7 +11,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void SetDefaults(NPC npc)
     {
-        if (BRS.IsBossRushActive() && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
+        if (BRS.I.IsBossRushActive && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
         {
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
@@ -21,7 +21,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void OnSpawn(NPC npc, IEntitySource source)
     {
-        if (BRS.IsBossRushActive() && BRS.I.CurrentBoss != null &&
+        if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
             BRS.I.CurrentBossData?.SubTypes?.Contains(npc.type) == true)
         {
             BRS.I.DynamicAddBoss(npc);
@@ -30,7 +30,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void OnKill(NPC npc)
     {
-        if (BRS.IsBossRushActive() && BRS.I.State == BRS.States.Run && BRS.I.CurrentBoss.Contains(npc))
+        if (BRS.I.IsBossRushActive && BRS.I.State == BRS.States.Run && BRS.I.CurrentBoss.Contains(npc))
         {
             BRS.I.MarkBossDefeat(npc);
         }
@@ -38,7 +38,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void PostAI(NPC npc)
     {
-        if (BRS.IsBossRushActive() && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData is { } bossData)
+        if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData is { } bossData)
         {
             bossData.Update.Invoke(npc, bossData.AI);
         }
