@@ -19,6 +19,7 @@ public class BossRushSystem : ModSystem
     public States State { get; private set; } = States.Off;
     public List<NPC> CurrentBoss => _currentBoss?.ToList();
     public BossData? CurrentBossData { get; private set; } = null;
+    private readonly Dictionary<float, List<BossData>> candidates = [];
     private readonly Queue<BossData> bossQueue = [];
     private List<NPC> _currentBoss = null;
     private Dictionary<NPC, bool> bossDefeated = null;
@@ -136,9 +137,28 @@ public class BossRushSystem : ModSystem
         }
     }
 
-    public void AddBoss(BossData bossData) => bossQueue.Enqueue(bossData);
+    public void AddBoss(float position, BossData data)
+    {
+        if (candidates.TryGetValue(position, out List<BossData> list))
+        {
+            list.Add(data);
+        }
+        else
+        {
+            candidates.Add(position, [data]);
+        }
+    }
 
-    protected virtual void InitializeSystem() { }
+    private void InitializeSystem()
+    {
+        foreach (var entry in candidates.OrderBy(entry => entry.Key))
+        {
+            foreach (var data in entry.Value.OrderBy(_ => Main.rand.Next()))
+            {
+                bossQueue.Enqueue(data);
+            }
+        }
+    }
 
     private void ResurrectPlayers()
     {
