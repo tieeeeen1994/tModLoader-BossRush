@@ -190,6 +190,7 @@ public class BossRushSystem : ModSystem
         allDead = false;
         prepareTimer = 0;
         bossDefeated = null;
+        candidates.Clear();
     }
 
     private void SpawnNextBoss()

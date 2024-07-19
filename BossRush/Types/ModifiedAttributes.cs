@@ -8,6 +8,7 @@ public struct ModifiedAttributes
     public int LifeFlatIncrease { get; private set; }
     public int DamageFlatIncrease { get; private set; }
     public int DefenseFlatIncrease { get; private set; }
+    public bool ProjectilesAffected { get; private set; }
 
     public ModifiedAttributes()
     {
@@ -20,7 +21,8 @@ public struct ModifiedAttributes
     }
 
     public ModifiedAttributes(float lifeMultiplier = 1f, float damageMultiplier = 1f, float defenseMultiplier = 1f,
-                              int lifeFlatIncrease = 0, int damageFlatIncrease = 0, int defenseFlatIncrease = 0)
+                              int lifeFlatIncrease = 0, int damageFlatIncrease = 0, int defenseFlatIncrease = 0,
+                              bool projectilesAffected = false)
     {
         LifeMultiplier = lifeMultiplier;
         DamageMultiplier = damageMultiplier;
@@ -28,6 +30,7 @@ public struct ModifiedAttributes
         LifeFlatIncrease = lifeFlatIncrease;
         DamageFlatIncrease = damageFlatIncrease;
         DefenseFlatIncrease = defenseFlatIncrease;
+        ProjectilesAffected = projectilesAffected;
     }
 
     public readonly int ComputeLife(int life) => ComputeStat(life, LifeFlatIncrease, LifeMultiplier);
