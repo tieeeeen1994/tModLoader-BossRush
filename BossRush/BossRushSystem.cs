@@ -18,6 +18,7 @@ public class BossRushSystem : ModSystem
     public bool IsBossRushOff => State == States.Off;
     public States State { get; private set; } = States.Off;
     public List<NPC> CurrentBoss => _currentBoss?.ToList();
+    public NPC ReferenceBoss => _currentBoss?.Find(boss => boss.active);
     public BossData? CurrentBossData { get; private set; } = null;
     private readonly Dictionary<float, List<BossData>> candidates = [];
     private readonly Queue<BossData> bossQueue = [];

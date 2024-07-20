@@ -13,7 +13,8 @@ public struct BossData
     public ModifiedAttributes ModifiedAttributes { get; private set; }
     public TimeContext? TimeContext { get; private set; }
     public PlaceContext? PlaceContext { get; private set; }
-    public Action<NPC, Dictionary<string, object>> Update { get; private set; }
+    public Action<NPC, Dictionary<string, object>> BossUpdate { get; private set; }
+    public Action<Projectile, Dictionary<string, object>> ProjectileUpdate { get; private set; }
     public Dictionary<string, object> AI { get; private set; }
     private readonly List<int> _types;
     private readonly List<int> _subTypes;
@@ -22,7 +23,8 @@ public struct BossData
                     Func<int, BossData, Rectangle> spawnOffset = null,
                     ModifiedAttributes? modifiedAttributes = null,
                     TimeContext? timeContext = null, List<PlaceContext> placeContexts = null,
-                    Action<NPC, Dictionary<string, object>> update = null)
+                    Action<NPC, Dictionary<string, object>> bossUpdate = null,
+                    Action<Projectile, Dictionary<string, object>> projectileUpdate = null)
     {
         _types = types;
         _subTypes = subTypes ?? [];
@@ -30,7 +32,8 @@ public struct BossData
         ModifiedAttributes = modifiedAttributes ?? new();
         TimeContext = timeContext;
         PlaceContext = placeContexts?[Main.rand.Next(placeContexts.Count)];
-        Update = update ?? ((_, _) => { });
+        BossUpdate = bossUpdate ?? ((_, _) => { });
+        ProjectileUpdate = projectileUpdate ?? ((_, _) => { });
         AI = [];
     }
 

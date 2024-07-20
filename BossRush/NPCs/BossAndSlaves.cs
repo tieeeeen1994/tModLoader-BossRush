@@ -40,7 +40,7 @@ public class BossAndSlaves : GlobalNPC
     {
         if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData is { } bossData)
         {
-            bossData.Update.Invoke(npc, bossData.AI);
+            bossData.BossUpdate(npc, bossData.AI);
         }
     }
 }

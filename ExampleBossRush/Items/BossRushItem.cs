@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using BossRush;
@@ -48,196 +47,251 @@ public class BossRushItem : ModItem
 
     private void AddBossesToSystem()
     {
-        //BRS.AddBoss(1, new(
-        //   [NPCID.KingSlime],
-        //   spawnOffset: (_, _) =>
-        //   {
-        //       int sign = Util.RandomSign();
-        //       return new(1000 * sign, -700, 200 * sign, -200);
-        //   },
-        //   modifiedAttributes: new(lifeMultiplier: 40, damageMultiplier: 2,
-        //                           lifeFlatIncrease: 80, damageFlatIncrease: 30),
-        //   update: (npc, ai) =>
-        //   {
-        //       if (npc.type == NPCID.KingSlime && npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
-        //       {
-        //           ai["DefenseAdded"] = true;
-        //           npc.defense *= 20;
-        //       }
-        //   }
-        //));
+        BRS.AddBoss(1, new(
+            [NPCID.KingSlime],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, -700, 200 * sign, -200);
+            },
+            modifiedAttributes: new(lifeMultiplier: 40, damageMultiplier: 2,
+                                    lifeFlatIncrease: 80, damageFlatIncrease: 30),
+            bossUpdate: (npc, ai) =>
+            {
+                if (npc.type == NPCID.KingSlime && npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+                {
+                    ai["DefenseAdded"] = true;
+                    npc.defense *= 20;
+                }
+            }
+        ));
 
-        //BRS.AddBoss(2, new(
-        //   [NPCID.EyeofCthulhu],
-        //   spawnOffset: (_, _) =>
-        //   {
-        //       int sign = Util.RandomSign();
-        //       return new(1000 * sign, 1000, 200 * sign, -2000);
-        //   },
-        //   timeContext: TimeContext.Night,
-        //   modifiedAttributes: new(lifeMultiplier: 90, damageMultiplier: 8,
-        //                           lifeFlatIncrease: 80, damageFlatIncrease: 4),
-        //   update: (npc, ai) =>
-        //   {
-        //       if (BRS.CurrentBoss.Contains(npc))
-        //       {
-        //           if (ai.TryGetValue("BossForcedDamage", out object value))
-        //           {
-        //               npc.damage = (int)value;
-        //           }
-        //           else
-        //           {
-        //               ai["BossForcedDamage"] = npc.damage;
-        //           }
-        //       }
-        //   }
-        //));
+        BRS.AddBoss(2, new(
+            [NPCID.EyeofCthulhu],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(1000 * sign, 1000, 200 * sign, -2000);
+            },
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(lifeMultiplier: 90, damageMultiplier: 8,
+                                    lifeFlatIncrease: 80, damageFlatIncrease: 4),
+            bossUpdate: (npc, ai) =>
+            {
+                if (BRS.CurrentBoss.Contains(npc))
+                {
+                    if (ai.TryGetValue("BossForcedDamage", out object value))
+                    {
+                        npc.damage = (int)value;
+                    }
+                    else
+                    {
+                        ai["BossForcedDamage"] = npc.damage;
+                    }
+                }
+            }
+        ));
 
-        //brs.addboss(3, new(
-        //    [npcid.eaterofworldshead],
-        //    subtypes: [npcid.eaterofworldsbody, npcid.eaterofworldstail, npcid.eaterofworldshead],
-        //    spawnoffset: (_, _) => new(-1000, 1000, 2000, 500),
-        //    placecontexts: [new(player => player.zonecorrupt = true)],
-        //    modifiedattributes: new(lifemultiplier: 200, damagemultiplier: 9, defensemultiplier: 50),
-        //    update: (npc, ai) =>
-        //    {
-        //        if (!ai.trygetvalue("segmentdefensetracker", out object value1))
-        //        {
-        //            value1 = new dictionary<npc, bool>();
-        //            ai["segmentdefensetracker"] = value1;
-        //        }
-        //        if (npc.type == npcid.eaterofworldsbody &&
-        //            npc.active && value1 is dictionary<npc, bool> bodytracker)
-        //        {
-        //            if (!bodytracker.trygetvalue(npc, out bool isdefended) && !isdefended)
-        //            {
-        //                npc.defense = 0;
-        //                bodytracker[npc] = true;
-        //            }
-        //        }
-        //        if (!ai.trygetvalue("headhealthtracker", out object value2))
-        //        {
-        //            value2 = new dictionary<npc, bool>();
-        //            ai["headhealthtracker"] = value2;
-        //        }
-        //        if ((npc.type == npcid.eaterofworldshead || npc.type == npcid.eaterofworldstail) &&
-        //            npc.active && value2 is dictionary<npc, bool> headtracker)
-        //        {
-        //            if (!headtracker.trygetvalue(npc, out bool istracked) && !istracked)
-        //            {
-        //                npc.life = npc.lifemax;
-        //                headtracker[npc] = true;
-        //            }
-        //        }
-        //        if (npc == brs.currentboss.find(entity => entity.active) && value1 is dictionary<npc, bool> bodies)
-        //        {
-        //            foreach (var body in bodies)
-        //            {
-        //                if (!body.key.active)
-        //                {
-        //                    if (!ai.trygetvalue("corruptortimers", out object timer))
-        //                    {
-        //                        timer = new dictionary<npc, (vector2, int)>();
-        //                        ai["corruptortimers"] = timer;
-        //                    }
-        //                    if (timer is dictionary<npc, (vector2, int)> timerdata)
-        //                    {
-        //                        if (!timerdata.trygetvalue(body.key, out (vector2, int) value))
-        //                        {
-        //                             timerdata[body.key] = (body.key.center, 1.toframes());
-        //                        }
-        //                        else if (value.item2 <= 0)
-        //                        {
-        //                            timerdata.remove(body.key);
-        //                            bodies.remove(body.key);
-        //                            int mobindex = npc.newnpc(body.key.getsource_fromai("partcutoff"),
-        //                                                      util.roundoff(value.item1.x),
-        //                                                      util.roundoff(value.item1.y),
-        //                                                      npcid.corruptor);
-        //                            npc mob = main.npc[mobindex];
-        //                            mob.lifemax = util.roundoff(body.key.lifemax * .5f);
-        //                            mob.life = mob.lifemax;
-        //                            mob.defense = 0;
-        //                            mob.damage = body.key.damage;
-        //                        }
-        //                        else
-        //                        {
-        //                            timerdata[body.key] = (value.item1, value.item2 - 1);
-        //                            for (int i = 0; i < 3; i++)
-        //                            {
-        //                                dust.newdust(value.item1 - new vector2(15, 15), 30, 30, dustid.demonite);
-        //                            }
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //));
+        BRS.AddBoss(3, new(
+            [NPCID.EaterofWorldsHead],
+            subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
+            spawnOffset: (_, _) => new(-1000, 1000, 2000, 500),
+            placeContexts: [new(player => player.ZoneCorrupt = true)],
+            modifiedAttributes: new(lifeMultiplier: 200, damageMultiplier: 2, defenseMultiplier: 50,
+                                    damageFlatIncrease: 70),
+            bossUpdate: (npc, ai) =>
+            {
+                if (!ai.TryGetValue("SpitTracker", out object value3))
+                {
+                    value3 = new Dictionary<NPC, bool>();
+                    ai["SpitTracker"] = value3;
+                }
+                if ((npc.type == NPCID.VileSpit || npc.type == NPCID.VileSpitEaterOfWorlds) && npc.active)
+                {
+                    if (value3 is Dictionary<NPC, bool> spitTracker &&
+                        !spitTracker.TryGetValue(npc, out bool tracked) && !tracked)
+                    {
+                        npc.life = npc.lifeMax = 10;
+                        npc.defense = 10000;
+                        npc.knockBackResist = 0f;
+                        spitTracker[npc] = true;
+                    }
+                    npc.damage = Util.RoundOff(BRS.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsHead).damage * .5f);
+                }
+                if (!ai.TryGetValue("SegmentTracker", out object value1))
+                {
+                    value1 = new Dictionary<NPC, bool>();
+                    ai["SegmentTracker"] = value1;
+                }
+                if (npc.type == NPCID.EaterofWorldsBody &&
+                    npc.active && value1 is Dictionary<NPC, bool> bodyTracker)
+                {
+                    if (!bodyTracker.TryGetValue(npc, out bool tracked) && !tracked)
+                    {
+                        npc.defense = 0;
+                        bodyTracker[npc] = true;
+                    }
+                }
+                if (!ai.TryGetValue("headhealthtracker", out object value2))
+                {
+                    value2 = new Dictionary<NPC, bool>();
+                    ai["headhealthtracker"] = value2;
+                }
+                if ((npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail) &&
+                    npc.active && value2 is Dictionary<NPC, bool> headTracker)
+                {
+                    if (!headTracker.TryGetValue(npc, out bool tracked) && !tracked)
+                    {
+                        npc.life = npc.lifeMax;
+                        headTracker[npc] = true;
+                    }
+                }
+                if (npc == BRS.ReferenceBoss && value1 is Dictionary<NPC, bool> bodies)
+                {
+                    foreach (var body in bodies)
+                    {
+                        NPC bodyEntity = body.Key;
+                        if (!bodyEntity.active)
+                        {
+                            if (!ai.TryGetValue("CorruptorTimers", out object timer))
+                            {
+                                timer = new Dictionary<NPC, (Vector2, int)>();
+                                ai["CorruptorTimers"] = timer;
+                            }
+                            if (timer is Dictionary<NPC, (Vector2, int)> timerData)
+                            {
+                                if (!timerData.TryGetValue(bodyEntity, out (Vector2, int) value))
+                                {
+                                    timerData[bodyEntity] = (bodyEntity.Center, 1.ToFrames());
+                                }
+                                else if (value.Item2 <= 0)
+                                {
+                                    timerData.Remove(bodyEntity);
+                                    bodies.Remove(bodyEntity);
+                                    int mobIndex = NPC.NewNPC(bodyEntity.GetSource_FromAI("PartCutOff"),
+                                                              Util.RoundOff(value.Item1.X),
+                                                              Util.RoundOff(value.Item1.Y),
+                                                              NPCID.Corruptor);
+                                    NPC mob = Main.npc[mobIndex];
+                                    mob.lifeMax = Util.RoundOff(bodyEntity.lifeMax * .3f);
+                                    mob.life = mob.lifeMax;
+                                    mob.defense = 0;
+                                    mob.damage = Util.RoundOff(bodyEntity.damage * .5f);
+                                    mob.knockBackResist = 0f;
+                                }
+                                else
+                                {
+                                    timerData[bodyEntity] = (value.Item1, value.Item2 - 1);
+                                    for (int i = 0; i < 3; i++)
+                                    {
+                                        Dust.NewDust(value.Item1 - new Vector2(15, 15), 30, 30, DustID.Demonite);
+                                    }
+                                    if (Main.netMode == NetmodeID.Server)
+                                    {
+                                        ModPacket packet = ExampleBossRush.Instance.GetPacket();
+                                        packet.Write((byte)ExampleBossRush.PacketTypes.CorruptorDust);
+                                        packet.WriteVector2(value.Item1);
+                                        packet.Send();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        ));
 
-        //BRS.AddBoss(3 , new(
-        //    [NPCID.BrainofCthulhu],
-        //    spawnOffset: (_, _) =>
-        //    {
-        //        int sign = Util.RandomSign();
-        //        return new(500 * sign, 500, 200 * sign, -1000);
-        //    },
-        //    placeContexts: [new(player => player.ZoneCrimson = true)],
-        //    modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2.5f,
-        //                            lifeFlatIncrease: 300, damageFlatIncrease: 70),
-        //    update: (npc, ai) =>
-        //    {
-        //        if (npc.type == NPCID.Creeper)
-        //        {
-        //            if (!ai.TryGetValue("Tracker", out object value))
-        //            {
-        //                value = new Dictionary<int, bool>();
-        //                ai["Tracker"] = value;
-        //            }
-        //            if (value is Dictionary<int, bool> tracker1 && npc.active &&
-        //                !tracker1.TryGetValue(npc.whoAmI, out bool isModified) && !isModified)
-        //            {
-        //                npc.knockBackResist = 0f;
-        //                tracker1[npc.whoAmI] = true;
-        //            }
-        //        }
-        //        else if (npc.type == NPCID.BrainofCthulhu)
-        //        {
-        //            npc.knockBackResist = 0f;
-        //            if (ai.TryGetValue("Tracker", out object value) &&
-        //                 value is Dictionary<int, bool> tracker2)
-        //            {
-        //                foreach (var pair in tracker2)
-        //                {
-        //                    if (!Main.npc[pair.Key].active)
-        //                    {
-        //                        int mob1 = NPC.NewNPC(npc.GetSource_FromAI("CreeperDied"),
-        //                                              Main.npc[pair.Key].Center.X.RoundOff(),
-        //                                              Main.npc[pair.Key].Center.Y.RoundOff(),
-        //                                              NPCID.IchorSticker);
-        //                        tracker2.Remove(pair.Key);
-        //                        Main.npc[mob1].lifeMax = Util.RoundOff(Main.npc[mob1].lifeMax * .5f);
-        //                        Main.npc[mob1].life = Main.npc[mob1].lifeMax;
-        //                        Main.npc[mob1].defense = 0;
-        //                        Main.npc[mob1].knockBackResist = 0f;
-        //                        Main.npc[mob1].damage = BRS.CurrentBoss.First().damage;
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        else if(npc.type == NPCID.IchorSticker)
-        //        {
-        //            npc.velocity += npc.DirectionTo(BRS.CurrentBoss.First().Center) * .25f;
-        //        }
-        //    }
-        //));
+        BRS.AddBoss(3, new(
+            [NPCID.BrainofCthulhu],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 500, 200 * sign, -1000);
+            },
+            placeContexts: [new(player => player.ZoneCrimson = true)],
+            modifiedAttributes: new(lifeMultiplier: 45, damageMultiplier: 2,
+                                    lifeFlatIncrease: 300, damageFlatIncrease: 70),
+            bossUpdate: (npc, ai) =>
+            {
+                if (npc.type == NPCID.Creeper)
+                {
+                    if (!ai.TryGetValue("Tracker", out object value))
+                    {
+                        value = new Dictionary<int, bool>();
+                        ai["Tracker"] = value;
+                    }
+                    if (value is Dictionary<int, bool> tracker1 && npc.active &&
+                        !tracker1.TryGetValue(npc.whoAmI, out bool isModified) && !isModified)
+                    {
+                        npc.knockBackResist = 0f;
+                        tracker1[npc.whoAmI] = true;
+                    }
+                }
+                else if (npc.type == NPCID.BrainofCthulhu)
+                {
+                    npc.knockBackResist = 0f;
+                    if (ai.TryGetValue("Tracker", out object value) &&
+                        value is Dictionary<int, bool> tracker2)
+                    {
+                        foreach (var pair in tracker2)
+                        {
+                            if (!Main.npc[pair.Key].active)
+                            {
+                                int mobIndex = NPC.NewNPC(npc.GetSource_FromAI("CreeperDied"),
+                                                        Main.npc[pair.Key].Center.X.RoundOff(),
+                                                        Main.npc[pair.Key].Center.Y.RoundOff(),
+                                                        NPCID.IchorSticker);
 
-        //Continue working on Queen Bee.
-        BRS.AddBoss(4, new([NPCID.QueenBee],
-                           spawnOffset: (_, _) => new(-1000, -1000, 2000, -200),
-                           timeContext: TimeContext.Noon,
-                           modifiedAttributes: new(lifeFlatIncrease: 70, lifeMultiplier: 70,
-                                                   damageMultiplier: 2, damageFlatIncrease: 35)));
+                                tracker2.Remove(pair.Key);
+                                Main.npc[mobIndex].lifeMax = Util.RoundOff(Main.npc[mobIndex].lifeMax * .5f);
+                                Main.npc[mobIndex].life = Main.npc[mobIndex].lifeMax;
+                                Main.npc[mobIndex].defense = 0;
+                                Main.npc[mobIndex].knockBackResist = 0f;
+                                Main.npc[mobIndex].damage = BRS.CurrentBoss.First().damage;
+                            }
+                        }
+                    }
+                }
+                else if (npc.type == NPCID.IchorSticker)
+                {
+                    npc.velocity += npc.DirectionTo(BRS.CurrentBoss.First().Center) * .25f;
+                }
+            },
+            projectileUpdate: (projectile, ai) =>
+            {
+                if (projectile.type == ProjectileID.GoldenShowerHostile)
+                {
+                    projectile.velocity.Y = projectile.oldVelocity.Y;
+                }
+            }   
+        ));
+
+        BRS.AddBoss(0, new(
+            [NPCID.QueenBee],
+            spawnOffset: (_, _) => new(-1000, -1000, 2000, -200),
+            timeContext: TimeContext.Noon,
+            modifiedAttributes: new(lifeFlatIncrease: 200, lifeMultiplier: 20, damageFlatIncrease: 50),
+            bossUpdate: (npc, ai) =>
+            {
+                if (npc.type == NPCID.Bee)
+                {
+                    npc.knockBackResist = 0f;
+                    npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .2f;
+                }
+                else if (npc.type == NPCID.BeeSmall)
+                {
+                    npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .5f;
+                }
+            },
+            projectileUpdate: (projectile, ai) =>
+            {
+                if (projectile.type == ProjectileID.QueenBeeStinger && BRS.ReferenceBoss != null)
+                {
+                    projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .1f);
+                }
+            },
+            placeContexts: [new(player => player.ZoneJungle = false)]
+        ));
 
         BRS.AddBoss(5, new(
             [NPCID.SkeletronHead],
