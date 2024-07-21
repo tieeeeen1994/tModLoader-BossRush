@@ -67,7 +67,7 @@ public class BossRushItem : ModItem
             }
         ));
 
-        BRS.AddBoss(2, new(
+        BRS.AddBoss(0, new(
             [NPCID.EyeofCthulhu],
             spawnOffset: (_, _) =>
             {
@@ -88,6 +88,58 @@ public class BossRushItem : ModItem
                     else
                     {
                         ai["BossForcedDamage"] = npc.damage;
+                    }
+                }
+                if (npc.type == NPCID.ServantofCthulhu)
+                {
+                    npc.knockBackResist = 0f;
+                    if (!ai.TryGetValue("ServantTracker", out object value1))
+                    {
+                        value1 = new Dictionary<NPC, Tuple<string, int>>();
+                        ai["ServantTracker"] = value1;
+                    }
+                    if (!ai.TryGetValue("DashTracker", out object value2))
+                    {
+                        value2 = new Dictionary<NPC, Vector2>();
+                        ai["DashTracker"] = value2;
+                    }
+                    if (value1 is Dictionary<NPC, Tuple<string, int>> servantTracker && npc.active)
+                    {
+                        if (!servantTracker.TryGetValue(npc, out var data))
+                        {
+                            data = ("Default", 180).ToTuple();
+                        }
+                        if (data.Item1 == "Default" && data.Item2 <= 0)
+                        {
+                            data = ("Dash", 30).ToTuple();
+                            if (value2 is Dictionary<NPC, Vector2> dashTracker)
+                            {
+                                dashTracker[npc] = npc.DirectionTo(Main.player[npc.target].Center);
+                            }
+                            if (Main.netMode == NetmodeID.SinglePlayer)
+                            {
+                                SoundEngine.PlaySound(ExampleBossRush.MiniRoar, npc.Center);
+                            }
+                            else
+                            {
+                                ModPacket packet = ExampleBossRush.Instance.GetPacket();
+                                packet.Write((byte)ExampleBossRush.PacketTypes.ServantRoar);
+                                packet.Write((short)npc.whoAmI);
+                                packet.Send();
+                            }
+                        }
+                        else if (data.Item1 == "Dash")
+                        {
+                            if (data.Item2 <= 0)
+                            {
+                                data = ("Default", 180).ToTuple();
+                            }
+                            if (value2 is Dictionary<NPC, Vector2> dashTracker)
+                            {
+                                npc.velocity = dashTracker[npc] * 10f;
+                            }
+                        }
+                        servantTracker[npc] = (data.Item1, data.Item2 - 1).ToTuple();
                     }
                 }
             }
@@ -117,7 +169,8 @@ public class BossRushItem : ModItem
                         npc.knockBackResist = 0f;
                         spitTracker[npc] = true;
                     }
-                    npc.damage = Util.RoundOff(BRS.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsHead).damage * .5f);
+                    NPC currentHead = BRS.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsHead);
+                    npc.damage = Util.RoundOff(currentHead.damage * .5f);
                 }
                 if (!ai.TryGetValue("SegmentTracker", out object value1))
                 {
@@ -174,7 +227,7 @@ public class BossRushItem : ModItem
                                                               Util.RoundOff(value.Item1.Y),
                                                               NPCID.Corruptor);
                                     NPC mob = Main.npc[mobIndex];
-                                    mob.lifeMax = Util.RoundOff(bodyEntity.lifeMax * .3f);
+                                    mob.lifeMax = Util.RoundOff(bodyEntity.lifeMax * .2f);
                                     mob.life = mob.lifeMax;
                                     mob.defense = 0;
                                     mob.damage = Util.RoundOff(bodyEntity.damage * .5f);
@@ -247,8 +300,7 @@ public class BossRushItem : ModItem
                                 Main.npc[mobIndex].lifeMax = Util.RoundOff(Main.npc[mobIndex].lifeMax * .5f);
                                 Main.npc[mobIndex].life = Main.npc[mobIndex].lifeMax;
                                 Main.npc[mobIndex].defense = 0;
-                                Main.npc[mobIndex].knockBackResist = 0f;
-                                Main.npc[mobIndex].damage = BRS.CurrentBoss.First().damage;
+                                Main.npc[mobIndex].damage = BRS.ReferenceBoss.damage;
                             }
                         }
                     }
@@ -264,7 +316,7 @@ public class BossRushItem : ModItem
                 {
                     projectile.velocity.Y = projectile.oldVelocity.Y;
                 }
-            }   
+            }
         ));
 
         BRS.AddBoss(4, new(
@@ -303,7 +355,7 @@ public class BossRushItem : ModItem
                 return new(500 * sign, 500, 200 * sign, -1000);
             },
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 50,
+            modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 40,
                                     damageMultiplier: 2, damageFlatIncrease: 40),
             bossUpdate: (npc, ai) =>
             {
@@ -388,7 +440,7 @@ public class BossRushItem : ModItem
                 }
             },
             projectileUpdate: (projectile, ai) =>
-            { 
+            {
                 if (projectile.type == ProjectileID.Skull && BRS.ReferenceBoss != null)
                 {
                     projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .08f);
@@ -418,7 +470,7 @@ public class BossRushItem : ModItem
             }
         ));
 
-        BRS.AddBoss(0, new(
+        BRS.AddBoss(6, new(
             [NPCID.WallofFlesh],
             placeContexts: [PlaceContext.LeftUnderworld, PlaceContext.RightUnderworld],
             spawnOffset: (_, bossData) =>
@@ -459,7 +511,10 @@ public class BossRushItem : ModItem
             timeContext: TimeContext.Noon,
             placeContexts: [new((player) =>
             {
-                Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
+                player.FindSpawn();
+                int spawnX = player.SpawnX != -1 ? player.SpawnX : Main.spawnTileX;
+                int spawnY = player.SpawnY != -1 ? player.SpawnY : Main.spawnTileY;
+                Vector2 worldCoordinates = new Vector2(spawnX, spawnY).ToWorldCoordinates();
                 worldCoordinates -= new Vector2(player.width / 2, player.height);
                 worldCoordinates = Util.RoundOff(worldCoordinates);
                 return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, 0);
