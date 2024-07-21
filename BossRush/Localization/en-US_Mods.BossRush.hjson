@@ -10,5 +10,5 @@ Messages: {
 	Disable: Boss Rush disabled.
 	Win: You win.
 	Failure: An issue of skill, it is.
-	Despawn: The boss disappeared. Commencing boss again.
+	Despawn: The boss disappeared. Retrying.
 }
