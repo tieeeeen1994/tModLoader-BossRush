@@ -295,7 +295,7 @@ public class BossRushItem : ModItem
             placeContexts: [new(player => player.ZoneJungle = true)]
         ));
 
-        BRS.AddBoss(0, new(
+        BRS.AddBoss(5, new(
             [NPCID.SkeletronHead],
             spawnOffset: (_, _) =>
             {
@@ -418,18 +418,33 @@ public class BossRushItem : ModItem
             }
         ));
 
-        BRS.AddBoss(6, new(
+        BRS.AddBoss(0, new(
             [NPCID.WallofFlesh],
             placeContexts: [PlaceContext.LeftUnderworld, PlaceContext.RightUnderworld],
             spawnOffset: (_, bossData) =>
             {
                 if (bossData.PlaceContext.Value.InitialPosition.Value.X < Main.maxTilesX / 2)
                 {
-                    return new(-500, 0, 0, 0);
+                    return new(-1000, 0, 0, 0);
                 }
                 else
                 {
-                    return new(500, 0, 0, 0);
+                    return new(1000, 0, 0, 0);
+                }
+            },
+            modifiedAttributes: new(lifeMultiplier: 150, damageMultiplier: 1.5f, damageFlatIncrease: 50),
+            bossUpdate: (npc, ai) =>
+            {
+                if (npc.type == NPCID.TheHungry || npc.type == NPCID.TheHungryII)
+                {
+                    npc.knockBackResist = 0f;
+                }
+            },
+            projectileUpdate: (projectile, ai) =>
+            {
+                if (projectile.type == ProjectileID.EyeLaser && BRS.ReferenceBoss != null)
+                {
+                    projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .05f);
                 }
             }
         ));
