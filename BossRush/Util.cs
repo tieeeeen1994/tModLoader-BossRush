@@ -17,7 +17,7 @@ public static class Util
     {
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
-            Main.NewText(message, color ?? Color.White);
+            Main.NewText(Language.GetTextValue(message), color ?? Color.White);
         }
         else if (Main.netMode == NetmodeID.Server)
         {

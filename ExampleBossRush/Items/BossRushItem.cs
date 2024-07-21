@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BossRush;
@@ -266,11 +267,12 @@ public class BossRushItem : ModItem
             }   
         ));
 
-        BRS.AddBoss(0, new(
+        BRS.AddBoss(4, new(
             [NPCID.QueenBee],
             spawnOffset: (_, _) => new(-1000, -1000, 2000, -200),
             timeContext: TimeContext.Noon,
-            modifiedAttributes: new(lifeFlatIncrease: 200, lifeMultiplier: 20, damageFlatIncrease: 50),
+            modifiedAttributes: new(lifeFlatIncrease: 200, lifeMultiplier: 30,
+                                    damageFlatIncrease: 50, damageMultiplier: 1.5f),
             bossUpdate: (npc, ai) =>
             {
                 if (npc.type == NPCID.Bee)
@@ -290,17 +292,130 @@ public class BossRushItem : ModItem
                     projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .1f);
                 }
             },
-            placeContexts: [new(player => player.ZoneJungle = false)]
+            placeContexts: [new(player => player.ZoneJungle = true)]
         ));
 
-        BRS.AddBoss(5, new(
+        BRS.AddBoss(0, new(
             [NPCID.SkeletronHead],
             spawnOffset: (_, _) =>
             {
                 int sign = Util.RandomSign();
                 return new(500 * sign, 500, 200 * sign, -1000);
             },
-            timeContext: TimeContext.Night
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 50,
+                                    damageMultiplier: 2, damageFlatIncrease: 40),
+            bossUpdate: (npc, ai) =>
+            {
+                if (!ai.TryGetValue("HandTracker", out object value))
+                {
+                    value = new List<NPC>();
+                    ai["HandTracker"] = value;
+                }
+                if (!ai.TryGetValue("TotalHands", out object number))
+                {
+                    ai["TotalHands"] = number = 0;
+                }
+                List<NPC> handTracker = (List<NPC>)value;
+                int handCount = (int)number;
+                if (npc.type == NPCID.SkeletronHand)
+                {
+                    if (npc.active && !handTracker.Exists(hand => hand == npc))
+                    {
+                        handTracker.Add(npc);
+                        ai["TotalHands"] = handCount + 1;
+                    }
+                }
+                if (npc.type == NPCID.SkeletronHead)
+                {
+                    if (!ai.TryGetValue("HeadDefense", out object defense))
+                    {
+                        ai["HeadDefense"] = defense = npc.defense;
+                    }
+                    if (!ai.TryGetValue("InfernoAttack", out object attack1))
+                    {
+                        attack1 = new Tuple<int, int>(0, 94);
+                        ai["InfernoAttack"] = attack1;
+                    }
+                    if (!ai.TryGetValue("SpectreAttack", out object attack2))
+                    {
+                        attack2 = new Tuple<int, int>(0, 61);
+                        ai["SpectreAttack"] = attack2;
+                    }
+                    handTracker.RemoveAll(hand => !hand.active);
+                    if (handTracker.Count > 0)
+                    {
+                        npc.defense = 10000;
+                    }
+                    else
+                    {
+                        npc.defense = (int)defense;
+                    }
+                    if (handTracker.Count <= Util.RoundOff(handCount * .5f) &&
+                        attack1 is Tuple<int, int> infernoTimer)
+                    {
+                        int timer = infernoTimer.Item1 + 1;
+                        if (timer >= infernoTimer.Item2)
+                        {
+                            ai["InfernoAttack"] = new Tuple<int, int>(0, infernoTimer.Item2);
+                            Vector2 velocity = npc.DirectionTo(Main.player[npc.target].Center) * 10f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI("Inferno"), npc.Center, velocity,
+                                                     ProjectileID.InfernoHostileBlast,
+                                                     Util.RoundOff(npc.damage * .08f), 0f);
+                        }
+                        else
+                        {
+                            ai["InfernoAttack"] = new Tuple<int, int>(timer, infernoTimer.Item2);
+                        }
+                    }
+                    if (handTracker.Count <= 0 &&
+                        attack2 is Tuple<int, int> spectreTimer)
+                    {
+                        int timer = spectreTimer.Item1 + 1;
+                        if (timer >= spectreTimer.Item2)
+                        {
+                            ai["SpectreAttack"] = new Tuple<int, int>(0, spectreTimer.Item2);
+                            Vector2 velocity = npc.DirectionTo(Main.player[npc.target].Center) * 5f;
+                            Projectile.NewProjectile(npc.GetSource_FromAI("Spectre"), npc.Center, velocity,
+                                                     ProjectileID.LostSoulHostile,
+                                                     Util.RoundOff(npc.damage * .08f), 0f);
+                        }
+                        else
+                        {
+                            ai["SpectreAttack"] = new Tuple<int, int>(timer, spectreTimer.Item2);
+                        }
+                    }
+                }
+            },
+            projectileUpdate: (projectile, ai) =>
+            { 
+                if (projectile.type == ProjectileID.Skull && BRS.ReferenceBoss != null)
+                {
+                    projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .08f);
+                }
+                if (projectile.type == ProjectileID.InfernoHostileBlast)
+                {
+                    projectile.velocity -= Vector2.Zero.DirectionTo(projectile.velocity) * .2f;
+                }
+                if (projectile.type == ProjectileID.LostSoulHostile)
+                {
+                    Player target = null;
+                    float distance = float.MaxValue;
+                    foreach (var player in Main.ActivePlayers)
+                    {
+                        float newDistance = projectile.Distance(player.Center);
+                        if (newDistance <= 12 * 16 && (target == null || newDistance < distance))
+                        {
+                            target = player;
+                            distance = newDistance;
+                        }
+                    }
+                    if (target != null)
+                    {
+                        projectile.velocity += projectile.DirectionTo(target.Center) * .1f;
+                    }
+                }
+            }
         ));
 
         BRS.AddBoss(6, new(

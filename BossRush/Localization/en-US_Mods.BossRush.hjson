@@ -6,8 +6,9 @@ Items: {
 }
 
 Messages: {
-	BossRushActive: Boss Rush commencing.
-	PussyOut: Why pussy out?
+	Active: Boss Rush commencing.
+	Disable: Boss Rush disabled.
 	Win: You win.
 	Failure: An issue of skill, it is.
+	Despawn: The boss disappeared. Commencing boss again.
 }
