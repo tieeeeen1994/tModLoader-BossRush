@@ -48,6 +48,7 @@ public class BossRushItem : ModItem
 
     private void AddBossesToSystem()
     {
+        # region King Slime
         BRS.AddBoss(1, new(
             [NPCID.KingSlime],
             spawnOffset: (_, _) =>
@@ -66,7 +67,9 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        #endregion
 
+        # region Eye of Cthulhu
         BRS.AddBoss(0, new(
             [NPCID.EyeofCthulhu],
             spawnOffset: (_, _) =>
@@ -144,7 +147,21 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        #endregion
 
+        # region Deerclops
+        BRS.AddBoss(2, new(
+            [NPCID.Deerclops],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 0, -200 * sign, -500);
+            },
+            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2)
+        ));
+        # endregion
+
+        # region Eater of Worlds
         BRS.AddBoss(3, new(
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
@@ -254,7 +271,9 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        # endregion
 
+        # region Brain of Cthulhu
         BRS.AddBoss(3, new(
             [NPCID.BrainofCthulhu],
             spawnOffset: (_, _) =>
@@ -318,7 +337,9 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        # endregion
 
+        # region Queen Bee
         BRS.AddBoss(4, new(
             [NPCID.QueenBee],
             spawnOffset: (_, _) => new(-1000, -1000, 2000, -200),
@@ -346,7 +367,9 @@ public class BossRushItem : ModItem
             },
             placeContexts: [new(player => player.ZoneJungle = true)]
         ));
+        # endregion
 
+        # region Skeletron
         BRS.AddBoss(5, new(
             [NPCID.SkeletronHead],
             spawnOffset: (_, _) =>
@@ -469,7 +492,9 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        # endregion
 
+        # region Wall of Flesh
         BRS.AddBoss(6, new(
             [NPCID.WallofFlesh],
             placeContexts: [PlaceContext.LeftUnderworld, PlaceContext.RightUnderworld],
@@ -500,7 +525,9 @@ public class BossRushItem : ModItem
                 }
             }
         ));
+        # endregion
 
+        # region Queen Slime
         BRS.AddBoss(7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: (_, _) =>
@@ -520,8 +547,10 @@ public class BossRushItem : ModItem
                 return new((int)worldCoordinates.X, (int)worldCoordinates.Y, 0, 0);
             })]
         ));
+        # endregion
 
         int twinsSign = Util.RandomSign();
+        # region The Twins
         BRS.AddBoss(8, new(
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: (type, _) =>
@@ -536,20 +565,28 @@ public class BossRushItem : ModItem
                     }
                 },
                 timeContext: TimeContext.Night
-            ));
+        ));
+        # endregion
 
+        # region The Destroyer
         BRS.AddBoss(8, new([NPCID.TheDestroyer],
                            spawnOffset: (_, _) => new(-1000, 1000, 2000, 500),
                            timeContext: TimeContext.Night));
+        # endregion
 
+        # region Skeletron Prime
         BRS.AddBoss(8, new([NPCID.SkeletronPrime],
                            spawnOffset: (_, _) => new(-1000, -800, 2000, -200),
                            timeContext: TimeContext.Night));
+        # endregion
 
+        # region Plantera
         BRS.AddBoss(9, new([NPCID.Plantera],
                            spawnOffset: (_, _) => new(-1000, 1500, 2000, 500),
                            timeContext: TimeContext.Noon));
+        # endregion
 
+        # region Golem
         BRS.AddBoss(10, new(
             [NPCID.Golem],
             spawnOffset: (_, _) =>
@@ -559,7 +596,9 @@ public class BossRushItem : ModItem
             },
             placeContexts: [new(player => player.ZoneLihzhardTemple = true)]
         ));
+        # endregion
 
+        # region Duke Fishron
         BRS.AddBoss(11, new(
             [NPCID.DukeFishron],
             spawnOffset: (_, _) =>
@@ -569,11 +608,15 @@ public class BossRushItem : ModItem
             },
             placeContexts: [new(player => player.ZoneBeach = true)]
         ));
+        # endregion
 
+        # region Empress of Light
         BRS.AddBoss(12, new([NPCID.HallowBoss],
                     spawnOffset: (_, _) => new(-50, -50, 100, -50),
                     timeContext: TimeContext.Night));
+        # endregion
 
+        # region Lunatic Cultist
         BRS.AddBoss(13, new(
             [NPCID.CultistBoss],
             spawnOffset: (_, _) =>
@@ -582,7 +625,10 @@ public class BossRushItem : ModItem
                 return new(300 * sign, 0, -100 * sign, -500);
             }
         ));
+        # endregion
 
+        # region Moon Lord
         BRS.AddBoss(14, new([NPCID.MoonLordCore]));
+        # endregion
     }
 }
