@@ -20,7 +20,7 @@ namespace BossRush.Projectiles
         public override void PostAI(Projectile projectile)
         {
             if (BRS.I.IsBossRushActive && !projectile.friendly && BRS.I.CurrentBoss != null &&
-                BRS.I.CurrentBossData is { } bossData)
+                BRS.I.ReferenceBoss != null && BRS.I.CurrentBossData is { } bossData)
             {
                 bossData.ProjectileUpdate(projectile, bossData.AI);
             }

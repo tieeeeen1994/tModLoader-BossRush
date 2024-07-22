@@ -49,7 +49,7 @@ public class BossRushItem : ModItem
     private void AddBossesToSystem()
     {
         # region King Slime
-        BRS.AddBoss(1, new(
+        BRS.AddBoss(0, new(
             [NPCID.KingSlime],
             spawnOffset: (_, _) =>
             {
@@ -65,12 +65,80 @@ public class BossRushItem : ModItem
                     ai["DefenseAdded"] = true;
                     npc.defense *= 20;
                 }
+                if (npc.type == NPCID.BlueSlime)
+                {
+                    npc.Transform(NPCID.SlimeSpiked);
+                }
+            },
+            projectileUpdate: (projectile, ai) =>
+            {
+                if (projectile.type == ProjectileID.SpikedSlimeSpike)
+                {
+                    if (!ai.TryGetValue("SpikeTracker", out object value1))
+                    {
+                        value1 = new Dictionary<Projectile, bool>();
+                        ai["SpikeTracker"] = value1;
+                    }
+                    if (value1 is Dictionary<Projectile, bool> spikeTracker &&
+                        !spikeTracker.TryGetValue(projectile, out bool tracked) && !tracked)
+                    {
+                        spikeTracker[projectile] = true;
+                        projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .1f);
+                        projectile.timeLeft = 5.ToFrames();
+                    }
+                    if (!ai.TryGetValue("States", out object value2))
+                    {
+                        value2 = new Dictionary<Projectile, Tuple<string, int, Vector2> >();
+                        ai["States"] = value2;
+                    }
+                    if (value2 is Dictionary<Projectile, Tuple<string, int, Vector2>> stateTracker)
+                    {
+                        if (!stateTracker.TryGetValue(projectile, out Tuple<string, int, Vector2> state))
+                        {
+                            state = ("Default", 1.2f.ToFrames(), Vector2.Zero).ToTuple();
+                        }
+                        if (state.Item1 == "Default" && state.Item2 <= 0)
+                        {
+                            List<Player> players = [];
+                            foreach (var player in Main.ActivePlayers)
+                            {
+                                if (!player.dead)
+                                {
+                                    players.Add(player);
+                                }
+                            }
+                            Player target = players[Main.rand.Next(players.Count)];
+                            Vector2 direction = projectile.DirectionTo(target.Center);
+                            stateTracker[projectile] = ("Target", 0, direction).ToTuple();
+                        }
+                        else if (state.Item1 == "Default")
+                        {
+                            stateTracker[projectile] = (state.Item1, state.Item2 - 1, state.Item3).ToTuple();
+                        }
+                        else if (state.Item1 == "Target")
+                        {
+                            projectile.velocity = state.Item3 * 4f;
+                        }
+                    }
+                }
             }
         ));
         #endregion
 
+        # region Deerclops
+        BRS.AddBoss(1, new(
+            [NPCID.Deerclops],
+            spawnOffset: (_, _) =>
+            {
+                int sign = Util.RandomSign();
+                return new(500 * sign, 0, -200 * sign, -500);
+            },
+            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2)
+        ));
+        # endregion
+
         # region Eye of Cthulhu
-        BRS.AddBoss(0, new(
+        BRS.AddBoss(2, new(
             [NPCID.EyeofCthulhu],
             spawnOffset: (_, _) =>
             {
@@ -148,18 +216,6 @@ public class BossRushItem : ModItem
             }
         ));
         #endregion
-
-        # region Deerclops
-        BRS.AddBoss(2, new(
-            [NPCID.Deerclops],
-            spawnOffset: (_, _) =>
-            {
-                int sign = Util.RandomSign();
-                return new(500 * sign, 0, -200 * sign, -500);
-            },
-            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2)
-        ));
-        # endregion
 
         # region Eater of Worlds
         BRS.AddBoss(3, new(
@@ -360,7 +416,7 @@ public class BossRushItem : ModItem
             },
             projectileUpdate: (projectile, ai) =>
             {
-                if (projectile.type == ProjectileID.QueenBeeStinger && BRS.ReferenceBoss != null)
+                if (projectile.type == ProjectileID.QueenBeeStinger)
                 {
                     projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .1f);
                 }
@@ -464,7 +520,7 @@ public class BossRushItem : ModItem
             },
             projectileUpdate: (projectile, ai) =>
             {
-                if (projectile.type == ProjectileID.Skull && BRS.ReferenceBoss != null)
+                if (projectile.type == ProjectileID.Skull)
                 {
                     projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .08f);
                 }
@@ -519,7 +575,7 @@ public class BossRushItem : ModItem
             },
             projectileUpdate: (projectile, ai) =>
             {
-                if (projectile.type == ProjectileID.EyeLaser && BRS.ReferenceBoss != null)
+                if (projectile.type == ProjectileID.EyeLaser)
                 {
                     projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .05f);
                 }
