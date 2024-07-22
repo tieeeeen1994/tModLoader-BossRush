@@ -60,14 +60,67 @@ public class BossRushItem : ModItem
                                     lifeFlatIncrease: 80, damageFlatIncrease: 30),
             bossUpdate: (npc, ai) =>
             {
-                if (npc.type == NPCID.KingSlime && npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+                if (npc.type == NPCID.KingSlime)
                 {
-                    ai["DefenseAdded"] = true;
-                    npc.defense *= 20;
+                    if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+                    {
+                        ai["DefenseAdded"] = true;
+                        npc.defense *= 20;
+                        npc.netUpdate = true;
+                    }
+                    if (ai.TryGetValue("States", out object statesObject) &&
+                        statesObject is Dictionary<Projectile, Tuple<string, int, Vector2>> value1)
+                    {
+                        foreach (var pair in value1)
+                        {
+                            if (!pair.Key.active)
+                            {
+                                value1.Remove(pair.Key);
+                            }
+                        }
+                    }
+                    if (ai.TryGetValue("SpikeTracker", out object spikesTrackerObject) &&
+                        spikesTrackerObject is Dictionary<Projectile, bool> value2)
+                    {
+                        foreach (var pair in value2)
+                        {
+                            if (!pair.Key.active)
+                            {
+                                value2.Remove(pair.Key);
+                            }
+                        }
+                    }
                 }
                 if (npc.type == NPCID.BlueSlime)
                 {
                     npc.Transform(NPCID.SlimeSpiked);
+                    npc.netUpdate = true;
+                }
+                if (npc.type == NPCID.SlimeSpiked)
+                {
+                    if (!ai.TryGetValue("BombardSpikes", out object value))
+                    {
+                        value = new Dictionary<NPC, int>();
+                        ai["BombardSpikes"] = value;
+                    }
+                    if (value is Dictionary<NPC, int> tracker)
+                    {
+                        if (!tracker.TryGetValue(npc, out int timer))
+                        {
+                            tracker[npc] = timer = 90;
+                        }
+                        if (timer <= 0)
+                        {
+                            tracker[npc] = 90;
+                            Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
+                                                     npc.Center, new Vector2(0, -5),
+                                                     ProjectileID.SpikedSlimeSpike, 1, 0f);
+                        }
+                        else
+                        {
+                            tracker[npc] = timer - 1;
+                        }
+                    }
                 }
             },
             projectileUpdate: (projectile, ai) =>
@@ -84,7 +137,6 @@ public class BossRushItem : ModItem
                     {
                         spikeTracker[projectile] = true;
                         projectile.damage = Util.RoundOff(BRS.ReferenceBoss.damage * .1f);
-                        projectile.timeLeft = 5.ToFrames();
                     }
                     if (!ai.TryGetValue("States", out object value2))
                     {
@@ -95,7 +147,7 @@ public class BossRushItem : ModItem
                     {
                         if (!stateTracker.TryGetValue(projectile, out Tuple<string, int, Vector2> state))
                         {
-                            state = ("Default", 1.2f.ToFrames(), Vector2.Zero).ToTuple();
+                            state = ("Default", 30, Vector2.Zero).ToTuple();
                         }
                         if (state.Item1 == "Default" && state.Item2 <= 0)
                         {
@@ -117,13 +169,13 @@ public class BossRushItem : ModItem
                         }
                         else if (state.Item1 == "Target")
                         {
-                            projectile.velocity = state.Item3 * 4f;
+                            projectile.velocity = state.Item3 * 5f;
                         }
                     }
                 }
             }
         ));
-        #endregion
+        # endregion
 
         # region Deerclops
         BRS.AddBoss(1, new(
@@ -289,7 +341,7 @@ public class BossRushItem : ModItem
                             {
                                 if (!timerData.TryGetValue(bodyEntity, out (Vector2, int) value))
                                 {
-                                    timerData[bodyEntity] = (bodyEntity.Center, 1.ToFrames());
+                                    timerData[bodyEntity] = (bodyEntity.Center, 60);
                                 }
                                 else if (value.Item2 <= 0)
                                 {
