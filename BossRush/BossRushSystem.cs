@@ -13,7 +13,9 @@ namespace BossRush;
 
 public class BossRushSystem : ModSystem
 {
-    internal static BossRushSystem I => ModContent.GetInstance<BossRushSystem>();
+    # region Fields & Properties
+    public static BossRushSystem I => Instance;
+    public static BossRushSystem Instance => ModContent.GetInstance<BossRushSystem>();
     public bool IsBossRushActive => State != States.Off;
     public bool IsBossRushOff => State == States.Off;
     public States State { get; private set; } = States.Off;
@@ -27,6 +29,7 @@ public class BossRushSystem : ModSystem
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
+    # endregion
 
     public override void NetSend(BinaryWriter writer)
     {
@@ -160,7 +163,7 @@ public class BossRushSystem : ModSystem
         {
             case States.On:
                 InitializeSystem();
-                State = States.Prepare;
+                ChangeState(States.Prepare);
                 break;
 
             case States.Prepare:
@@ -170,12 +173,12 @@ public class BossRushSystem : ModSystem
                     if (bossQueue.Count <= 0)
                     {
                         Util.NewText("Mods.BossRush.Messages.Win");
-                        State = States.End;
+                        ChangeState(States.End);
                     }
                     else
                     {
                         SpawnNextBoss();
-                        State = States.Run;
+                        ChangeState(States.Run);
                     }
                 }
                 break;
@@ -200,48 +203,14 @@ public class BossRushSystem : ModSystem
             case States.Off:
                 Util.NewText("Mods.BossRush.Messages.Active");
                 CleanStage();
-                State = States.On;
+                ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
                 Util.NewText("Mods.BossRush.Messages.Disable");
                 CleanStage();
-                State = States.End;
+                ChangeState(States.End);
                 break;
-        }
-    }
-
-    public void TrackPlayerDeaths()
-    {
-        if (!allDead)
-        {
-            foreach (var player in Main.ActivePlayers)
-            {
-                if (!player.dead)
-                {
-                    return;
-                }
-            }
-            allDead = true;
-            Util.NewText("Mods.BossRush.Messages.Failure");
-        }
-    }
-
-    public void DynamicAddBoss(NPC boss)
-    {
-        _currentBoss.Add(boss);
-        bossDefeated.Add(boss, false);
-    }
-
-    public void MarkBossDefeat(NPC boss)
-    {
-        bossDefeated[boss] = true;
-        if (!allDead && IsBossDefeated())
-        {
-            ResurrectPlayers();
-            allDead = false;
-            bossQueue.Dequeue();
-            State = States.Prepare;
         }
     }
 
@@ -257,15 +226,55 @@ public class BossRushSystem : ModSystem
         }
     }
 
+    internal void TrackPlayerDeaths()
+    {
+        if (!allDead)
+        {
+            foreach (var player in Main.ActivePlayers)
+            {
+                if (!player.dead)
+                {
+                    return;
+                }
+            }
+            allDead = true;
+            Util.NewText("Mods.BossRush.Messages.Failure");
+        }
+    }
+
+    internal void DynamicAddBoss(NPC boss)
+    {
+        _currentBoss.Add(boss);
+        if (Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            bossDefeated.Add(boss, false);
+        }
+    }
+
+    internal void MarkBossDefeat(NPC boss)
+    {
+        bossDefeated[boss] = true;
+        if (!allDead && IsBossDefeated())
+        {
+            ResurrectPlayers();
+            allDead = false;
+            bossQueue.Dequeue();
+            ChangeState(States.Prepare);
+        }
+    }
+
+    private void ChangeState(States state)
+    {
+        State = state;
+        NetMessage.SendData(MessageID.WorldData);
+    }
+
     private void CheckPlayerCondition()
     {
-        if (allDead)
+        if (allDead && (IsBossGone() || ++allDeadEndTimer >= 10.ToFrames()))
         {
-            if (IsBossGone() || ++allDeadEndTimer >= 10.ToFrames())
-            {
-                allDeadEndTimer = 0;
-                State = States.End;
-            }
+            allDeadEndTimer = 0;
+            ChangeState(States.End);
         }
     }
 
@@ -274,7 +283,7 @@ public class BossRushSystem : ModSystem
         if (!allDead && IsBossDespawned())
         {
             CleanStage(_currentBoss);
-            State = States.Prepare;
+            ChangeState(States.Prepare);
             Util.NewText("Mods.BossRush.Messages.Despawn");
         }
     }
@@ -312,7 +321,6 @@ public class BossRushSystem : ModSystem
 
     private void ResetSystem()
     {
-        State = States.Off;
         _currentBoss = null;
         CurrentBossData = null;
         bossQueue.Clear();
@@ -321,8 +329,7 @@ public class BossRushSystem : ModSystem
         prepareTimer = 0;
         bossDefeated = null;
         candidates.Clear();
-        NetMessage.SendData(MessageID.WorldData);
-        // Continue here.
+        ChangeState(States.Off);
     }
 
     private void SpawnNextBoss()
@@ -340,6 +347,7 @@ public class BossRushSystem : ModSystem
             if (!npc.friendly)
             {
                 npc.active = false;
+                npc.netUpdate = true;
             }
         }
     }

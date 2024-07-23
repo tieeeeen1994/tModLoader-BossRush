@@ -1,6 +1,5 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
-using Terraria.ID;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 
@@ -17,7 +16,7 @@ public class BossAndSlaves : GlobalNPC
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
             npc.defense = attributes.ComputeDefense(npc.defense);
-            npc.netAlways = true;
+            npc.netUpdate = true;
         }
     }
 
@@ -35,15 +34,6 @@ public class BossAndSlaves : GlobalNPC
         if (BRS.I.IsBossRushActive && BRS.I.State == BRS.States.Run && BRS.I.CurrentBoss.Contains(npc))
         {
             BRS.I.MarkBossDefeat(npc);
-        }
-    }
-
-    public override void PostAI(NPC npc)
-    {
-        if (Main.netMode != NetmodeID.MultiplayerClient && BRS.I.IsBossRushActive &&
-            BRS.I.CurrentBoss != null && BRS.I.CurrentBossData is { } bossData)
-        {
-            bossData.BossUpdate(npc, bossData.AI);
         }
     }
 }

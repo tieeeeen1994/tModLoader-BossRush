@@ -25,9 +25,13 @@ public static class Util
         }
     }
 
-    public static int ToFrames(this float seconds) => RoundOff(seconds * Main.frameRate);
+    // public static int ToFrames(this float seconds) => RoundOff(seconds * Main.frameRate);
 
-    public static int ToFrames(this int seconds) => seconds * Main.frameRate;
+    // public static int ToFrames(this int seconds) => seconds * Main.frameRate;
+
+    public static int ToFrames(this float seconds) => RoundOff(ToFrames(seconds));
+
+    public static int ToFrames(this int seconds) => seconds * 60;
 
     public static Vector2 ChooseRandomPoint(this Rectangle rectangle)
     {
@@ -38,5 +42,5 @@ public static class Util
         return new(offsetX, offsetY);
     }
 
-    public static int RandomSign() => Main.rand.NextBool() ? 1 : -1;
+    public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
 }

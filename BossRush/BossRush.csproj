@@ -7,6 +7,9 @@
 	<PropertyGroup>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
+	<ItemGroup>
+	  <Folder Include="NPCs\Old\" />
+	</ItemGroup>
 
 	<!-- References -->
 </Project>

@@ -12,5 +12,8 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\BossRush\BossRush.csproj" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Items\Old\" />
+	</ItemGroup>
 
 </Project>
