@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BossRush.Types;
 using Microsoft.Xna.Framework;
@@ -26,6 +27,132 @@ public class BossRushSystem : ModSystem
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
+
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((byte)State);
+        int currentBossItemCount = _currentBoss?.Count ?? 0;
+        writer.Write(currentBossItemCount);
+        foreach (var boss in _currentBoss)
+        {
+            writer.Write(boss.whoAmI);
+        }
+        if (CurrentBossData == null)
+        {
+            writer.Write(false);
+        }
+        else
+        {
+            writer.Write(true);
+            BossData bossData = CurrentBossData.Value;
+            writer.Write(bossData.Types.Count);
+            foreach (int type in bossData.Types)
+            {
+                writer.Write(type);
+            }
+            writer.Write(bossData.SubTypes.Count);
+            foreach (int subType in bossData.SubTypes)
+            {
+                writer.Write(subType);
+            }
+            ModifiedAttributes attributes = bossData.ModifiedAttributes;
+            writer.Write(attributes.LifeFlatIncrease);
+            writer.Write(attributes.LifeMultiplier);
+            writer.Write(attributes.DamageFlatIncrease);
+            writer.Write(attributes.DamageMultiplier);
+            writer.Write(attributes.DefenseFlatIncrease);
+            writer.Write(attributes.DefenseMultiplier);
+            writer.Write(attributes.ProjectilesAffected);
+            if (bossData.TimeContext == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                TimeContext timeContext = bossData.TimeContext.Value;
+                writer.Write(timeContext.Time);
+                writer.Write(timeContext.DayTime);
+            }
+            if (bossData.PlaceContext == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                PlaceContext placeContext = bossData.PlaceContext.Value;
+                writer.Write(placeContext.TeleportRange.X);
+                writer.Write(placeContext.TeleportRange.Y);
+                writer.Write(placeContext.TeleportRange.Width);
+                writer.Write(placeContext.TeleportRange.Height);
+            }
+        }
+    }
+
+    public override void NetReceive(BinaryReader reader)
+    {
+        State = (States)reader.ReadByte();
+        int currentBossItemCount = reader.ReadInt32();
+        _currentBoss = [];
+        for (int i = 0; i < currentBossItemCount; i++)
+        {
+            int npcIndex = reader.ReadInt32();
+            _currentBoss.Add(Main.npc[npcIndex]);
+        }
+        bool currentBossDataExists = reader.ReadBoolean();
+        if (currentBossDataExists)
+        {
+            int typesCount = reader.ReadInt32();
+            List<int> types = [];
+            for (int i = 0; i < typesCount; i++)
+            {
+                types.Add(reader.ReadInt32());
+            }
+            int subTypesCount = reader.ReadInt32();
+            List<int> subTypes = [];
+            for (int i = 0; i < subTypesCount; i++)
+            {
+                subTypes.Add(reader.ReadInt32());
+            }
+            int lifeFlatIncrease = reader.ReadInt32();
+            float lifeMultiplier = reader.ReadSingle();
+            int damageFlatIncrease = reader.ReadInt32();
+            float damageMultiplier = reader.ReadSingle();
+            int defenseFlatIncrease = reader.ReadInt32();
+            float defenseMultiplier = reader.ReadSingle();
+            bool projectilesAffected = reader.ReadBoolean();
+            bool timeContextExists = reader.ReadBoolean();
+            TimeContext? timeContext = null;
+            if (timeContextExists)
+            {
+                double time = reader.ReadDouble();
+                bool dayTime = reader.ReadBoolean();
+                timeContext = new(time, dayTime);
+            }
+            bool placeContextExists = reader.ReadBoolean();
+            PlaceContext? placeContext = null;
+            if (placeContextExists)
+            {
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                int width = reader.ReadInt32();
+                int height = reader.ReadInt32();
+                placeContext = new(x, y, width, height);
+            }
+            CurrentBossData = new BossData(
+                types: types, subTypes: subTypes,
+                modifiedAttributes: new(lifeMultiplier, damageMultiplier, defenseMultiplier,
+                                        lifeFlatIncrease, damageFlatIncrease, defenseFlatIncrease,
+                                        projectilesAffected),
+                timeContext: timeContext, placeContext: placeContext
+            );
+        }
+        else
+        {
+            CurrentBossData = null;
+        }
+    }
 
     public override void PostUpdateWorld()
     {
@@ -194,6 +321,8 @@ public class BossRushSystem : ModSystem
         prepareTimer = 0;
         bossDefeated = null;
         candidates.Clear();
+        NetMessage.SendData(MessageID.WorldData);
+        // Continue here.
     }
 
     private void SpawnNextBoss()
