@@ -13,15 +13,29 @@ public static class Util
 
     public static Vector2 RoundOff(this Vector2 value) => new(RoundOff(value.X), RoundOff(value.Y));
 
-    public static void NewText(string message, Color? color = null)
+    public static void NewText(string message, Color? color = null, bool literal = false)
     {
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
-            Main.NewText(Language.GetTextValue(message), color ?? Color.White);
+            if (literal)
+            {
+                Main.NewText(message, color ?? Color.White);
+            }
+            else
+            {
+                Main.NewText(Language.GetTextValue(message), color ?? Color.White);
+            }
         }
         else if (Main.netMode == NetmodeID.Server)
         {
-            ChatHelper.BroadcastChatMessage(NetworkText.FromKey(message), color ?? Color.White);
+            if (literal)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), color ?? Color.White);
+            }
+            else
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromKey(message), color ?? Color.White);
+            }
         }
     }
 
@@ -29,7 +43,7 @@ public static class Util
 
     // public static int ToFrames(this int seconds) => seconds * Main.frameRate;
 
-    public static int ToFrames(this float seconds) => RoundOff(ToFrames(seconds));
+    public static int ToFrames(this float seconds) => ToFrames(RoundOff(seconds));
 
     public static int ToFrames(this int seconds) => seconds * 60;
 

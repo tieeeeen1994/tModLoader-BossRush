@@ -34,11 +34,18 @@ public class BossRushSystem : ModSystem
     public override void NetSend(BinaryWriter writer)
     {
         writer.Write((byte)State);
-        int currentBossItemCount = _currentBoss?.Count ?? 0;
-        writer.Write(currentBossItemCount);
-        foreach (var boss in _currentBoss)
+        if (_currentBoss == null)
         {
-            writer.Write(boss.whoAmI);
+            writer.Write(false);
+        }
+        else
+        {
+            writer.Write(true);
+            writer.Write(_currentBoss.Count);
+            foreach (var boss in _currentBoss)
+            {
+                writer.Write(boss.whoAmI);
+            }
         }
         if (CurrentBossData == null)
         {
@@ -96,12 +103,20 @@ public class BossRushSystem : ModSystem
     public override void NetReceive(BinaryReader reader)
     {
         State = (States)reader.ReadByte();
-        int currentBossItemCount = reader.ReadInt32();
-        _currentBoss = [];
-        for (int i = 0; i < currentBossItemCount; i++)
+        bool currentBossExists = reader.ReadBoolean();
+        if (currentBossExists)
         {
-            int npcIndex = reader.ReadInt32();
-            _currentBoss.Add(Main.npc[npcIndex]);
+            int currentBossCount = reader.ReadInt32();
+            _currentBoss = [];
+            for (int i = 0; i < currentBossCount; i++)
+            {
+                int npcIndex = reader.ReadInt32();
+                _currentBoss.Add(Main.npc[npcIndex]);
+            }
+        }
+        else
+        {
+            _currentBoss = null;
         }
         bool currentBossDataExists = reader.ReadBoolean();
         if (currentBossDataExists)
@@ -159,6 +174,8 @@ public class BossRushSystem : ModSystem
 
     public override void PostUpdateWorld()
     {
+        Util.NewText($"State: {State}", literal: true);
+
         switch (State)
         {
             case States.On:
