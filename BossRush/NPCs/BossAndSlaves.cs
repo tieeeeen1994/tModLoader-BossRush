@@ -16,7 +16,6 @@ public class BossAndSlaves : GlobalNPC
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
             npc.defense = attributes.ComputeDefense(npc.defense);
-            npc.netUpdate = true;
         }
     }
 

@@ -247,15 +247,23 @@ public class BossRushSystem : ModSystem
     {
         if (!allDead)
         {
-            foreach (var player in Main.ActivePlayers)
+            if (Main.ActivePlayers.GetEnumerator().MoveNext())
             {
-                if (!player.dead)
+                foreach (var player in Main.ActivePlayers)
                 {
-                    return;
+                    if (!player.dead)
+                    {
+                        return;
+                    }
                 }
+                allDead = true;
+                Util.NewText("Mods.BossRush.Messages.Failure");
             }
-            allDead = true;
-            Util.NewText("Mods.BossRush.Messages.Failure");
+            else
+            {
+                Util.CleanStage();
+                ResetSystem();
+            }
         }
     }
 
