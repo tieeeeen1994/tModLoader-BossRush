@@ -3,89 +3,77 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
 
-namespace ExampleBossRush.NPCs
+namespace ExampleBossRush.NPCs;
+
+public class KingSlimeAndMinions : BossRushBossAndMinions
 {
-    public class KingSlimeAndMinions : GlobalNPC
+    protected override List<int> ApplicableTypes => [NPCID.KingSlime, NPCID.BlueSlime, NPCID.SlimeSpiked];
+
+    protected override void Update(NPC npc)
     {
-        internal static readonly Dictionary<string, object> ai = [];
-        private static readonly List<int> applicableTypes = [NPCID.KingSlime, NPCID.BlueSlime, NPCID.SlimeSpiked];
-
-        public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+        if (npc.type == NPCID.KingSlime)
         {
-            return lateInstantiation && applicableTypes.Contains(entity.type);
-        }
-
-        public override void PostAI(NPC npc)
-        {
-            if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData != null)
+            if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
             {
-                if (npc.type == NPCID.KingSlime)
+                ai["DefenseAdded"] = true;
+                npc.defense *= 20;
+                npc.netUpdate = true;
+            }
+            if (ai.TryGetValue("States", out object statesObject) &&
+                statesObject is Dictionary<Projectile, Tuple<string, int, Vector2>> value1)
+            {
+                foreach (var pair in value1)
                 {
-                    if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
+                    if (!pair.Key.active)
                     {
-                        ai["DefenseAdded"] = true;
-                        npc.defense *= 20;
-                        npc.netUpdate = true;
-                    }
-                    if (ai.TryGetValue("States", out object statesObject) &&
-                        statesObject is Dictionary<Projectile, Tuple<string, int, Vector2>> value1)
-                    {
-                        foreach (var pair in value1)
-                        {
-                            if (!pair.Key.active)
-                            {
-                                value1.Remove(pair.Key);
-                            }
-                        }
-                    }
-                    if (ai.TryGetValue("SpikeTracker", out object spikesTrackerObject) &&
-                        spikesTrackerObject is Dictionary<Projectile, bool> value2)
-                    {
-                        foreach (var pair in value2)
-                        {
-                            if (!pair.Key.active)
-                            {
-                                value2.Remove(pair.Key);
-                            }
-                        }
+                        value1.Remove(pair.Key);
                     }
                 }
-                if (npc.type == NPCID.BlueSlime)
+            }
+            if (ai.TryGetValue("SpikeTracker", out object spikesTrackerObject) &&
+                spikesTrackerObject is Dictionary<Projectile, bool> value2)
+            {
+                foreach (var pair in value2)
                 {
-                    npc.Transform(NPCID.SlimeSpiked);
-                    npc.netUpdate = true;
+                    if (!pair.Key.active)
+                    {
+                        value2.Remove(pair.Key);
+                    }
                 }
-                if (npc.type == NPCID.SlimeSpiked)
+            }
+        }
+        if (npc.type == NPCID.BlueSlime)
+        {
+            npc.Transform(NPCID.SlimeSpiked);
+            npc.netUpdate = true;
+        }
+        if (npc.type == NPCID.SlimeSpiked)
+        {
+            if (!ai.TryGetValue("BombardSpikes", out object value))
+            {
+                value = new Dictionary<NPC, int>();
+                ai["BombardSpikes"] = value;
+            }
+            if (value is Dictionary<NPC, int> tracker)
+            {
+                if (!tracker.TryGetValue(npc, out int timer))
                 {
-                    if (!ai.TryGetValue("BombardSpikes", out object value))
+                    tracker[npc] = timer = 90;
+                }
+                if (timer <= 0)
+                {
+                    tracker[npc] = 90;
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        value = new Dictionary<NPC, int>();
-                        ai["BombardSpikes"] = value;
+                        Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
+                                                 npc.Center, new Vector2(0, -5),
+                                                 ProjectileID.SpikedSlimeSpike, 1, 0f);
                     }
-                    if (value is Dictionary<NPC, int> tracker)
-                    {
-                        if (!tracker.TryGetValue(npc, out int timer))
-                        {
-                            tracker[npc] = timer = 90;
-                        }
-                        if (timer <= 0)
-                        {
-                            tracker[npc] = 90;
-                            if (Main.netMode != NetmodeID.MultiplayerClient)
-                            {
-                                Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
-                                                         npc.Center, new Vector2(0, -5),
-                                                         ProjectileID.SpikedSlimeSpike, 1, 0f);
-                            }
-                        }
-                        else
-                        {
-                            tracker[npc] = timer - 1;
-                        }
-                    }
+                }
+                else
+                {
+                    tracker[npc] = timer - 1;
                 }
             }
         }
