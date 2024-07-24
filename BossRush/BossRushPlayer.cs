@@ -14,7 +14,7 @@ public class BossRushPlayer : ModPlayer
             Player.respawnTimer = 10.ToFrames();
         }
         // For debugging and quick respawns.
-        Player.respawnTimer = 0;
+        // Player.respawnTimer = 0;
     }
 
     public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
+using BR = BossRush.BossRush;
 
 namespace BossRush;
 
@@ -57,4 +60,22 @@ public static class Util
     }
 
     public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
+
+    public static void CleanStage(IEnumerable<NPC> npcs = null)
+    {
+        npcs ??= Main.npc;
+        foreach (var npc in npcs)
+        {
+            if (!npc.friendly)
+            {
+                npc.active = false;
+            }
+        }
+        if (Main.netMode == NetmodeID.Server)
+        {
+            ModPacket packet = BR.I.GetPacket();
+            packet.Write((byte)BR.PacketType.CleanStage);
+            packet.Send();
+        }
+    }
 }

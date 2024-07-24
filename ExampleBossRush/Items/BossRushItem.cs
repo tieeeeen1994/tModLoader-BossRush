@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using BossRush;
 using BossRush.Types;
 using Microsoft.Xna.Framework;
-using MonoMod.RuntimeDetour;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -55,7 +51,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(0, new(
             [NPCID.KingSlime],
             spawnOffset: new(1000 * sign, -700, 200 * sign, -200),
-            modifiedAttributes: new(lifeMultiplier: 40, damageMultiplier: 2,
+            modifiedAttributes: new(lifeMultiplier: .40f, damageMultiplier: 2,
                                     lifeFlatIncrease: 80, damageFlatIncrease: 30)
         ));
         # endregion
@@ -65,7 +61,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(1, new(
             [NPCID.Deerclops],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500),
-            modifiedAttributes: new(lifeMultiplier: 50, damageMultiplier: 2)
+            modifiedAttributes: new(lifeMultiplier: .50f, damageMultiplier: 2)
         ));
         # endregion
 

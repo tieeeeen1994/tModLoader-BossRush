@@ -174,8 +174,6 @@ public class BossRushSystem : ModSystem
 
     public override void PostUpdateWorld()
     {
-        Util.NewText($"State: {State}", literal: true);
-
         switch (State)
         {
             case States.On:
@@ -184,7 +182,7 @@ public class BossRushSystem : ModSystem
                 break;
 
             case States.Prepare:
-                if (++prepareTimer >= .5f.ToFrames())
+                if (++prepareTimer >= 1.ToFrames())
                 {
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
@@ -206,6 +204,8 @@ public class BossRushSystem : ModSystem
                 break;
 
             case States.End:
+                Util.NewText("Mods.BossRush.Messages.End");
+                Util.CleanStage(_currentBoss);
                 ResetSystem();
                 break;
         }
@@ -219,13 +219,13 @@ public class BossRushSystem : ModSystem
         {
             case States.Off:
                 Util.NewText("Mods.BossRush.Messages.Active");
-                CleanStage();
+                Util.CleanStage();
                 ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
                 Util.NewText("Mods.BossRush.Messages.Disable");
-                CleanStage();
+                Util.CleanStage();
                 ChangeState(States.End);
                 break;
         }
@@ -299,7 +299,7 @@ public class BossRushSystem : ModSystem
     {
         if (!allDead && IsBossDespawned())
         {
-            CleanStage(_currentBoss);
+            Util.CleanStage(_currentBoss);
             ChangeState(States.Prepare);
             Util.NewText("Mods.BossRush.Messages.Despawn");
         }
@@ -356,19 +356,6 @@ public class BossRushSystem : ModSystem
         bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
     }
 
-    private void CleanStage(IEnumerable<NPC> npcs = null)
-    {
-        npcs ??= Main.npc;
-        foreach (var npc in npcs)
-        {
-            if (!npc.friendly)
-            {
-                npc.active = false;
-                npc.netUpdate = true;
-            }
-        }
-    }
-
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
 
     private bool IsBossDefeated() => !bossDefeated.ContainsValue(false);
@@ -408,7 +395,8 @@ public class BossRushSystem : ModSystem
             int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
 
             // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1);
+            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
+                                      1, 0, 0, 0, 0, target.whoAmI);
             spawnedBosses.Add(Main.npc[npcIndex]);
         }
 

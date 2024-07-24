@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Terraria;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace BossRush.Types;
 

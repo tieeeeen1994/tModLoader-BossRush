@@ -5,12 +5,13 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
+using BRS = BossRush.BossRushSystem;
 
 namespace BossRush;
 
 public class BossRush : Mod
 {
-    public static BossRush I => ModContent.GetInstance<BossRush>();
+    internal static BossRush I => ModContent.GetInstance<BossRush>();
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
@@ -24,17 +25,23 @@ public class BossRush : Mod
                     if (Main.LocalPlayer.active)
                     {
                         Main.LocalPlayer.Teleport(position);
+                        NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0,
+                                            Main.myPlayer, position.X, position.Y);
                     }
                 }
                 break;
 
             case PacketType.SpawnPlayer:
+                if (Main.netMode == NetmodeID.MultiplayerClient && Main.LocalPlayer.dead)
+                {
+                    Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
+                }
+                break;
+
+            case PacketType.CleanStage:
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
-                    if (Main.LocalPlayer.dead)
-                    {
-                        Main.LocalPlayer.Spawn(PlayerSpawnContext.ReviveFromDeath);
-                    }
+                    Util.CleanStage();
                 }
                 break;
         }
@@ -65,7 +72,7 @@ public class BossRush : Mod
     private int NewNPC(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type,
                        int Start, float ai0, float ai1, float ai2, float ai3, int Target)
     {
-        if (BossRushSystem.I.IsBossRushActive && Type == NPCID.KingSlime)
+        if (BRS.I.IsBossRushActive && Type == NPCID.KingSlime)
         {
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
             MethodInfo method = typeof(NPC).GetMethod("GetAvailableNPCSlot", flags);
@@ -100,7 +107,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropMoney(On_NPC.orig_NPCLoot_DropMoney orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -108,7 +115,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropItems(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -116,7 +123,7 @@ public class BossRush : Mod
 
     private void NPCLoot_DropHeals(On_NPC.orig_NPCLoot_DropHeals orig, NPC self, Player closestPlayer)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig(self, closestPlayer);
         }
@@ -125,7 +132,7 @@ public class BossRush : Mod
     private void DropBossPotionsAndHearts(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig,
                                           NPC self, ref string typeName)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig(self, ref typeName);
         }
@@ -133,7 +140,7 @@ public class BossRush : Mod
 
     private void CreateBrickBoxForWallOfFlesh(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig(self);
         }
@@ -141,11 +148,11 @@ public class BossRush : Mod
 
     private void TriggerLunarApocalypse(On_WorldGen.orig_TriggerLunarApocalypse orig)
     {
-        if (BossRushSystem.I.IsBossRushOff)
+        if (BRS.I.IsBossRushOff)
         {
             orig();
         }
     }
 
-    public enum PacketType : byte { Teleport, SpawnPlayer }
+    public enum PacketType : byte { Teleport, SpawnPlayer, CleanStage }
 }

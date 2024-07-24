@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -37,7 +36,6 @@ public struct PlaceContext
                 if (Main.netMode == NetmodeID.SinglePlayer)
                 {
                     player.Teleport(position);
-                    NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0, player.whoAmI, position.X, position.Y);
                 }
                 else if (Main.netMode == NetmodeID.Server)
                 {
