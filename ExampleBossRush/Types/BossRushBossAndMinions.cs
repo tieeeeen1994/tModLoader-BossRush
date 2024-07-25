@@ -3,7 +3,7 @@ using Terraria;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 
-namespace ExampleBossRush.NPCs;
+namespace ExampleBossRush.Types;
 
 public abstract class BossRushBossAndMinions : GlobalNPC
 {
@@ -26,16 +26,18 @@ public abstract class BossRushBossAndMinions : GlobalNPC
         }
     }
 
-    protected T StoreOrFetch<T>(string key, T value)
+    public T StoreOrFetch<T>(string key, T value) => (T)StoreOrFetch(ai, key, value);
+
+    public U StoreOrFetch<T, U>(Dictionary<T, U> storage, T key, U value)
     {
-        if (!ai.ContainsKey(key))
+        if (!storage.ContainsKey(key))
         {
-            ai[key] = value;
+            storage[key] = value;
         }
-        return (T)ai[key];
+        return storage[key];
     }
 
-    protected void CleanInactiveData<T, U>(Dictionary<T, U> storage) where T : Entity
+    public void CleanInactiveData<T, U>(Dictionary<T, U> storage) where T : Entity
     {
         foreach (var entry in storage)
         {

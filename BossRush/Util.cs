@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
@@ -46,7 +46,7 @@ public static class Util
 
     // public static int ToFrames(this int seconds) => seconds * Main.frameRate;
 
-    public static int ToFrames(this float seconds) => ToFrames(RoundOff(seconds));
+    public static int ToFrames(this float seconds) => RoundOff(seconds * 60);
 
     public static int ToFrames(this int seconds) => seconds * 60;
 

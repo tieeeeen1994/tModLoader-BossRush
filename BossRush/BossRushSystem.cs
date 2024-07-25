@@ -1,8 +1,8 @@
+using BossRush.Types;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using BossRush.Types;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -401,7 +401,7 @@ public class BossRushSystem : ModSystem
 
             foreach (var type in data.Types)
             {
-                Vector2 offsetValue = data.RandomSpawnLocation(type);
+                Vector2 offsetValue = data.RandomSpawnLocation();
                 int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
                 int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
 

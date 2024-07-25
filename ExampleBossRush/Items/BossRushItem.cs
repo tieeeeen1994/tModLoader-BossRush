@@ -77,7 +77,7 @@ public class BossRushItem : ModItem
         #endregion
 
         # region Eater of Worlds
-        BRS.AddBoss(-3, new(
+        BRS.AddBoss(3, new(
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
             spawnOffset: new(-1000, 1000, 2000, 500),

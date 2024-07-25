@@ -1,8 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿using BossRush;
+using ExampleBossRush.Types;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
 
@@ -12,36 +14,20 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
 
     protected override void Update(NPC npc)
     {
+        var bombardSpikes = StoreOrFetch("BombardSpikes", new Dictionary<NPC, int>());
         if (npc.type == NPCID.KingSlime)
         {
+            var states = StoreOrFetch("States", new Dictionary<Projectile, (string, int, Vector2)>());
+            var spikeTracker = StoreOrFetch("SpikeTracker", new Dictionary<Projectile, bool>());
             if (npc.life < npc.lifeMax * .2f && !ai.ContainsKey("DefenseAdded"))
             {
                 ai["DefenseAdded"] = true;
-                npc.defense *= 20;
+                npc.defense *= 30;
                 npc.netUpdate = true;
             }
-            if (ai.TryGetValue("States", out object statesObject) &&
-                statesObject is Dictionary<Projectile, Tuple<string, int, Vector2>> value1)
-            {
-                foreach (var pair in value1)
-                {
-                    if (!pair.Key.active)
-                    {
-                        value1.Remove(pair.Key);
-                    }
-                }
-            }
-            if (ai.TryGetValue("SpikeTracker", out object spikesTrackerObject) &&
-                spikesTrackerObject is Dictionary<Projectile, bool> value2)
-            {
-                foreach (var pair in value2)
-                {
-                    if (!pair.Key.active)
-                    {
-                        value2.Remove(pair.Key);
-                    }
-                }
-            }
+            CleanInactiveData(states);
+            CleanInactiveData(spikeTracker);
+            CleanInactiveData(bombardSpikes);
         }
         if (npc.type == NPCID.BlueSlime)
         {
@@ -50,20 +36,19 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
         }
         if (npc.type == NPCID.SlimeSpiked)
         {
-            if (!ai.TryGetValue("BombardSpikes", out object value))
+            if (BRS.Instance.ReferenceBoss == null)
             {
-                value = new Dictionary<NPC, int>();
-                ai["BombardSpikes"] = value;
-            }
-            if (value is Dictionary<NPC, int> tracker)
-            {
-                if (!tracker.TryGetValue(npc, out int timer))
+                if (bombardSpikes.Count > 0)
                 {
-                    tracker[npc] = timer = 90;
+                    bombardSpikes.Clear();
                 }
+            }
+            else
+            {
+                var timer = StoreOrFetch(bombardSpikes, npc, 1.5f.ToFrames());
                 if (timer <= 0)
                 {
-                    tracker[npc] = 90;
+                    bombardSpikes[npc] = 1.5f.ToFrames();
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
@@ -73,7 +58,7 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
                 }
                 else
                 {
-                    tracker[npc] = timer - 1;
+                    bombardSpikes[npc] = timer - 1;
                 }
             }
         }

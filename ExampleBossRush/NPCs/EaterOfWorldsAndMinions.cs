@@ -1,4 +1,5 @@
 ﻿using BossRush;
+using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -26,7 +27,7 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
         var spitTracker = StoreOrFetch("SpitTracker", new Dictionary<NPC, bool>());
         var segmentTracker = StoreOrFetch("SegmentTracker", new Dictionary<NPC, bool>());
         var headTracker = StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>());
-        var corruptTimers = StoreOrFetch("CorruptorTimers", new List<(Vector2, int, int, int)>());
+        var corruptTimers = StoreOrFetch("CorruptorTimers", new List<(Vector2, int)>());
         var corruptTracker = StoreOrFetch("CorruptorTracker", new Dictionary<NPC, bool>());
         var spitTimer = StoreOrFetch("SpitTimer", new Dictionary<NPC, int>());
         if (npc == BRS.I.ReferenceBoss)
@@ -40,40 +41,38 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 NPC bodyEntity = body.Key;
                 if (!bodyEntity.active)
                 {
-                    corruptTimers.Add((bodyEntity.Center, 1.5f.ToFrames(),
-                                       bodyEntity.lifeMax, bodyEntity.damage));
+                    corruptTimers.Add((bodyEntity.Center, 1.5f.ToFrames()));
                     segmentTracker.Remove(bodyEntity);
                 }
             }
             for (int i = 0; i < corruptTimers.Count; i++)
             {
-                var value = corruptTimers[i];
-                if (value.Item2 <= 0)
+                (Vector2 position, int timer) = corruptTimers[i];
+                if (timer <= 0)
                 {
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
                         NPC mob = NPC.NewNPCDirect(BRS.I.ReferenceBoss.GetSource_FromAI("PartCutOff"),
-                                                   value.Item1.X.RoundOff(),
-                                                   value.Item1.Y.RoundOff(),
+                                                   position.X.RoundOff(), position.Y.RoundOff(),
                                                    NPCID.Corruptor);
                     }
                     corruptTimers.RemoveAt(i--);
                 }
                 else
                 {
-                    corruptTimers[i] = (value.Item1, value.Item2 - 1, value.Item3, value.Item4);
+                    corruptTimers[i] = (position, timer - 1);
                     if (Main.netMode == NetmodeID.Server)
                     {
                         ModPacket packet = EBR.Instance.GetPacket();
                         packet.Write((byte)EBR.PacketTypes.CorruptorDust);
-                        packet.WriteVector2(value.Item1);
+                        packet.WriteVector2(position);
                         packet.Send();
                     }
                     else
                     {
                         for (int j = 0; j < 3; j++)
                         {
-                            Dust.NewDust(value.Item1 - new Vector2(15, 15), 30, 30, DustID.Demonite);
+                            Dust.NewDust(position - new Vector2(15, 15), 30, 30, DustID.Demonite);
                         }
                     }
                 }

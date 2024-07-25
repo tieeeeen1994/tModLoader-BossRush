@@ -1,4 +1,4 @@
-﻿using ExampleBossRush.NPCs;
+﻿using ExampleBossRush.Types;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 

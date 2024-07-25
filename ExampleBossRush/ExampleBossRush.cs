@@ -1,6 +1,4 @@
-using BossRush;
 using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
 using System.IO;
 using Terraria;
 using Terraria.ID;

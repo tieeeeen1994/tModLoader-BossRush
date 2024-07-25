@@ -1,6 +1,6 @@
+using Microsoft.Xna.Framework;
 using System.IO;
 using System.Reflection;
-using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
