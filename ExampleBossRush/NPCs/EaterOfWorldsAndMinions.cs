@@ -5,6 +5,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
+using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs;
 
@@ -22,60 +23,57 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
 
     protected override void Update(NPC npc)
     {
-        var spitTracker = (Dictionary<NPC, bool>)StoreOrFetch("SpitTracker", new Dictionary<NPC, bool>()).Value;
-        var segmentTracker = (Dictionary<NPC, bool>)StoreOrFetch("SegmentTracker", new Dictionary<NPC, bool>()).Value;
-        var headTracker = (Dictionary<NPC, bool>)StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>()).Value;
-        var corruptTimers = (Dictionary<NPC, (Vector2, int)>)StoreOrFetch(
-            "CorruptorTimers",
-            new Dictionary<NPC, (Vector2, int)>()
-        ).Value;
+        var spitTracker = StoreOrFetch("SpitTracker", new Dictionary<NPC, bool>());
+        var segmentTracker = StoreOrFetch("SegmentTracker", new Dictionary<NPC, bool>());
+        var headTracker = StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>());
+        var corruptTimers = StoreOrFetch("CorruptorTimers", new List<(Vector2, int, int, int)>());
+        var corruptTracker = StoreOrFetch("CorruptorTracker", new Dictionary<NPC, bool>());
+        var spitTimer = StoreOrFetch("SpitTimer", new Dictionary<NPC, int>());
         if (npc == BRS.I.ReferenceBoss)
         {
-            CleanInactiveData("SpitTracker");
-            CleanInactiveData("HeadHealthTracker");
+            CleanInactiveData(spitTracker);
+            CleanInactiveData(headTracker);
+            CleanInactiveData(corruptTracker);
+            CleanInactiveData(spitTimer);
             foreach (var body in segmentTracker)
             {
                 NPC bodyEntity = body.Key;
                 if (!bodyEntity.active)
                 {
-                    if (!corruptTimers.TryGetValue(bodyEntity, out (Vector2, int) value))
+                    corruptTimers.Add((bodyEntity.Center, 1.5f.ToFrames(),
+                                       bodyEntity.lifeMax, bodyEntity.damage));
+                    segmentTracker.Remove(bodyEntity);
+                }
+            }
+            for (int i = 0; i < corruptTimers.Count; i++)
+            {
+                var value = corruptTimers[i];
+                if (value.Item2 <= 0)
+                {
+                    if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        segmentTracker.Remove(bodyEntity);
-                        corruptTimers[bodyEntity] = (bodyEntity.Center, 1.5f.ToFrames());
+                        NPC mob = NPC.NewNPCDirect(BRS.I.ReferenceBoss.GetSource_FromAI("PartCutOff"),
+                                                   value.Item1.X.RoundOff(),
+                                                   value.Item1.Y.RoundOff(),
+                                                   NPCID.Corruptor);
                     }
-                    else if (value.Item2 <= 0)
+                    corruptTimers.RemoveAt(i--);
+                }
+                else
+                {
+                    corruptTimers[i] = (value.Item1, value.Item2 - 1, value.Item3, value.Item4);
+                    if (Main.netMode == NetmodeID.Server)
                     {
-                        corruptTimers.Remove(bodyEntity);
-                        if (Main.netMode != NetmodeID.MultiplayerClient)
-                        {
-                            NPC mob = NPC.NewNPCDirect(bodyEntity.GetSource_FromAI("PartCutOff"),
-                                                       value.Item1.X.RoundOff(),
-                                                       value.Item1.Y.RoundOff(),
-                                                       NPCID.Corruptor);
-                            mob.lifeMax = Util.RoundOff(bodyEntity.lifeMax * .2f);
-                            mob.life = mob.lifeMax;
-                            mob.defense = 0;
-                            mob.damage = Util.RoundOff(bodyEntity.damage * .5f);
-                            mob.knockBackResist = 0f;
-                            mob.netUpdate = true;
-                        }
+                        ModPacket packet = EBR.Instance.GetPacket();
+                        packet.Write((byte)EBR.PacketTypes.CorruptorDust);
+                        packet.WriteVector2(value.Item1);
+                        packet.Send();
                     }
                     else
                     {
-                        corruptTimers[bodyEntity] = (value.Item1, value.Item2 - 1);
-                        if (Main.netMode == NetmodeID.Server)
+                        for (int j = 0; j < 3; j++)
                         {
-                            ModPacket packet = ExampleBossRush.Instance.GetPacket();
-                            packet.Write((byte)ExampleBossRush.PacketTypes.CorruptorDust);
-                            packet.WriteVector2(value.Item1);
-                            packet.Send();
-                        }
-                        else
-                        {
-                            for (int i = 0; i < 3; i++)
-                            {
-                                Dust.NewDust(value.Item1 - new Vector2(15, 15), 30, 30, DustID.Demonite);
-                            }
+                            Dust.NewDust(value.Item1 - new Vector2(15, 15), 30, 30, DustID.Demonite);
                         }
                     }
                 }
@@ -89,11 +87,23 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 npc.defense = 10000;
                 npc.knockBackResist = 0f;
                 spitTracker[npc] = true;
+                spitTimer[npc] = 5.ToFrames();
             }
             NPC currentHead = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsHead);
             if (currentHead != null)
             {
                 npc.damage = Util.RoundOff(currentHead.damage * .5f);
+            }
+            if (spitTimer.TryGetValue(npc, out int timer))
+            {
+                if (timer <= 0)
+                {
+                    npc.active = false;
+                }
+                else
+                {
+                    spitTimer[npc] = timer - 1;
+                }
             }
         }
         if (npc.type == NPCID.EaterofWorldsBody && npc.active)
@@ -111,6 +121,22 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 npc.life = npc.lifeMax;
                 npc.netUpdate = true;
                 headTracker[npc] = true;
+            }
+        }
+        if (npc.type == NPCID.Corruptor && npc.active)
+        {
+            if (!corruptTracker.TryGetValue(npc, out bool tracked) && !tracked)
+            {
+                NPC currentBody = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsBody);
+                if (currentBody != null)
+                {
+                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .3f);
+                    npc.life = npc.lifeMax;
+                    npc.defense = 0;
+                    npc.damage = Util.RoundOff(currentBody.damage * .5f);
+                    npc.knockBackResist = 0f;
+                    corruptTracker[npc] = true;
+                }
             }
         }
     }

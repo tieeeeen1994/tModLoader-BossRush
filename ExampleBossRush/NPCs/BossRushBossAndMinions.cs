@@ -24,37 +24,25 @@ public abstract class BossRushBossAndMinions : GlobalNPC
         {
             Update(npc);
         }
-        else if (ai.Count > 0 && BRS.I.IsBossRushActive && (BRS.I.CurrentBoss == null || BRS.I.CurrentBossData == null))
-        {
-            ai.Clear();
-        }
     }
 
-    protected KeyValuePair<string, object> StoreOrFetch(string key, object value)
+    protected T StoreOrFetch<T>(string key, T value)
     {
-        if (!ai.TryGetValue(key, out object existingValue))
+        if (!ai.ContainsKey(key))
         {
-            ai[key] = existingValue = value;
+            ai[key] = value;
         }
-        return new KeyValuePair<string, object>(key, existingValue);
+        return (T)ai[key];
     }
 
-    protected Dictionary<Entity, object> CleanInactiveData(string key)
+    protected void CleanInactiveData<T, U>(Dictionary<T, U> storage) where T : Entity
     {
-        if (ai.TryGetValue(key, out object value) && value is Dictionary<Entity, object> storage)
+        foreach (var entry in storage)
         {
-            foreach (var entry in storage)
+            if (!entry.Key.active)
             {
-                if (!entry.Key.active)
-                {
-                    storage.Remove(entry.Key);
-                }
+                storage.Remove(entry.Key);
             }
-            return storage;
-        }
-        else
-        {
-            return null;
         }
     }
 }

@@ -81,7 +81,7 @@ public class BossRushItem : ModItem
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
             spawnOffset: new(-1000, 1000, 2000, 500),
-            modifiedAttributes: new(damageMultiplier: 2, damageFlatIncrease: 7,
+            modifiedAttributes: new(damageMultiplier: 2, damageFlatIncrease: 70,
                                     lifeMultiplier: 200, defenseMultiplier: 50)
         ));
         # endregion
