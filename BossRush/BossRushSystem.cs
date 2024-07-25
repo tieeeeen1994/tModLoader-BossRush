@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BossRush.Types;
 using Microsoft.Xna.Framework;
@@ -12,7 +13,9 @@ namespace BossRush;
 
 public class BossRushSystem : ModSystem
 {
-    internal static BossRushSystem I => ModContent.GetInstance<BossRushSystem>();
+    # region Fields & Properties
+    public static BossRushSystem I => Instance;
+    public static BossRushSystem Instance => ModContent.GetInstance<BossRushSystem>();
     public bool IsBossRushActive => State != States.Off;
     public bool IsBossRushOff => State == States.Off;
     public States State { get; private set; } = States.Off;
@@ -26,6 +29,148 @@ public class BossRushSystem : ModSystem
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
+    # endregion
+
+    public override void NetSend(BinaryWriter writer)
+    {
+        writer.Write((byte)State);
+        if (_currentBoss == null)
+        {
+            writer.Write(false);
+        }
+        else
+        {
+            writer.Write(true);
+            writer.Write(_currentBoss.Count);
+            foreach (var boss in _currentBoss)
+            {
+                writer.Write(boss.whoAmI);
+            }
+        }
+        if (CurrentBossData == null)
+        {
+            writer.Write(false);
+        }
+        else
+        {
+            writer.Write(true);
+            BossData bossData = CurrentBossData.Value;
+            writer.Write(bossData.Types.Count);
+            foreach (int type in bossData.Types)
+            {
+                writer.Write(type);
+            }
+            writer.Write(bossData.SubTypes.Count);
+            foreach (int subType in bossData.SubTypes)
+            {
+                writer.Write(subType);
+            }
+            ModifiedAttributes attributes = bossData.ModifiedAttributes;
+            writer.Write(attributes.LifeFlatIncrease);
+            writer.Write(attributes.LifeMultiplier);
+            writer.Write(attributes.DamageFlatIncrease);
+            writer.Write(attributes.DamageMultiplier);
+            writer.Write(attributes.DefenseFlatIncrease);
+            writer.Write(attributes.DefenseMultiplier);
+            writer.Write(attributes.ProjectilesAffected);
+            if (bossData.TimeContext == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                TimeContext timeContext = bossData.TimeContext.Value;
+                writer.Write(timeContext.Time);
+                writer.Write(timeContext.DayTime);
+            }
+            if (bossData.PlaceContext == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                PlaceContext placeContext = bossData.PlaceContext.Value;
+                writer.Write(placeContext.TeleportRange.X);
+                writer.Write(placeContext.TeleportRange.Y);
+                writer.Write(placeContext.TeleportRange.Width);
+                writer.Write(placeContext.TeleportRange.Height);
+            }
+        }
+    }
+
+    public override void NetReceive(BinaryReader reader)
+    {
+        State = (States)reader.ReadByte();
+        bool currentBossExists = reader.ReadBoolean();
+        if (currentBossExists)
+        {
+            int currentBossCount = reader.ReadInt32();
+            _currentBoss = [];
+            for (int i = 0; i < currentBossCount; i++)
+            {
+                int npcIndex = reader.ReadInt32();
+                _currentBoss.Add(Main.npc[npcIndex]);
+            }
+        }
+        else
+        {
+            _currentBoss = null;
+        }
+        bool currentBossDataExists = reader.ReadBoolean();
+        if (currentBossDataExists)
+        {
+            int typesCount = reader.ReadInt32();
+            List<int> types = [];
+            for (int i = 0; i < typesCount; i++)
+            {
+                types.Add(reader.ReadInt32());
+            }
+            int subTypesCount = reader.ReadInt32();
+            List<int> subTypes = [];
+            for (int i = 0; i < subTypesCount; i++)
+            {
+                subTypes.Add(reader.ReadInt32());
+            }
+            int lifeFlatIncrease = reader.ReadInt32();
+            float lifeMultiplier = reader.ReadSingle();
+            int damageFlatIncrease = reader.ReadInt32();
+            float damageMultiplier = reader.ReadSingle();
+            int defenseFlatIncrease = reader.ReadInt32();
+            float defenseMultiplier = reader.ReadSingle();
+            bool projectilesAffected = reader.ReadBoolean();
+            bool timeContextExists = reader.ReadBoolean();
+            TimeContext? timeContext = null;
+            if (timeContextExists)
+            {
+                double time = reader.ReadDouble();
+                bool dayTime = reader.ReadBoolean();
+                timeContext = new(time, dayTime);
+            }
+            bool placeContextExists = reader.ReadBoolean();
+            PlaceContext? placeContext = null;
+            if (placeContextExists)
+            {
+                int x = reader.ReadInt32();
+                int y = reader.ReadInt32();
+                int width = reader.ReadInt32();
+                int height = reader.ReadInt32();
+                placeContext = new(x, y, width, height);
+            }
+            CurrentBossData = new BossData(
+                types: types, subTypes: subTypes,
+                modifiedAttributes: new(lifeMultiplier, damageMultiplier, defenseMultiplier,
+                                        lifeFlatIncrease, damageFlatIncrease, defenseFlatIncrease,
+                                        projectilesAffected),
+                timeContext: timeContext, placeContext: placeContext
+            );
+        }
+        else
+        {
+            CurrentBossData = null;
+        }
+    }
 
     public override void PostUpdateWorld()
     {
@@ -33,22 +178,22 @@ public class BossRushSystem : ModSystem
         {
             case States.On:
                 InitializeSystem();
-                State = States.Prepare;
+                ChangeState(States.Prepare);
                 break;
 
             case States.Prepare:
-                if (++prepareTimer >= .5f.ToFrames())
+                if (++prepareTimer >= 1.ToFrames())
                 {
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
                     {
                         Util.NewText("Mods.BossRush.Messages.Win");
-                        State = States.End;
+                        ChangeState(States.End);
                     }
                     else
                     {
                         SpawnNextBoss();
-                        State = States.Run;
+                        ChangeState(States.Run);
                     }
                 }
                 break;
@@ -59,6 +204,8 @@ public class BossRushSystem : ModSystem
                 break;
 
             case States.End:
+                Util.NewText("Mods.BossRush.Messages.End");
+                Util.CleanStage(_currentBoss);
                 ResetSystem();
                 break;
         }
@@ -72,49 +219,15 @@ public class BossRushSystem : ModSystem
         {
             case States.Off:
                 Util.NewText("Mods.BossRush.Messages.Active");
-                CleanStage();
-                State = States.On;
+                Util.CleanStage();
+                ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
                 Util.NewText("Mods.BossRush.Messages.Disable");
-                CleanStage();
-                State = States.End;
+                Util.CleanStage();
+                ChangeState(States.End);
                 break;
-        }
-    }
-
-    public void TrackPlayerDeaths()
-    {
-        if (!allDead)
-        {
-            foreach (var player in Main.ActivePlayers)
-            {
-                if (!player.dead)
-                {
-                    return;
-                }
-            }
-            allDead = true;
-            Util.NewText("Mods.BossRush.Messages.Failure");
-        }
-    }
-
-    public void DynamicAddBoss(NPC boss)
-    {
-        _currentBoss.Add(boss);
-        bossDefeated.Add(boss, false);
-    }
-
-    public void MarkBossDefeat(NPC boss)
-    {
-        bossDefeated[boss] = true;
-        if (!allDead && IsBossDefeated())
-        {
-            ResurrectPlayers();
-            allDead = false;
-            bossQueue.Dequeue();
-            State = States.Prepare;
         }
     }
 
@@ -130,15 +243,63 @@ public class BossRushSystem : ModSystem
         }
     }
 
+    internal void TrackPlayerDeaths()
+    {
+        if (!allDead)
+        {
+            if (Main.ActivePlayers.GetEnumerator().MoveNext())
+            {
+                foreach (var player in Main.ActivePlayers)
+                {
+                    if (!player.dead)
+                    {
+                        return;
+                    }
+                }
+                allDead = true;
+                Util.NewText("Mods.BossRush.Messages.Failure");
+            }
+            else
+            {
+                Util.CleanStage();
+                ResetSystem();
+            }
+        }
+    }
+
+    internal void DynamicAddBoss(NPC boss)
+    {
+        _currentBoss.Add(boss);
+        if (Main.netMode != NetmodeID.MultiplayerClient)
+        {
+            bossDefeated.Add(boss, false);
+        }
+    }
+
+    internal void MarkBossDefeat(NPC boss)
+    {
+        bossDefeated[boss] = true;
+        if (!allDead && IsBossDefeated())
+        {
+            ResurrectPlayers();
+            allDead = false;
+            bossQueue.Dequeue();
+            ChangeState(States.Prepare);
+        }
+    }
+
+    private void ChangeState(States state)
+    {
+        State = state;
+        NetMessage.SendData(MessageID.WorldData);
+    }
+
     private void CheckPlayerCondition()
     {
-        if (allDead)
+        if (allDead && (IsBossGone() || ++allDeadEndTimer >= 10.ToFrames()))
         {
-            if (IsBossGone() || ++allDeadEndTimer >= 10.ToFrames())
-            {
-                allDeadEndTimer = 0;
-                State = States.End;
-            }
+            allDeadEndTimer = 0;
+            ChangeState(States.End);
         }
     }
 
@@ -146,8 +307,8 @@ public class BossRushSystem : ModSystem
     {
         if (!allDead && IsBossDespawned())
         {
-            CleanStage(_currentBoss);
-            State = States.Prepare;
+            Util.CleanStage(_currentBoss);
+            ChangeState(States.Prepare);
             Util.NewText("Mods.BossRush.Messages.Despawn");
         }
     }
@@ -185,7 +346,6 @@ public class BossRushSystem : ModSystem
 
     private void ResetSystem()
     {
-        State = States.Off;
         _currentBoss = null;
         CurrentBossData = null;
         bossQueue.Clear();
@@ -194,6 +354,7 @@ public class BossRushSystem : ModSystem
         prepareTimer = 0;
         bossDefeated = null;
         candidates.Clear();
+        ChangeState(States.Off);
     }
 
     private void SpawnNextBoss()
@@ -201,18 +362,6 @@ public class BossRushSystem : ModSystem
         CurrentBossData = bossQueue.Peek();
         _currentBoss = Spawn(CurrentBossData.Value);
         bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
-    }
-
-    private void CleanStage(IEnumerable<NPC> npcs = null)
-    {
-        npcs ??= Main.npc;
-        foreach (var npc in npcs)
-        {
-            if (!npc.friendly)
-            {
-                npc.active = false;
-            }
-        }
     }
 
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
@@ -254,7 +403,8 @@ public class BossRushSystem : ModSystem
             int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
 
             // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type, 1);
+            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
+                                      1, 0, 0, 0, 0, target.whoAmI);
             spawnedBosses.Add(Main.npc[npcIndex]);
         }
 

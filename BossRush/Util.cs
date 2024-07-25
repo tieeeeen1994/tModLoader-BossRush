@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
+using BR = BossRush.BossRush;
 
 namespace BossRush;
 
@@ -13,21 +16,39 @@ public static class Util
 
     public static Vector2 RoundOff(this Vector2 value) => new(RoundOff(value.X), RoundOff(value.Y));
 
-    public static void NewText(string message, Color? color = null)
+    public static void NewText(string message, Color? color = null, bool literal = false)
     {
         if (Main.netMode == NetmodeID.SinglePlayer)
         {
-            Main.NewText(Language.GetTextValue(message), color ?? Color.White);
+            if (literal)
+            {
+                Main.NewText(message, color ?? Color.White);
+            }
+            else
+            {
+                Main.NewText(Language.GetTextValue(message), color ?? Color.White);
+            }
         }
         else if (Main.netMode == NetmodeID.Server)
         {
-            ChatHelper.BroadcastChatMessage(NetworkText.FromKey(message), color ?? Color.White);
+            if (literal)
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(message), color ?? Color.White);
+            }
+            else
+            {
+                ChatHelper.BroadcastChatMessage(NetworkText.FromKey(message), color ?? Color.White);
+            }
         }
     }
 
-    public static int ToFrames(this float seconds) => RoundOff(seconds * Main.frameRate);
+    // public static int ToFrames(this float seconds) => RoundOff(seconds * Main.frameRate);
 
-    public static int ToFrames(this int seconds) => seconds * Main.frameRate;
+    // public static int ToFrames(this int seconds) => seconds * Main.frameRate;
+
+    public static int ToFrames(this float seconds) => ToFrames(RoundOff(seconds));
+
+    public static int ToFrames(this int seconds) => seconds * 60;
 
     public static Vector2 ChooseRandomPoint(this Rectangle rectangle)
     {
@@ -38,5 +59,23 @@ public static class Util
         return new(offsetX, offsetY);
     }
 
-    public static int RandomSign() => Main.rand.NextBool() ? 1 : -1;
+    public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
+
+    public static void CleanStage(IEnumerable<NPC> npcs = null)
+    {
+        npcs ??= Main.npc;
+        foreach (var npc in npcs)
+        {
+            if (!npc.friendly)
+            {
+                npc.active = false;
+            }
+        }
+        if (Main.netMode == NetmodeID.Server)
+        {
+            ModPacket packet = BR.I.GetPacket();
+            packet.Write((byte)BR.PacketType.CleanStage);
+            packet.Send();
+        }
+    }
 }

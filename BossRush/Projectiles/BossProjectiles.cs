@@ -1,5 +1,4 @@
 ﻿using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 
@@ -11,20 +10,11 @@ namespace BossRush.Projectiles
 
         public override void SetDefaults(Projectile projectile)
         {
-            if (BRS.I.IsBossRushActive && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes &&
-                attributes.ProjectilesAffected && !projectile.friendly)
+            if (BRS.I.IsBossRushActive && !projectile.friendly &&
+                BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes &&
+                attributes.ProjectilesAffected)
             {
                 projectile.damage = attributes.ComputeDamage(projectile.damage);
-            }
-        }
-
-        public override void PostAI(Projectile projectile)
-        {
-            if (Main.netMode != NetmodeID.MultiplayerClient && BRS.I.IsBossRushActive &&
-                !projectile.friendly && BRS.I.CurrentBoss != null &&
-                BRS.I.ReferenceBoss != null && BRS.I.CurrentBossData is { } bossData)
-            {
-                bossData.ProjectileUpdate(projectile, bossData.AI);
             }
         }
     }

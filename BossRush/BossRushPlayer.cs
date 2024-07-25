@@ -14,15 +14,7 @@ public class BossRushPlayer : ModPlayer
             Player.respawnTimer = 10.ToFrames();
         }
         // For debugging and quick respawns.
-        Player.respawnTimer = 0;
-    }
-
-    public override void PostUpdate()
-    {
-        if (BRS.I.IsBossRushActive)
-        {
-            BRS.I.CurrentBossData?.PlaceContext?.ForceBiomeFunction?.Invoke(Player);
-        }
+        // Player.respawnTimer = 0;
     }
 
     public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
