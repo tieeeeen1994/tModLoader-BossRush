@@ -53,9 +53,12 @@ public class KingSlimeProjectiles : BossProjectiles
                                 players.Add(player);
                             }
                         }
-                        Player target = players[Main.rand.Next(players.Count)];
-                        Vector2 direction = projectile.DirectionTo(target.Center);
-                        stateTracker[projectile] = ("Target", 0, direction).ToTuple();
+                        if (players.Count > 0)
+                        {
+                            Player target = players[Main.rand.Next(players.Count)];
+                            Vector2 direction = projectile.DirectionTo(target.Center);
+                            stateTracker[projectile] = ("Target", 0, direction).ToTuple();
+                        }
                     }
                     else if (state.Item1 == "Default")
                     {

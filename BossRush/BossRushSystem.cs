@@ -393,22 +393,31 @@ public class BossRushSystem : ModSystem
             }
         }
 
-        Player target = Main.rand.Next(potentialTargetPlayers);
-        List<NPC> spawnedBosses = [];
-
-        foreach (var type in data.Types)
+        if (potentialTargetPlayers.Count > 0)
         {
-            Vector2 offsetValue = data.RandomSpawnLocation(type);
-            int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
-            int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
 
-            // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-            int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
-                                      1, 0, 0, 0, 0, target.whoAmI);
-            spawnedBosses.Add(Main.npc[npcIndex]);
+            Player target = Main.rand.Next(potentialTargetPlayers);
+            List<NPC> spawnedBosses = [];
+
+            foreach (var type in data.Types)
+            {
+                Vector2 offsetValue = data.RandomSpawnLocation(type);
+                int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
+                int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
+
+                // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
+                int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
+                                          1, 0, 0, 0, 0, target.whoAmI);
+                spawnedBosses.Add(Main.npc[npcIndex]);
+            }
+
+            return spawnedBosses;
         }
-
-        return spawnedBosses;
+        else
+        {
+            Util.NewText("Something went wrong. No players found when trying to spawn boss.", literal: true);
+            return [];
+        }
     }
 
     public enum States : byte { Off, On, Prepare, Run, End }
