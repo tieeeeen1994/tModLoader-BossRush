@@ -59,7 +59,7 @@ public class BossRushItem : ModItem
 
         #region Deerclops
         sign = Util.RandomSign();
-        BRS.AddBoss(-1, new(
+        BRS.AddBoss(1, new(
             [NPCID.Deerclops],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500),
             modifiedAttributes: new(lifeMultiplier: 20, damageMultiplier: 3)
@@ -134,11 +134,13 @@ public class BossRushItem : ModItem
         Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
         Player player = Main.player.Where(p => p.active).First();
         worldCoordinates -= new Vector2(player.width / 2, player.height);
-        BRS.AddBoss(7, new(
+        BRS.AddBoss(-7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
-            placeContext: new(worldCoordinates, 0, 0)
+            placeContext: new(worldCoordinates, 0, 0),
+            modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 2f,
+                                    lifeFlatIncrease: 900)
         ));
         #endregion
 

@@ -26,14 +26,14 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
     {
         var spitTracker = StoreOrFetch("SpitTracker", new Dictionary<NPC, bool>());
         var segmentTracker = StoreOrFetch("SegmentTracker", new Dictionary<NPC, bool>());
-        var headTracker = StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>());
+        //var headTracker = StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>());
         var corruptTimers = StoreOrFetch("CorruptorTimers", new List<(Vector2, int)>());
         var corruptTracker = StoreOrFetch("CorruptorTracker", new Dictionary<NPC, bool>());
         var spitTimer = StoreOrFetch("SpitTimer", new Dictionary<NPC, int>());
         if (npc == BRS.I.ReferenceBoss)
         {
             CleanInactiveData(spitTracker);
-            CleanInactiveData(headTracker);
+            //CleanInactiveData(headTracker);
             CleanInactiveData(corruptTracker);
             CleanInactiveData(spitTimer);
             foreach (var body in segmentTracker)
@@ -113,15 +113,15 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 segmentTracker[npc] = true;
             }
         }
-        if ((npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail) && npc.active)
-        {
-            if (!headTracker.TryGetValue(npc, out bool tracked) && !tracked)
-            {
-                npc.life = npc.lifeMax;
-                npc.netUpdate = true;
-                headTracker[npc] = true;
-            }
-        }
+        //if ((npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail) && npc.active)
+        //{
+        //    if (!headTracker.TryGetValue(npc, out bool tracked) && !tracked)
+        //    {
+        //        npc.life = npc.lifeMax;
+        //        npc.netUpdate = true;
+        //        headTracker[npc] = true;
+        //    }
+        //}
         if (npc.type == NPCID.Corruptor && npc.active)
         {
             if (!corruptTracker.TryGetValue(npc, out bool tracked) && !tracked)
@@ -129,7 +129,7 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 NPC currentBody = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsBody);
                 if (currentBody != null)
                 {
-                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .3f);
+                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .2f);
                     npc.life = npc.lifeMax;
                     npc.defense = 0;
                     npc.damage = Util.RoundOff(currentBody.damage * .5f);
