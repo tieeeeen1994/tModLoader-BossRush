@@ -12,9 +12,7 @@ public class RandomMobs : GlobalNPC
     {
         if (BRS.I.IsBossRushActive)
         {
-            // Using this might have side-effects.
-            // maxSpawns = 0;
-            spawnRate = int.MaxValue;
+            maxSpawns = 0;
         }
     }
 }

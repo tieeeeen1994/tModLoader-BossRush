@@ -46,27 +46,28 @@ public class BossRushItem : ModItem
 
     private void AddBossesToSystem()
     {
+
+        #region King Slime
         int sign = Util.RandomSign();
-        # region King Slime
         BRS.AddBoss(0, new(
             [NPCID.KingSlime],
             spawnOffset: new(1000 * sign, -700, 200 * sign, -200),
             modifiedAttributes: new(lifeMultiplier: 40, damageMultiplier: 2,
                                     lifeFlatIncrease: 80, damageFlatIncrease: 30)
         ));
-        # endregion
+        #endregion
 
+        #region Deerclops
         sign = Util.RandomSign();
-        # region Deerclops
-        BRS.AddBoss(1, new(
+        BRS.AddBoss(-1, new(
             [NPCID.Deerclops],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500),
-            modifiedAttributes: new(lifeMultiplier: 20, damageMultiplier: 2)
+            modifiedAttributes: new(lifeMultiplier: 20, damageMultiplier: 3)
         ));
-        # endregion
+        #endregion
 
+        #region Eye of Cthulhu
         sign = Util.RandomSign();
-        # region Eye of Cthulhu
         BRS.AddBoss(2, new(
             [NPCID.EyeofCthulhu],
             spawnOffset: new(1000 * sign, 1000, 200 * sign, -2000),
@@ -84,10 +85,10 @@ public class BossRushItem : ModItem
             modifiedAttributes: new(damageMultiplier: 2, damageFlatIncrease: 70,
                                     lifeMultiplier: 200, defenseMultiplier: 50)
         ));
-        # endregion
+        #endregion
 
+        #region Brain of Cthulhu
         sign = Util.RandomSign();
-        # region Brain of Cthulhu
         BRS.AddBoss(3, new(
             [NPCID.BrainofCthulhu],
             spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
@@ -96,7 +97,7 @@ public class BossRushItem : ModItem
         ));
         # endregion
 
-        # region Queen Bee
+        #region Queen Bee
         BRS.AddBoss(4, new(
             [NPCID.QueenBee],
             spawnOffset: new(-1000, -1000, 2000, -200),
@@ -104,52 +105,51 @@ public class BossRushItem : ModItem
             modifiedAttributes: new(lifeFlatIncrease: 200, lifeMultiplier: 30,
                                     damageFlatIncrease: 50, damageMultiplier: 1.5f)
         ));
-        # endregion
+        #endregion
 
-        sign = Util.RandomSign();
-        # region Skeletron
-        BRS.AddBoss(-5, new(
+        #region Skeletron
+        BRS.AddBoss(5, new(
             [NPCID.SkeletronHead],
-            spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
+            spawnOffset: new(500, -500, 1000, -500),
             timeContext: TimeContext.Night,
             modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 40,
                                     damageMultiplier: 2, damageFlatIncrease: 40)
         ));
-        # endregion
+        #endregion
 
+        #region Wall of Flesh
         bool result = Main.rand.NextBool();
         PlaceContext chooseSide = result ? PlaceContext.LeftUnderworld : PlaceContext.RightUnderworld;
         Rectangle offsetSide = result ? new(-1000, 0, 0, 0) : new(1000, 0, 0, 0);
-        # region Wall of Flesh
         BRS.AddBoss(6, new(
             [NPCID.WallofFlesh],
             placeContext: chooseSide,
             spawnOffset: offsetSide,
             modifiedAttributes: new(lifeMultiplier: 150, damageMultiplier: 1.5f, damageFlatIncrease: 50)
         ));
-        # endregion
+        #endregion
 
+        #region Queen Slime
         sign = Util.RandomSign();
         Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
         Player player = Main.player.Where(p => p.active).First();
         worldCoordinates -= new Vector2(player.width / 2, player.height);
-        # region Queen Slime
         BRS.AddBoss(7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
             placeContext: new(worldCoordinates, 0, 0)
         ));
-        # endregion
+        #endregion
 
+        #region The Twins
         sign = Util.RandomSign();
-        # region The Twins
         BRS.AddBoss(8, new(
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: new(1000 * sign, 1000, 200 * sign, -2000),
             timeContext: TimeContext.Night
         ));
-        # endregion
+        #endregion
 
         # region The Destroyer
         BRS.AddBoss(8, new([NPCID.TheDestroyer],
@@ -167,37 +167,37 @@ public class BossRushItem : ModItem
         BRS.AddBoss(9, new([NPCID.Plantera],
                            spawnOffset: new(-1000, 1500, 2000, 500),
                            timeContext: TimeContext.Noon));
-        # endregion
+        #endregion
 
-        sign = Util.RandomSign();
         #region Golem
+        sign = Util.RandomSign();
         BRS.AddBoss(10, new(
             [NPCID.Golem],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500)
         ));
-        # endregion
+        #endregion
 
+        #region Duke Fishron
         sign = Util.RandomSign();
-        # region Duke Fishron
         BRS.AddBoss(11, new(
             [NPCID.DukeFishron],
             spawnOffset: new(300 * sign, 50, -100 * sign, -50)
         ));
         # endregion
 
-        # region Empress of Light
+        #region Empress of Light
         BRS.AddBoss(12, new([NPCID.HallowBoss],
                     spawnOffset: new(0, -100, 0, 0),
                     timeContext: TimeContext.Night));
-        # endregion
+        #endregion
 
+        #region Lunatic Cultist
         sign = Util.RandomSign();
-        # region Lunatic Cultist
         BRS.AddBoss(13, new(
             [NPCID.CultistBoss],
             spawnOffset: new(300 * sign, 0, -100 * sign, -500)
         ));
-        # endregion
+        #endregion
 
         # region Moon Lord
         BRS.AddBoss(14, new([NPCID.MoonLordCore]));
