@@ -54,7 +54,7 @@ public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
                 stickerTracker[npc.whoAmI] = true;
             }
             npc.velocity += npc.DirectionTo(BRS.I.ReferenceBoss.Center) * .25f;
-            npc.velocity = npc.velocity.Clamp(new(-10f), new(10f));
+            npc.velocity = npc.velocity.Clamp(new(-20f), new(20f));
         }
     }
 }

@@ -88,7 +88,7 @@ public class BossRushItem : ModItem
 
         sign = Util.RandomSign();
         # region Brain of Cthulhu
-        BRS.AddBoss(-3, new(
+        BRS.AddBoss(3, new(
             [NPCID.BrainofCthulhu],
             spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
             modifiedAttributes: new(lifeMultiplier: 45, damageMultiplier: 2,
@@ -108,7 +108,7 @@ public class BossRushItem : ModItem
 
         sign = Util.RandomSign();
         # region Skeletron
-        BRS.AddBoss(5, new(
+        BRS.AddBoss(-5, new(
             [NPCID.SkeletronHead],
             spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
             timeContext: TimeContext.Night,
