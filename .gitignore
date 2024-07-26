@@ -2,3 +2,6 @@
 bin/
 obj/
 .vscode/
+.DS_Store
+*.csproj.user
+*.user.csproj
