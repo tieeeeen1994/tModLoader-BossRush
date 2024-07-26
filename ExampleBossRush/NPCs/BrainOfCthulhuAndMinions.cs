@@ -23,7 +23,7 @@ public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
                 tracker[npc.whoAmI] = true;
             }
         }
-        else if (npc.type == NPCID.BrainofCthulhu && BRS.I.ReferenceBoss != null)
+        else if (npc.type == NPCID.BrainofCthulhu)
         {
             npc.knockBackResist = 0f;
             foreach (var pair in tracker)
@@ -43,17 +43,17 @@ public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
             }
             CleanInactiveData(stickerTracker);
         }
-        else if (npc.type == NPCID.IchorSticker && BRS.I.ReferenceBoss != null)
+        else if (npc.type == NPCID.IchorSticker && BRS.I.ReferenceBoss is NPC boss)
         {
             if (!stickerTracker.TryGetValue(npc.whoAmI, out bool tracked) && !tracked)
             {
                 npc.lifeMax = Util.RoundOff(npc.lifeMax * .5f);
                 npc.life = npc.lifeMax;
                 npc.defense = 0;
-                npc.damage = BRS.I.ReferenceBoss.damage;
+                npc.damage = boss.damage;
                 stickerTracker[npc.whoAmI] = true;
             }
-            npc.velocity += npc.DirectionTo(BRS.I.ReferenceBoss.Center) * .25f;
+            npc.velocity += npc.DirectionTo(boss.Center) * .25f;
             npc.velocity = npc.velocity.Clamp(new(-20f), new(20f));
         }
     }
