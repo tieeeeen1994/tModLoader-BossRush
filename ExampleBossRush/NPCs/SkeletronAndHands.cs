@@ -75,23 +75,26 @@ namespace ExampleBossRush.NPCs
                 }
                 else if (handTracker.Count > 0)
                 {
-                   (int timer, int maxTimer) = StoreOrFetch("SkullAttack", (0, 37));
+                    (int timer, int maxTimer) = StoreOrFetch("SkullAttack", (0, 41));
                     if (++timer >= maxTimer)
                     {
                         ai["SkullAttack"] = (0, maxTimer);
-                        Vector2 velocity = (npc.DirectionTo(Main.player[npc.target].Center) + npc.velocity);
-                        velocity.Normalize();
-                        velocity *= 5f;
-                        Projectile skull =
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            Vector2 velocity = (npc.DirectionTo(Main.player[npc.target].Center) + npc.velocity);
+                            velocity.Normalize();
+                            velocity *= 5f;
                             Projectile.NewProjectileDirect(npc.GetSource_FromAI("Skull"), npc.Center, velocity,
-                                                           ProjectileID.Skull, 1, 0f, -1, -1);
-                        skull.timeLeft = 300;
+                                                            ProjectileID.Skull, 1, 0f, -1, -1);
+                        }
                     }
                     else
                     {
                         ai["SkullAttack"] = (timer, maxTimer);
                     }
                 }
+                var skullTracker = StoreOrFetch("SkullTracker", new Dictionary<int, bool>());
+                CleanInactiveData(skullTracker);
             }
         }
     }

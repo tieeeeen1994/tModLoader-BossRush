@@ -20,7 +20,14 @@ namespace ExampleBossRush.Projectiles
         {
             if (projectile.type == ProjectileID.Skull)
             {
-                projectile.damage = Util.RoundOff(BRS.I.ReferenceBoss.damage * .08f);
+                var skullTracker = StoreOrFetch("SkullTracker", new Dictionary<int, bool>());
+                if (!skullTracker.TryGetValue(projectile.whoAmI, out bool tracked) && !tracked)
+                {
+                    projectile.damage = Util.RoundOff(BRS.I.ReferenceBoss.damage * .05f);
+                    projectile.timeLeft = 300;
+                    skullTracker[projectile.whoAmI] = true;
+                }
+                
             }
             if (projectile.type == ProjectileID.InfernoHostileBlast)
             {
