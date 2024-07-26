@@ -47,4 +47,15 @@ public abstract class BossRushBossAndMinions : GlobalNPC
             }
         }
     }
+
+    public void CleanInactiveData<T>(Dictionary<int, T> storage)
+    {
+        foreach (var entry in storage)
+        {
+            if (!Main.npc[entry.Key].active)
+            {
+                storage.Remove(entry.Key);
+            }
+        }
+    }
 }

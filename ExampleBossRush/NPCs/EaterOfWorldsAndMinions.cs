@@ -52,9 +52,9 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 {
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        NPC mob = NPC.NewNPCDirect(BRS.I.ReferenceBoss.GetSource_FromAI("PartCutOff"),
-                                                   position.X.RoundOff(), position.Y.RoundOff(),
-                                                   NPCID.Corruptor);
+                        NPC.NewNPC(BRS.I.ReferenceBoss.GetSource_FromAI("PartCutOff"),
+                                   position.X.RoundOff(), position.Y.RoundOff(),
+                                   NPCID.Corruptor);
                     }
                     corruptTimers.RemoveAt(i--);
                 }

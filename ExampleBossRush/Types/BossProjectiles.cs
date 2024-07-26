@@ -48,4 +48,15 @@ public abstract class BossRushProjectiles : GlobalProjectile
             }
         }
     }
+
+    public void CleanInactiveData<T>(Dictionary<int, T> storage)
+    {
+        foreach (var entry in storage)
+        {
+            if (!Main.projectile[entry.Key].active)
+            {
+                storage.Remove(entry.Key);
+            }
+        }
+    }
 }
