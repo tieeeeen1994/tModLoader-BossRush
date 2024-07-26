@@ -1,6 +1,6 @@
-﻿using ExampleBossRush.Types;
+﻿using BossRush;
+using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
@@ -21,58 +21,35 @@ public class EyeOfCthulhuAndMinions : BossRushBossAndMinions
 
     protected override void Update(NPC npc)
     {
+        var servantTracker = StoreOrFetch("ServantTracker", new Dictionary<NPC, (string, int)>());
+        var dashTracker = StoreOrFetch("DashTracker", new Dictionary<NPC, Vector2>());
         if (npc.type == NPCID.EyeofCthulhu)
         {
-            if (ai.TryGetValue("BossForcedDamage", out object value))
-            {
-                npc.damage = (int)value;
-            }
-            else
-            {
-                ai["BossForcedDamage"] = npc.damage;
-            }
+            npc.damage = StoreOrFetch("BossForcedDamage", npc.damage);
+            CleanInactiveData(servantTracker);
+            CleanInactiveData(dashTracker);
         }
         else if (npc.type == NPCID.ServantofCthulhu)
         {
+            (string state, int timer) = StoreOrFetch(servantTracker, npc, ("Default", 180));
+            if (state == "Default" && timer <= 0)
+            {
+                state = "Dash";
+                timer = .5f.ToFrames();
+                dashTracker[npc] = npc.DirectionTo(Main.player[npc.target].Center);
+                SoundEngine.PlaySound(MiniRoar, npc.Center);
+            }
+            else if (state == "Dash")
+            {
+                if (timer <= 0)
+                {
+                    state = "Default";
+                    timer = 3.ToFrames();
+                }
+                npc.velocity = dashTracker[npc] * 10f;
+            }
+            servantTracker[npc] = (state, timer - 1);
             npc.knockBackResist = 0f;
-            if (!ai.TryGetValue("ServantTracker", out object value1))
-            {
-                value1 = new Dictionary<NPC, Tuple<string, int>>();
-                ai["ServantTracker"] = value1;
-            }
-            if (!ai.TryGetValue("DashTracker", out object value2))
-            {
-                value2 = new Dictionary<NPC, Vector2>();
-                ai["DashTracker"] = value2;
-            }
-            if (value1 is Dictionary<NPC, Tuple<string, int>> servantTracker && npc.active)
-            {
-                if (!servantTracker.TryGetValue(npc, out var data))
-                {
-                    data = ("Default", 180).ToTuple();
-                }
-                if (data.Item1 == "Default" && data.Item2 <= 0)
-                {
-                    data = ("Dash", 30).ToTuple();
-                    if (value2 is Dictionary<NPC, Vector2> dashTracker)
-                    {
-                        dashTracker[npc] = npc.DirectionTo(Main.player[npc.target].Center);
-                    }
-                    SoundEngine.PlaySound(MiniRoar, npc.Center);
-                }
-                else if (data.Item1 == "Dash")
-                {
-                    if (data.Item2 <= 0)
-                    {
-                        data = ("Default", 180).ToTuple();
-                    }
-                    if (value2 is Dictionary<NPC, Vector2> dashTracker)
-                    {
-                        npc.velocity = dashTracker[npc] * 10f;
-                    }
-                }
-                servantTracker[npc] = (data.Item1, data.Item2 - 1).ToTuple();
-            }
         }
     }
 }
