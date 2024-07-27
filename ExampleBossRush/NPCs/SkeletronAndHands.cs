@@ -85,7 +85,7 @@ namespace ExampleBossRush.NPCs
                             velocity.Normalize();
                             velocity *= 5f;
                             Projectile.NewProjectileDirect(npc.GetSource_FromAI("Skull"), npc.Center, velocity,
-                                                            ProjectileID.Skull, 1, 0f, -1, -1);
+                                                           ProjectileID.Skull, 1, 0f, -1, -1);
                         }
                     }
                     else

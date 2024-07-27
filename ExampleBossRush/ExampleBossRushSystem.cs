@@ -14,7 +14,7 @@ namespace ExampleBossRush
         public override void PreUpdateWorld()
         {
             var ai = BossRushBossAndMinions.ai;
-            if (ai.Count > 0 && (BRS.I.CurrentBoss == null || BRS.I.CurrentBossData == null))
+            if (ai.Count > 0 && (BRS.I.State == BRS.States.Prepare))
             {
                 ai.Clear();
             }

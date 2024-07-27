@@ -24,8 +24,8 @@ public class KingSlimeProjectiles : BossRushProjectiles
                 spikeTracker[projectile] = true;
                 projectile.damage = Util.RoundOff(referenceBoss.damage * .1f);
             }
-            (string state, int timer, Vector2 direction) = StoreOrFetch(states, projectile,
-                                                                        ("Default", .5f.ToFrames(), Vector2.Zero));
+            (string state, int timer, Vector2 direction) =
+                StoreOrFetch(states, projectile, ("Default", .5f.ToFrames(), Vector2.Zero));
             if (state == "Default" && timer <= 0)
             {
                 List<Player> players = [];
@@ -41,6 +41,7 @@ public class KingSlimeProjectiles : BossRushProjectiles
                     Player target = players[Main.rand.Next(players.Count)];
                     direction = projectile.DirectionTo(target.Center);
                     states[projectile] = ("Target", 0, direction);
+                    projectile.timeLeft = 10.ToFrames();
                 }
             }
             else if (state == "Default")

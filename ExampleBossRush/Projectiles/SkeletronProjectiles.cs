@@ -23,7 +23,10 @@ namespace ExampleBossRush.Projectiles
                 var skullTracker = StoreOrFetch("SkullTracker", new Dictionary<int, bool>());
                 if (!skullTracker.TryGetValue(projectile.whoAmI, out bool tracked) && !tracked)
                 {
-                    projectile.damage = Util.RoundOff(BRS.I.ReferenceBoss.damage * .05f);
+                    if (BRS.I.ReferenceBoss is NPC boss)
+                    {
+                        projectile.damage = Util.RoundOff(boss.damage * .05f);
+                    }
                     projectile.timeLeft = 300;
                     skullTracker[projectile.whoAmI] = true;
                 }
@@ -49,7 +52,7 @@ namespace ExampleBossRush.Projectiles
                 if (target != null)
                 {
                     projectile.velocity += projectile.DirectionTo(target.Center) * .1f;
-                    projectile.velocity = projectile.velocity.Clamp(new(-20, -20), new(20, 20));
+                    projectile.velocity = projectile.velocity.Clamp(new(-12, -12), new(12, 12));
                 }
             }
         }

@@ -57,14 +57,20 @@ public static class Util
 
     public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
 
-    public static void CleanStage(IEnumerable<NPC> npcs = null)
+    public static void CleanStage()
     {
-        npcs ??= Main.npc;
-        foreach (var npc in npcs)
+        foreach (var npc in Main.npc)
         {
             if (!npc.friendly)
             {
                 npc.active = false;
+            }
+        }
+        foreach (var projectile in Main.projectile)
+        {
+            if (!projectile.friendly)
+            {
+                projectile.active = false;
             }
         }
         if (Main.netMode == NetmodeID.Server)

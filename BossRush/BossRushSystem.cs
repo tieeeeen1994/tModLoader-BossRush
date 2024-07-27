@@ -205,7 +205,7 @@ public class BossRushSystem : ModSystem
 
             case States.End:
                 Util.NewText("Mods.BossRush.Messages.End");
-                Util.CleanStage(_currentBoss);
+                Util.CleanStage();
                 ResetSystem();
                 break;
         }
@@ -307,7 +307,7 @@ public class BossRushSystem : ModSystem
     {
         if (!allDead && IsBossDespawned())
         {
-            Util.CleanStage(_currentBoss);
+            Util.CleanStage();
             ChangeState(States.Prepare);
             Util.NewText("Mods.BossRush.Messages.Despawn");
         }

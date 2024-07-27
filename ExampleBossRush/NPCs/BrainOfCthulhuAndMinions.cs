@@ -47,7 +47,7 @@ public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
         {
             if (!stickerTracker.TryGetValue(npc.whoAmI, out bool tracked) && !tracked)
             {
-                npc.lifeMax = Util.RoundOff(npc.lifeMax * .5f);
+                npc.lifeMax = Util.RoundOff(npc.lifeMax * .4f);
                 npc.life = npc.lifeMax;
                 npc.defense = 0;
                 npc.damage = boss.damage;

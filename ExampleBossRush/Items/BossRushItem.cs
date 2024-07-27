@@ -125,7 +125,7 @@ public class BossRushItem : ModItem
             [NPCID.WallofFlesh],
             placeContext: chooseSide,
             spawnOffset: offsetSide,
-            modifiedAttributes: new(lifeMultiplier: 150, damageMultiplier: 1.5f, damageFlatIncrease: 50)
+            modifiedAttributes: new(lifeMultiplier: 140, damageMultiplier: 1.5f, damageFlatIncrease: 50)
         ));
         #endregion
 
@@ -134,7 +134,7 @@ public class BossRushItem : ModItem
         Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
         Player player = Main.player.Where(p => p.active).First();
         worldCoordinates -= new Vector2(player.width / 2, player.height);
-        BRS.AddBoss(-7, new(
+        BRS.AddBoss(7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
@@ -145,24 +145,32 @@ public class BossRushItem : ModItem
         #endregion
 
         #region The Twins
-        sign = Util.RandomSign();
         BRS.AddBoss(8, new(
             [NPCID.Retinazer, NPCID.Spazmatism],
-            spawnOffset: new(1000 * sign, 1000, 200 * sign, -2000),
-            timeContext: TimeContext.Night
+            spawnOffset: new(1000, -700, -2000, -300),
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(lifeMultiplier: 13, damageMultiplier: 1.8f, damageFlatIncrease: 30)
         ));
         #endregion
 
         # region The Destroyer
-        BRS.AddBoss(8, new([NPCID.TheDestroyer],
-                           spawnOffset: new(-1000, 1000, 2000, 500),
-                           timeContext: TimeContext.Night));
+        BRS.AddBoss(8, new(
+            [NPCID.TheDestroyer],
+            spawnOffset: new(-1000, 1000, 2000, 500),
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(lifeMultiplier: 15, damageMultiplier: 1.5f,
+                                    lifeFlatIncrease: 20, damageFlatIncrease: 30)
+        ));
         # endregion
 
         # region Skeletron Prime
-        BRS.AddBoss(8, new([NPCID.SkeletronPrime],
-                           spawnOffset: new(-1000, -700, 2000, -300),
-                           timeContext: TimeContext.Night));
+        BRS.AddBoss(-8, new(
+            [NPCID.SkeletronPrime],
+            spawnOffset: new(-1000, -700, 2000, -300),
+            timeContext: TimeContext.Night,
+            modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 1.5f,
+                                    damageFlatIncrease: 50)
+        ));
         # endregion
 
         # region Plantera
