@@ -10,7 +10,7 @@ namespace ExampleBossRush.Types
 {
     public abstract class SharedBossProjectiles : BossRushProjectiles
     {
-        protected sealed override void Update(Projectile projectile)
+        protected override void Update(Projectile projectile)
         {
             if (ApplicableTypes.Contains(projectile.type) && BRS.I.CurrentBoss is List<NPC> bosses)
             {

@@ -22,8 +22,16 @@ public class ExampleBossRush : Mod
                     Dust.NewDust(position - new Vector2(15, 15), 30, 30, DustID.Demonite);
                 }
                 break;
+
+            case PacketTypes.BoulderProperties:
+                int boulderIndex = reader.ReadInt32();
+                Projectile projectile = Main.projectile[boulderIndex];
+                projectile.friendly = false;
+                projectile.hostile = true;
+                projectile.trap = false;
+                break;
         }
     }
 
-    public enum PacketTypes : byte { CorruptorDust }
+    public enum PacketTypes : byte { CorruptorDust, BoulderProperties }
 }

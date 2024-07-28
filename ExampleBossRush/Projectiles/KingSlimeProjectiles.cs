@@ -41,7 +41,7 @@ public class KingSlimeProjectiles : BossRushProjectiles
                     Player target = players[Main.rand.Next(players.Count)];
                     direction = projectile.DirectionTo(target.Center);
                     states[projectile] = ("Target", 0, direction);
-                    projectile.timeLeft = 10.ToFrames();
+                    projectile.timeLeft = 7.ToFrames();
                 }
             }
             else if (state == "Default")

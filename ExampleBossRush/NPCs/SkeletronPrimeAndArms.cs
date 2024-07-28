@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using Terraria.ModLoader;
+using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs
 {
@@ -24,9 +26,11 @@ namespace ExampleBossRush.NPCs
             {
                 var bombTracker = StoreOrFetch("BombTracker", new Dictionary<Projectile, bool>());
                 var rocketTracker = StoreOrFetch("RocketTracker", new Dictionary<Projectile, int>());
+                var laserTracker = StoreOrFetch("LaserTracker", new Dictionary<Projectile, bool>());
                 StoreOrFetch("OriginalDamage", npc.damage);
                 CleanInactiveData(bombTracker);
                 CleanInactiveData(rocketTracker);
+                CleanInactiveData(laserTracker);
             }
             else if (npc.type == NPCID.PrimeCannon)
             {
@@ -64,8 +68,15 @@ namespace ExampleBossRush.NPCs
                                                                       1, 20f, -1, 0, 0, npc.target);
                             proj.trap = false;
                             proj.friendly = false;
+                            proj.hostile = true;
+                            if (Main.netMode == NetmodeID.Server)
+                            {
+                                ModPacket packet = EBR.Instance.GetPacket();
+                                packet.Write((byte)EBR.PacketTypes.BoulderProperties);
+                                packet.Write(proj.whoAmI);
+                                packet.Send();
+                            }
                             proj.netUpdate = true;
-
                         }
                         ai["BoulderCooldown"] = boulderCooldown = 2.ToFrames();
                     }
@@ -76,6 +87,30 @@ namespace ExampleBossRush.NPCs
             {
                 var scrapCooldown = StoreOrFetch("ScrapCooldown", 0);
                 ai["ScrapCooldown"] = Math.Max(0, --scrapCooldown);
+            }
+            else if (npc.type == NPCID.PrimeLaser)
+            {
+                var laserQueue = StoreOrFetch("LaserQueue", new List<(int, Vector2)>());
+                for (int i = 0; i < laserQueue.Count; i++)
+                {
+                    (int timer, Vector2 velocity) = laserQueue[i];
+                    if (timer <= 0)
+                    {
+                        laserQueue.RemoveAt(i--);
+                        if (Main.netMode != NetmodeID.MultiplayerClient)
+                        {
+                            var offset = velocity;
+                            offset.Normalize();
+                            Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + (offset * 48),
+                                                     velocity, ProjectileID.DeathLaser,
+                                                     1, 25, -1, 0, 0, 69);
+                        }
+                    }
+                    else
+                    {
+                        laserQueue[i] = (timer - 1, velocity);
+                    }
+                }
             }
         }
 

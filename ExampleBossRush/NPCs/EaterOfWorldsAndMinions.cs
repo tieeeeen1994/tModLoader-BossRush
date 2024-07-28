@@ -113,15 +113,6 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 segmentTracker[npc] = true;
             }
         }
-        //if ((npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail) && npc.active)
-        //{
-        //    if (!headTracker.TryGetValue(npc, out bool tracked) && !tracked)
-        //    {
-        //        npc.life = npc.lifeMax;
-        //        npc.netUpdate = true;
-        //        headTracker[npc] = true;
-        //    }
-        //}
         if (npc.type == NPCID.Corruptor && npc.active)
         {
             if (!corruptTracker.TryGetValue(npc, out bool tracked) && !tracked)

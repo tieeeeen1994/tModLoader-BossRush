@@ -71,6 +71,13 @@ namespace ExampleBossRush.Projectiles
                     projectile.damage = Util.RoundOff((int)originalDamage * .2f);
                 }
             }
+            else if (projectile.type == ProjectileID.SaucerScrap)
+            {
+                if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
+                {
+                    projectile.damage = Util.RoundOff((int)originalDamage * .1f);
+                }
+            }
         }
     }
 }
