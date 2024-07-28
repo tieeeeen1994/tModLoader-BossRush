@@ -145,7 +145,7 @@ public class BossRushItem : ModItem
         #endregion
 
         #region The Twins
-        BRS.AddBoss(8, new(
+        BRS.AddBoss(-8, new(
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: new(1000, -700, -2000, -300),
             timeContext: TimeContext.Night,
@@ -164,7 +164,7 @@ public class BossRushItem : ModItem
         # endregion
 
         # region Skeletron Prime
-        BRS.AddBoss(-8, new(
+        BRS.AddBoss(8, new(
             [NPCID.SkeletronPrime],
             spawnOffset: new(-1000, -700, 2000, -300),
             timeContext: TimeContext.Night,
