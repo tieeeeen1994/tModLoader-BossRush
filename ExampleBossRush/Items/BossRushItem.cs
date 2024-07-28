@@ -145,7 +145,7 @@ public class BossRushItem : ModItem
         #endregion
 
         #region The Twins
-        BRS.AddBoss(-8, new(
+        BRS.AddBoss(8, new(
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: new(1000, -700, -2000, -300),
             timeContext: TimeContext.Night,
@@ -154,11 +154,11 @@ public class BossRushItem : ModItem
         #endregion
 
         # region The Destroyer
-        BRS.AddBoss(8, new(
+        BRS.AddBoss(-8, new(
             [NPCID.TheDestroyer],
             spawnOffset: new(-1000, 1000, 2000, 500),
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeMultiplier: 15, damageMultiplier: 1.5f,
+            modifiedAttributes: new(lifeMultiplier: 15, damageMultiplier: 1.3f,
                                     lifeFlatIncrease: 20, damageFlatIncrease: 30)
         ));
         # endregion
