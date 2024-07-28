@@ -1,3 +1,4 @@
+using ExampleBossRush.NPCs;
 using Microsoft.Xna.Framework;
 using System.IO;
 using Terraria;
@@ -30,8 +31,18 @@ public class ExampleBossRush : Mod
                 projectile.hostile = true;
                 projectile.trap = false;
                 break;
+
+            case PacketTypes.PrimeScrap:
+                int npcIndex = reader.ReadInt32();
+                NPC npc = Main.npc[npcIndex];
+                if (npc.type == NPCID.PrimeSaw && npc.active &&
+                    npc.TryGetGlobalNPC<SkeletronPrimeAndArms>(out var global))
+                {
+                    global.SawScrap(npc);
+                }
+                break;
         }
     }
 
-    public enum PacketTypes : byte { CorruptorDust, BoulderProperties }
+    public enum PacketTypes : byte { CorruptorDust, BoulderProperties, PrimeScrap }
 }

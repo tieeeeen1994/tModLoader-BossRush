@@ -124,7 +124,7 @@ namespace ExampleBossRush.NPCs
             SawScrap(npc);
         }
 
-        private void SawScrap(NPC npc)
+        internal void SawScrap(NPC npc)
         {
             if (npc.type == NPCID.PrimeSaw)
             {
@@ -136,7 +136,14 @@ namespace ExampleBossRush.NPCs
                     {
                         var velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity,
-                                                 ProjectileID.SaucerScrap, 1, 5f);
+                                                 ProjectileID.SaucerScrap, 1, 15f);
+                    }
+                    else
+                    {
+                        ModPacket packet = EBR.Instance.GetPacket();
+                        packet.Write((byte)EBR.PacketTypes.PrimeScrap);
+                        packet.Write(npc.whoAmI);
+                        packet.Send();
                     }
                 }
             }
