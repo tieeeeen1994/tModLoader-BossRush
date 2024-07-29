@@ -154,7 +154,7 @@ public class BossRushItem : ModItem
         #endregion
 
         # region The Destroyer
-        BRS.AddBoss(-8, new(
+        BRS.AddBoss(8, new(
             [NPCID.TheDestroyer],
             spawnOffset: new(-1000, 1000, 2000, 500),
             timeContext: TimeContext.Night,
@@ -174,9 +174,12 @@ public class BossRushItem : ModItem
         # endregion
 
         # region Plantera
-        BRS.AddBoss(9, new([NPCID.Plantera],
-                           spawnOffset: new(-1000, 1500, 2000, 500),
-                           timeContext: TimeContext.Noon));
+        BRS.AddBoss(-9, new(
+            [NPCID.Plantera],
+            spawnOffset: new(-1000, 1500, 2000, 500),
+            timeContext: TimeContext.Noon,
+            modifiedAttributes: new(lifeMultiplier: 3)
+        ));
         #endregion
 
         #region Golem

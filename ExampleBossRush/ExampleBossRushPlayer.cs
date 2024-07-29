@@ -25,6 +25,9 @@ public class ExampleBossRushPlayer : ModPlayer
                 case NPCID.QueenBee:
                     Player.ZoneJungle = true;
                     break;
+                case NPCID.Plantera:
+                    Player.ZoneJungle = false;
+                    break;
             }
         }
     }
