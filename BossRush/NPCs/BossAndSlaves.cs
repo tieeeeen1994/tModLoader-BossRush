@@ -7,11 +7,15 @@ namespace BossRush.NPCs;
 
 public class BossAndSlaves : GlobalNPC
 {
-    public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => lateInstantiation;
+    public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+    {
+        return lateInstantiation && !entity.CountsAsACritter;
+    }
 
     public override void SetDefaults(NPC npc)
     {
-        if (BRS.I.IsBossRushActive && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
+        if (!npc.CountsAsACritter && BRS.I.IsBossRushActive &&
+            BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
         {
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);

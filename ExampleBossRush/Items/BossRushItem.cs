@@ -184,10 +184,10 @@ public class BossRushItem : ModItem
 
         #region Golem
         sign = Util.RandomSign();
-        BRS.AddBoss(-10, new(
+        BRS.AddBoss(10, new(
             [NPCID.Golem],
             spawnOffset: new(700 * sign, -400, -200 * sign, -10),
-            modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 1.5f,
+            modifiedAttributes: new(lifeMultiplier: 7f, damageMultiplier: 1.5f,
                                     lifeFlatIncrease: 100, damageFlatIncrease: 20)
         ));
         #endregion
@@ -201,21 +201,21 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Empress of Light
-        BRS.AddBoss(12, new([NPCID.HallowBoss],
+        BRS.AddBoss(11, new([NPCID.HallowBoss],
                     spawnOffset: new(0, -100, 0, 0),
                     timeContext: TimeContext.Night));
         #endregion
 
         #region Lunatic Cultist
         sign = Util.RandomSign();
-        BRS.AddBoss(13, new(
+        BRS.AddBoss(12, new(
             [NPCID.CultistBoss],
             spawnOffset: new(300 * sign, 0, -100 * sign, -500)
         ));
         #endregion
 
         #region Moon Lord
-        BRS.AddBoss(14, new([NPCID.MoonLordCore]));
+        BRS.AddBoss(13, new([NPCID.MoonLordCore]));
         #endregion
     }
 }
