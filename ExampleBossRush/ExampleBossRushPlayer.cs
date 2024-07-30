@@ -19,12 +19,12 @@ public class ExampleBossRushPlayer : ModPlayer
                 case NPCID.BrainofCthulhu:
                     Player.ZoneCrimson = true;
                     break;
-                case NPCID.Golem:
-                    Player.ZoneLihzhardTemple = true;
-                    goto case NPCID.QueenBee;
                 case NPCID.QueenBee:
                     Player.ZoneJungle = true;
                     break;
+                case NPCID.Golem:
+                    Player.ZoneLihzhardTemple = false;
+                    goto case NPCID.Plantera;
                 case NPCID.Plantera:
                     Player.ZoneJungle = false;
                     break;

@@ -110,7 +110,7 @@ public class BossRushItem : ModItem
         #region Skeletron
         BRS.AddBoss(5, new(
             [NPCID.SkeletronHead],
-            spawnOffset: new(500, -500, 1000, -500),
+            spawnOffset: new(-1000, -700, 2000, -300),
             timeContext: TimeContext.Night,
             modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 40,
                                     damageMultiplier: 2, damageFlatIncrease: 40)
@@ -174,7 +174,7 @@ public class BossRushItem : ModItem
         # endregion
 
         # region Plantera
-        BRS.AddBoss(-9, new(
+        BRS.AddBoss(9, new(
             [NPCID.Plantera],
             spawnOffset: new(-1000, 1500, 2000, 500),
             timeContext: TimeContext.Noon,
@@ -184,9 +184,11 @@ public class BossRushItem : ModItem
 
         #region Golem
         sign = Util.RandomSign();
-        BRS.AddBoss(10, new(
+        BRS.AddBoss(-10, new(
             [NPCID.Golem],
-            spawnOffset: new(500 * sign, 0, -200 * sign, -500)
+            spawnOffset: new(700 * sign, -400, -200 * sign, -10),
+            modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 1.5f,
+                                    lifeFlatIncrease: 100, damageFlatIncrease: 20)
         ));
         #endregion
 
@@ -196,7 +198,7 @@ public class BossRushItem : ModItem
             [NPCID.DukeFishron],
             spawnOffset: new(300 * sign, 50, -100 * sign, -50)
         ));
-        # endregion
+        #endregion
 
         #region Empress of Light
         BRS.AddBoss(12, new([NPCID.HallowBoss],
@@ -212,8 +214,8 @@ public class BossRushItem : ModItem
         ));
         #endregion
 
-        # region Moon Lord
+        #region Moon Lord
         BRS.AddBoss(14, new([NPCID.MoonLordCore]));
-        # endregion
+        #endregion
     }
 }

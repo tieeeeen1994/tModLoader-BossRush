@@ -5,7 +5,7 @@ using Terraria;
 using Terraria.ID;
 using BRS = BossRush.BossRushSystem;
 
-namespace ExampleBossRush;
+namespace ExampleBossRush.NPCs;
 
 public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
 {

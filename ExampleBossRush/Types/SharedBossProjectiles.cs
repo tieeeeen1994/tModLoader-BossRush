@@ -1,9 +1,6 @@
 ﻿using BossRush;
-using Microsoft.Xna.Framework;
-using System;
 using System.Collections.Generic;
 using Terraria;
-using Terraria.ID;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Types

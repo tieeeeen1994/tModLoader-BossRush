@@ -3,7 +3,7 @@ using ExampleBossRush.Types;
 using Terraria;
 using Terraria.ID;
 
-namespace ExampleBossRush;
+namespace ExampleBossRush.Projectiles;
 
 public class BrainOfCthulhuProjectiles : BossRushProjectiles
 {

@@ -5,27 +5,26 @@ using Terraria;
 using Terraria.ID;
 using BRS = BossRush.BossRushSystem;
 
-namespace ExampleBossRush.Projectiles
-{
-    public class QueenSlimeProjectiles : BossRushProjectiles
-    {
-        protected override List<int> ApplicableTypes => [
-            ProjectileID.QueenSlimeMinionBlueSpike,
-            ProjectileID.QueenSlimeMinionPinkBall,
-            ProjectileID.QueenSlimeGelAttack,
-            ProjectileID.QueenSlimeSmash
-        ];
+namespace ExampleBossRush.Projectiles;
 
-        protected override void Update(Projectile projectile)
+public class QueenSlimeProjectiles : BossRushProjectiles
+{
+    protected override List<int> ApplicableTypes => [
+        ProjectileID.QueenSlimeMinionBlueSpike,
+        ProjectileID.QueenSlimeMinionPinkBall,
+        ProjectileID.QueenSlimeGelAttack,
+        ProjectileID.QueenSlimeSmash
+    ];
+
+    protected override void Update(Projectile projectile)
+    {
+        if (ApplicableTypes.Contains(projectile.type) && BRS.I.CurrentBossData is BossData bossData)
         {
-            if (ApplicableTypes.Contains(projectile.type) && BRS.I.CurrentBossData is BossData bossData)
+            var tracker = StoreOrFetch("Tracker", new Dictionary<Projectile, bool>());
+            if (!tracker.TryGetValue(projectile, out var tracked) && !tracked)
             {
-                var tracker = StoreOrFetch("Tracker", new Dictionary<Projectile, bool>());
-                if (!tracker.TryGetValue(projectile, out var tracked) && !tracked)
-                {
-                    projectile.damage = bossData.ModifiedAttributes.ComputeDamage(projectile.damage);
-                    tracker[projectile] = true;
-                }
+                projectile.damage = bossData.ModifiedAttributes.ComputeDamage(projectile.damage);
+                tracker[projectile] = true;
             }
         }
     }
