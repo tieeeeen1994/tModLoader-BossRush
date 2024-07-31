@@ -15,4 +15,15 @@ public class RandomMobs : GlobalNPC
             maxSpawns = 0;
         }
     }
+
+    public override bool PreAI(NPC npc)
+    {
+        if (BRS.I.IsBossRushActive && npc.CountsAsACritter)
+        {
+            NPC inactiveNpc = Main.npc[npc.whoAmI] = new NPC();
+            return inactiveNpc.active = false;
+        }
+
+        return true;
+    }
 }

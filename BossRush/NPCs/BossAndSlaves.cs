@@ -14,8 +14,7 @@ public class BossAndSlaves : GlobalNPC
 
     public override void SetDefaults(NPC npc)
     {
-        if (!npc.CountsAsACritter && BRS.I.IsBossRushActive &&
-            BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
+        if (BRS.I.IsBossRushActive && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
         {
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
