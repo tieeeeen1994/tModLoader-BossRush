@@ -36,7 +36,7 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
         }
         if (npc.type == NPCID.SlimeSpiked)
         {
-            if (BRS.Instance.ReferenceBoss == null)
+            if (BRS.I.ReferenceBoss == null)
             {
                 if (bombardSpikes.Count > 0)
                 {

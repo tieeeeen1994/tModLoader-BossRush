@@ -52,7 +52,7 @@ public class SkeletronProjectiles : BossRushProjectiles
             if (target != null)
             {
                 projectile.velocity += projectile.DirectionTo(target.Center) * .1f;
-                projectile.velocity = projectile.velocity.Clamp(new(-12, -12), new(12, 12));
+                projectile.velocity = projectile.velocity.Clamp(12f);
             }
         }
     }

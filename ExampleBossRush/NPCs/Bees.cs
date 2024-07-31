@@ -5,9 +5,9 @@ using Terraria.ID;
 
 namespace ExampleBossRush.NPCs;
 
-public class QueenBeeAndMinions : BossRushBossAndMinions
+public class Bees : BossRushBossAndMinions
 {
-    protected override List<int> ApplicableTypes => [NPCID.QueenBee, NPCID.Bee, NPCID.BeeSmall];
+    protected override List<int> ApplicableTypes => [NPCID.Bee, NPCID.BeeSmall];
 
     protected override void Update(NPC npc)
     {
@@ -15,12 +15,12 @@ public class QueenBeeAndMinions : BossRushBossAndMinions
         {
             npc.knockBackResist = 0f;
             npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .2f;
-            npc.velocity = npc.velocity.Clamp(new(-30), new(30));
+            npc.velocity = npc.velocity.Clamp(10f);
         }
         else if (npc.type == NPCID.BeeSmall)
         {
             npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .5f;
-            npc.velocity = npc.velocity.Clamp(new(-30), new(30));
+            npc.velocity = npc.velocity.Clamp(20f);
         }
     }
 }

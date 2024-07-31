@@ -9,7 +9,7 @@ public class ExampleBossRushPlayer : ModPlayer
 {
     public override void PostUpdate()
     {
-        if (BRS.Instance.IsBossRushActive && BRS.Instance.ReferenceBoss is NPC boss)
+        if (BRS.I.IsBossRushActive && BRS.I.ReferenceBoss is NPC boss)
         {
             switch (boss.type)
             {

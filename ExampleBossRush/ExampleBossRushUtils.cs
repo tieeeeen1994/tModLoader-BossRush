@@ -1,11 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria;
 
 namespace ExampleBossRush;
 
 internal static class ExampleBossRushUtils
 {
-    internal static Vector2 Clamp(this Vector2 value, Vector2 min, Vector2 max)
+    internal static Vector2 Clamp(this Vector2 value, float maxDistance)
     {
-        return new Vector2(MathHelper.Clamp(value.X, min.X, max.X), MathHelper.Clamp(value.Y, min.Y, max.Y));
+        if (Vector2.Distance(Vector2.Zero, value) > maxDistance)
+        {
+            return Vector2.Normalize(value) * maxDistance;
+        }
+        else
+        {
+            return value;
+        }
     }
 }
