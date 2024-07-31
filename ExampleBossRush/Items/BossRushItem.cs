@@ -131,14 +131,10 @@ public class BossRushItem : ModItem
 
         #region Queen Slime
         sign = Util.RandomSign();
-        Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
-        Player player = Main.player.Where(p => p.active).First();
-        worldCoordinates -= new Vector2(player.width / 2, player.height);
         BRS.AddBoss(7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
-            placeContext: new(worldCoordinates, 0, 0),
             modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 2f,
                                     lifeFlatIncrease: 900)
         ));
@@ -204,10 +200,9 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Empress of Light
-        BRS.AddBoss(-12, new([NPCID.HallowBoss],
+        BRS.AddBoss(12, new([NPCID.HallowBoss],
                     spawnOffset: new(0, -300, 0, 0),
                     timeContext: TimeContext.Night,
-                    placeContext: new(worldCoordinates, 0, 0),
                     modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.9f)
         ));
         #endregion

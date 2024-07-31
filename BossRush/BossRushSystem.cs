@@ -359,7 +359,12 @@ public class BossRushSystem : ModSystem
 
     private void SpawnNextBoss()
     {
-        CurrentBossData = bossQueue.Peek();
+        var nextBossData = bossQueue.Peek();
+        if (nextBossData.PlaceContext == null)
+        {
+            CurrentBossData?.PlaceContext?.BackToSpawn();
+        }
+        CurrentBossData = nextBossData;
         _currentBoss = Spawn(CurrentBossData.Value);
         bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
     }

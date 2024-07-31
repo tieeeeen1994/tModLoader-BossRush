@@ -52,6 +52,29 @@ public struct PlaceContext
         }
     }
 
+    public readonly void BackToSpawn()
+    {
+        Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
+        foreach (var player in Main.ActivePlayers)
+        {
+            if (player.active)
+            {
+                Vector2 position = worldCoordinates - new Vector2(player.width / 2, player.height);
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    player.Teleport(position);
+                }
+                else if (Main.netMode == NetmodeID.Server)
+                {
+                    ModPacket packet = BR.I.GetPacket();
+                    packet.Write((byte)BR.PacketType.Teleport);
+                    packet.WriteVector2(position);
+                    packet.Send(player.whoAmI);
+                }
+            }
+        }
+    }
+
     private static Vector2 UnderworldPosition(int xTileCoordinate)
     {
         int yTileCoordinate = Util.RoundOff(Main.UnderworldLayer + .34f * (Main.maxTilesY - Main.UnderworldLayer));
