@@ -195,7 +195,7 @@ public class BossRushItem : ModItem
         #region Duke Fishron
         sign = Util.RandomSign();
         chooseSide = Main.rand.NextBool() ? PlaceContext.LeftOcean : PlaceContext.RightOcean;
-        BRS.AddBoss(-11, new(
+        BRS.AddBoss(11, new(
             [NPCID.DukeFishron],
             spawnOffset: new(900 * sign, 0, -200 * sign, -10),
             placeContext: chooseSide,
@@ -204,9 +204,12 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Empress of Light
-        BRS.AddBoss(12, new([NPCID.HallowBoss],
-                    spawnOffset: new(0, -100, 0, 0),
-                    timeContext: TimeContext.Night));
+        BRS.AddBoss(-12, new([NPCID.HallowBoss],
+                    spawnOffset: new(0, -300, 0, 0),
+                    timeContext: TimeContext.Night,
+                    placeContext: new(worldCoordinates, 0, 0),
+                    modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.9f)
+        ));
         #endregion
 
         #region Lunatic Cultist
