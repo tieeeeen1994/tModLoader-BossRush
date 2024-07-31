@@ -13,6 +13,8 @@ public static class Util
 {
     public static int RoundOff(this float value) => (int)MathF.Round(value, 0, MidpointRounding.ToEven);
 
+    public static int RoundOff(this double value) => (int)Math.Round(value, 0, MidpointRounding.ToEven);
+
     public static Vector2 RoundOff(this Vector2 value) => new(RoundOff(value.X), RoundOff(value.Y));
 
     public static void NewText(string message, Color? color = null, bool literal = false)
@@ -79,4 +81,8 @@ public static class Util
             packet.Send();
         }
     }
+
+    public static int ToWorldCoordinate(this int tileCoordinate) => tileCoordinate * 16;
+
+    public static int ToWorldCoordinate(this double tileCoordinate) => RoundOff(tileCoordinate * 16d);
 }

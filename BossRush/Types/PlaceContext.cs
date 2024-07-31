@@ -15,6 +15,11 @@ public struct PlaceContext
 
     public static PlaceContext RightUnderworld => new(UnderworldPosition(Main.maxTilesX - 100), 10, 10);
 
+    public static PlaceContext LeftOcean => new(2000, 3000, -500, 500);
+
+    public static PlaceContext RightOcean => new(Main.maxTilesX.ToWorldCoordinate() - 2000,
+                                                 3000, 500, 500);
+
     public PlaceContext(Vector2 initialPosition, int width, int height)
     {
         Vector2 valuePosition = InitialPosition = initialPosition.RoundOff();
@@ -25,7 +30,6 @@ public struct PlaceContext
 
     public PlaceContext(int x, int y, int width, int height) : this(new(x, y), width, height) { }
 
-    // TODO: Teleport Networking
     public readonly void TeleportPlayers()
     {
         foreach (var player in Main.ActivePlayers)
