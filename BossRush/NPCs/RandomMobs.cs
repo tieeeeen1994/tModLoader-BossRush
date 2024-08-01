@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using BossRush.Types;
+using System;
+using Terraria;
 using Terraria.ModLoader;
 using BRS = BossRush.BossRushSystem;
 
@@ -12,7 +14,23 @@ public class RandomMobs : GlobalNPC
     {
         if (BRS.I.IsBossRushActive)
         {
-            maxSpawns = 0;
+            if (BRS.I.CurrentBossData is BossData bossData &&
+                bossData.SpawnAttributes is SpawnAttributes spawnData)
+            {
+                try
+                {
+                    spawnRate = Math.Max(Util.RoundOff(spawnRate / spawnData.RateMultiplier), 0);
+                }
+                catch (DivideByZeroException)
+                {
+                    spawnRate = 0;
+                }
+                maxSpawns = Util.RoundOff((maxSpawns + spawnData.MaxFlatIncrease) * spawnData.MaxMultiplier);
+            }
+            else
+            {
+                maxSpawns = 0;
+            }
         }
     }
 

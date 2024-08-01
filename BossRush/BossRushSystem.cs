@@ -97,6 +97,34 @@ public class BossRushSystem : ModSystem
                 writer.Write(placeContext.TeleportRange.Width);
                 writer.Write(placeContext.TeleportRange.Height);
             }
+            SpawnAttributes spawns = bossData.SpawnAttributes;
+            writer.Write(spawns.RateMultiplier);
+            writer.Write(spawns.MaxMultiplier);
+            writer.Write(spawns.MaxFlatIncrease);
+            if (bossData.StartMessage == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                Message startMessage = bossData.StartMessage.Value;
+                writer.Write(startMessage.Text);
+                writer.Write(startMessage.Literal);
+                writer.Write(startMessage.Color.PackedValue);
+            }
+            if (bossData.DefeatMessage == null)
+            {
+                writer.Write(false);
+            }
+            else
+            {
+                writer.Write(true);
+                Message defeatMessage = bossData.DefeatMessage.Value;
+                writer.Write(defeatMessage.Text);
+                writer.Write(defeatMessage.Literal);
+                writer.Write(defeatMessage.Color.PackedValue);
+            }
         }
     }
 
@@ -158,12 +186,35 @@ public class BossRushSystem : ModSystem
                 int height = reader.ReadInt32();
                 placeContext = new(x, y, width, height);
             }
+            float rateMultiplier = reader.ReadSingle();
+            float maxMultiplier = reader.ReadSingle();
+            int maxFlatIncrease = reader.ReadInt32();
+            bool startMessageExists = reader.ReadBoolean();
+            Message? startMessage = null;
+            if (startMessageExists)
+            {
+                string text = reader.ReadString();
+                bool literal = reader.ReadBoolean();
+                Color color = new() { PackedValue = reader.ReadUInt32() };
+                startMessage = new(text, literal, color);
+            }
+            bool defeatMessageExists = reader.ReadBoolean();
+            Message? defeatMessage = null;
+            if (defeatMessageExists)
+            {
+                string text = reader.ReadString();
+                bool literal = reader.ReadBoolean();
+                Color color = new() { PackedValue = reader.ReadUInt32() };
+                defeatMessage = new(text, literal, color);
+            }
             CurrentBossData = new BossData(
                 types: types, subTypes: subTypes,
                 modifiedAttributes: new(lifeMultiplier, damageMultiplier, defenseMultiplier,
                                         lifeFlatIncrease, damageFlatIncrease, defenseFlatIncrease,
                                         projectilesAffected),
-                timeContext: timeContext, placeContext: placeContext
+                spawnAttributes: new(maxMultiplier, maxFlatIncrease, rateMultiplier),
+                timeContext: timeContext, placeContext: placeContext,
+                startMessage: startMessage, defeatMessage: defeatMessage
             );
         }
         else
@@ -281,6 +332,7 @@ public class BossRushSystem : ModSystem
         bossDefeated[boss] = true;
         if (!allDead && IsBossDefeated())
         {
+            CurrentBossData?.DefeatMessage?.Display();
             ResurrectPlayers();
             allDead = false;
             bossQueue.Dequeue();
@@ -367,6 +419,7 @@ public class BossRushSystem : ModSystem
         CurrentBossData = nextBossData;
         _currentBoss = Spawn(CurrentBossData.Value);
         bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
+        CurrentBossData?.StartMessage?.Display();
     }
 
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();

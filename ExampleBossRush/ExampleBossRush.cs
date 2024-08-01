@@ -1,15 +1,37 @@
+using ExampleBossRush.Detours;
 using ExampleBossRush.NPCs;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using Terraria;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
+using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush;
 
 public class ExampleBossRush : Mod
 {
     public static ExampleBossRush Instance => ModContent.GetInstance<ExampleBossRush>();
+
+    public override void Load()
+    {
+        On_NebulaPillarBigProgressBar.GetMaxShieldValue += NebulaShield;
+        On_SolarFlarePillarBigProgressBar.GetMaxShieldValue += SolarShield;
+        On_VortexPillarBigProgressBar.GetMaxShieldValue += VortexShield;
+        On_StardustPillarBigProgressBar.GetMaxShieldValue += StardustShield;
+        ShieldStrengthTowerMaxDetour.Apply();
+    }
+
+    public override void Unload()
+    {
+        On_NebulaPillarBigProgressBar.GetMaxShieldValue -= NebulaShield;
+        On_SolarFlarePillarBigProgressBar.GetMaxShieldValue -= SolarShield;
+        On_VortexPillarBigProgressBar.GetMaxShieldValue -= VortexShield;
+        On_StardustPillarBigProgressBar.GetMaxShieldValue -= StardustShield;
+        ShieldStrengthTowerMaxDetour.Undo();
+    }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
@@ -59,6 +81,56 @@ public class ExampleBossRush : Mod
                     }
                 }
                 break;
+        }
+    }
+
+    private float SolarShield(On_SolarFlarePillarBigProgressBar.orig_GetMaxShieldValue orig,
+                              SolarFlarePillarBigProgressBar self)
+    {
+        if (BRS.I.IsBossRushActive)
+        {
+            return Pillars.ShieldValue;
+        }
+        else
+        {
+            return orig(self);
+        }
+    }
+
+    private float VortexShield(On_VortexPillarBigProgressBar.orig_GetMaxShieldValue orig, VortexPillarBigProgressBar self)
+    {
+        if (BRS.I.IsBossRushActive)
+        {
+            return Pillars.ShieldValue;
+        }
+        else
+        {
+            return orig(self);
+        }
+    }
+
+    private float NebulaShield(On_NebulaPillarBigProgressBar.orig_GetMaxShieldValue orig,
+                               NebulaPillarBigProgressBar self)
+    {
+        if (BRS.I.IsBossRushActive)
+        {
+            return Pillars.ShieldValue;
+        }
+        else
+        {
+            return orig(self);
+        }
+    }
+
+    private float StardustShield(On_StardustPillarBigProgressBar.orig_GetMaxShieldValue orig, StardustPillarBigProgressBar self)
+    {
+        if (BRS.I.IsBossRushActive)
+        {
+            return Pillars.ShieldValue;
+        }
+        else
+        {
+            return orig(self);
         }
     }
 
