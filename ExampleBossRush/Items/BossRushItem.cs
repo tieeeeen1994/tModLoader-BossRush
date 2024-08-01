@@ -239,7 +239,7 @@ public class BossRushItem : ModItem
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
             modifiedAttributes: new(lifeMultiplier: 3),
-            defeatMessage: new(text: "Mods.ExampleBossRush.DeathMessages.SolarPillar", literal: false)
+            defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.SolarPillar")
         ));
 
         BRS.AddBoss(14, new(
@@ -247,7 +247,7 @@ public class BossRushItem : ModItem
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
             modifiedAttributes: new(lifeMultiplier: 3),
-            defeatMessage: new(text: "Mods.ExampleBossRush.DeathMessages.NebulaPillar", literal: false)
+            defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.NebulaPillar")
         ));
 
         BRS.AddBoss(14, new(
@@ -255,7 +255,7 @@ public class BossRushItem : ModItem
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
             modifiedAttributes: new(lifeMultiplier: 3),
-            defeatMessage: new(text: "Mods.ExampleBossRush.DeathMessages.StardustPillar", literal: false)
+            defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.StardustPillar")
         ));
 
         BRS.AddBoss(14, new(
@@ -263,7 +263,7 @@ public class BossRushItem : ModItem
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
             modifiedAttributes: new(lifeMultiplier: 3),
-            defeatMessage: new(text: "Mods.ExampleBossRush.DeathMessages.VortexPillar", literal: false)
+            defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.VortexPillar")
         ));
         #endregion
 

@@ -228,6 +228,7 @@ public class BossRushSystem : ModSystem
         switch (State)
         {
             case States.On:
+                Util.NewText("Mods.BossRush.Messages.Commence", new(102, 255, 255));
                 InitializeSystem();
                 ChangeState(States.Prepare);
                 break;
@@ -238,7 +239,7 @@ public class BossRushSystem : ModSystem
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
                     {
-                        Util.NewText("Mods.BossRush.Messages.Win");
+                        Util.NewText("Mods.BossRush.Messages.Win", new(102, 255, 255));
                         ChangeState(States.End);
                     }
                     else
@@ -255,7 +256,7 @@ public class BossRushSystem : ModSystem
                 break;
 
             case States.End:
-                Util.NewText("Mods.BossRush.Messages.End");
+                Util.NewText("Mods.BossRush.Messages.End", new(102, 255, 255));
                 Util.CleanStage();
                 ResetSystem();
                 break;
@@ -269,13 +270,13 @@ public class BossRushSystem : ModSystem
         switch (State)
         {
             case States.Off:
-                Util.NewText("Mods.BossRush.Messages.Active");
+                Util.NewText("Mods.BossRush.Messages.Active", new(102, 255, 255));
                 Util.CleanStage();
                 ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
-                Util.NewText("Mods.BossRush.Messages.Disable");
+                Util.NewText("Mods.BossRush.Messages.Disable", new(102, 255, 255));
                 Util.CleanStage();
                 ChangeState(States.End);
                 break;
@@ -308,7 +309,7 @@ public class BossRushSystem : ModSystem
                     }
                 }
                 allDead = true;
-                Util.NewText("Mods.BossRush.Messages.Failure");
+                Util.NewText("Mods.BossRush.Messages.Failure", new(102, 255, 255));
             }
             else
             {
@@ -361,7 +362,7 @@ public class BossRushSystem : ModSystem
         {
             Util.CleanStage();
             ChangeState(States.Prepare);
-            Util.NewText("Mods.BossRush.Messages.Despawn");
+            Util.NewText("Mods.BossRush.Messages.Despawn", new(102, 255, 255));
         }
     }
 
@@ -473,7 +474,8 @@ public class BossRushSystem : ModSystem
         }
         else
         {
-            Util.NewText("Something went wrong. No players found when trying to spawn boss.", literal: true);
+            Util.NewText("Something went wrong. No players found when trying to spawn boss.",
+                         new(102, 255, 255), true);
             return [];
         }
     }
