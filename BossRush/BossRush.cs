@@ -72,11 +72,12 @@ public class BossRush : Mod
     private int NewNPC(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type,
                        int Start, float ai0, float ai1, float ai2, float ai3, int Target)
     {
-        if (BRS.I.IsBossRushActive && Type == NPCID.KingSlime)
+        if (BRS.I.IsBossRushActive)
         {
             BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
             MethodInfo method = typeof(NPC).GetMethod("GetAvailableNPCSlot", flags);
-            int availableNPCSlot = (int)method.Invoke(null, [Type, Start]);
+            int trueStart = Start == 0 ? 1 : Start; // Do not use index 0 in Boss Rush as Worm AI have bugs.
+            int availableNPCSlot = (int)method.Invoke(null, [Type, trueStart]);
             if (availableNPCSlot >= 0)
             {
                 NPC selected = Main.npc[availableNPCSlot] = new NPC();

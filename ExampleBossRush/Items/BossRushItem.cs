@@ -1,7 +1,6 @@
 using BossRush;
 using BossRush.Types;
 using Microsoft.Xna.Framework;
-using System.Linq;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
@@ -225,11 +224,11 @@ public class BossRushItem : ModItem
 
         #region Lunatic Cultist
         sign = Util.RandomSign();
-        BRS.AddBoss(13, new(
+        BRS.AddBoss(-13, new(
             [NPCID.CultistBoss],
             spawnOffset: new(300 * sign, 0, -100 * sign, -500),
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: 3, damageMultiplier: 1.5f)
+            modifiedAttributes: new(lifeMultiplier: 8, damageMultiplier: 1.5f)
         ));
         #endregion
 
