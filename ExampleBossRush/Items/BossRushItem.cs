@@ -45,7 +45,6 @@ public class BossRushItem : ModItem
 
     private void AddBossesToSystem()
     {
-
         #region King Slime
         int sign = Util.RandomSign();
         BRS.AddBoss(0, new(

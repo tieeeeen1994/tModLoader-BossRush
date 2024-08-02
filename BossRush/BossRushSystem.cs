@@ -266,6 +266,31 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 
     public override void OnWorldUnload() => ResetSystem();
 
+    /// <summary>
+    /// Adds a boss through BossData to the Boss Rush event.
+    /// The position signifies the ordering of the bosses. The lower the position, the earlier the boss will spawn.
+    /// If two bosses have the same position, they will be randomly ordered.
+    /// </summary>
+    /// <param name="position">Queue number of the boss stage</param>
+    /// <param name="data">Associated BossData</param>
+    public void AddBoss(float position, BossData data)
+    {
+        if (candidates.TryGetValue(position, out List<BossData> list))
+        {
+            list.Add(data);
+        }
+        else
+        {
+            candidates.Add(position, [data]);
+        }
+    }
+
+    /// <summary>
+    /// This is the main trigger for turning Boss Rush mode on or off.
+    /// There are still ways to control the toggling behavior through checking the BossRushSystem.States value.
+    /// An enum is provided for easier checks.
+    /// Call this when an item is used, or when a tile is broken, or intercting with tiles, anything!
+    /// </summary>
     public void ToggleBossRush()
     {
         switch (State)
@@ -281,18 +306,6 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                 Util.CleanStage();
                 ChangeState(States.End);
                 break;
-        }
-    }
-
-    public void AddBoss(float position, BossData data)
-    {
-        if (candidates.TryGetValue(position, out List<BossData> list))
-        {
-            list.Add(data);
-        }
-        else
-        {
-            candidates.Add(position, [data]);
         }
     }
 
