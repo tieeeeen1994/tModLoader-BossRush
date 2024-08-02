@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -10,6 +11,8 @@ namespace ExampleBossRush.Projectiles;
 public class SpazmatismProjectiles : BossRushProjectiles
 {
     protected override List<int> ApplicableTypes => [ProjectileID.EyeFire, ProjectileID.CursedFlameHostile];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.Spazmatism);
 
     protected override void Update(Projectile projectile)
     {

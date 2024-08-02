@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
@@ -10,6 +11,8 @@ namespace ExampleBossRush.NPCs;
 public class BrainOfCthulhuAndMinions : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.Creeper, NPCID.BrainofCthulhu, NPCID.IchorSticker];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.BrainofCthulhu);
 
     protected override void Update(NPC npc)
     {

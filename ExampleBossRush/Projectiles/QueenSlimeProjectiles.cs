@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -15,6 +16,8 @@ public class QueenSlimeProjectiles : BossRushProjectiles
         ProjectileID.QueenSlimeGelAttack,
         ProjectileID.QueenSlimeSmash
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.QueenSlimeBoss);
 
     protected override void Update(Projectile projectile)
     {

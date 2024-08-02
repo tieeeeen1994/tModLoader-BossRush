@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 using EBR = ExampleBossRush.ExampleBossRush;
 
@@ -22,18 +23,18 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
         NPCID.VileSpitEaterOfWorlds
     ];
 
+    protected override bool AbsoluteCheck => IsCurrentBoss(BossParts);
+
     protected override void Update(NPC npc)
     {
         var spitTracker = StoreOrFetch("SpitTracker", new Dictionary<NPC, bool>());
         var segmentTracker = StoreOrFetch("SegmentTracker", new Dictionary<NPC, bool>());
-        //var headTracker = StoreOrFetch("HeadHealthTracker", new Dictionary<NPC, bool>());
         var corruptTimers = StoreOrFetch("CorruptorTimers", new List<(Vector2, int)>());
         var corruptTracker = StoreOrFetch("CorruptorTracker", new Dictionary<NPC, bool>());
         var spitTimer = StoreOrFetch("SpitTimer", new Dictionary<NPC, int>());
         if (npc == BRS.I.ReferenceBoss)
         {
             CleanInactiveData(spitTracker);
-            //CleanInactiveData(headTracker);
             CleanInactiveData(corruptTracker);
             CleanInactiveData(spitTimer);
             foreach (var body in segmentTracker)
@@ -130,4 +131,6 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
             }
         }
     }
+
+    private List<int> BossParts => [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];
 }

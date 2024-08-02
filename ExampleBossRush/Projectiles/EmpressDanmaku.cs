@@ -3,25 +3,27 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
-namespace ExampleBossRush.Projectiles
-{
-    public class EmpressDanmaku : BossRushProjectiles
-    {
-        protected override List<int> ApplicableTypes => [
-            ProjectileID.FairyQueenLance,
-            ProjectileID.FairyQueenSunDance,
-            ProjectileID.HallowBossLastingRainbow,
-            ProjectileID.HallowBossRainbowStreak,
-        ];
+namespace ExampleBossRush.Projectiles;
 
-        protected override void Update(Projectile projectile)
+public class EmpressDanmaku : BossRushProjectiles
+{
+    protected override List<int> ApplicableTypes => [
+        ProjectileID.FairyQueenLance,
+        ProjectileID.FairyQueenSunDance,
+        ProjectileID.HallowBossLastingRainbow,
+        ProjectileID.HallowBossRainbowStreak,
+    ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.HallowBoss);
+
+    protected override void Update(Projectile projectile)
+    {
+        if (ApplicableTypes.Contains(projectile.type) && BRS.I.ReferenceBoss is NPC boss)
         {
-            if (ApplicableTypes.Contains(projectile.type) && BRS.I.ReferenceBoss is NPC boss)
-            {
-                projectile.damage = Util.RoundOff(boss.defDamage * .15f);
-            }
+            projectile.damage = Util.RoundOff(boss.defDamage * .15f);
         }
     }
 }

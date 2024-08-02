@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ExampleBossRush.ExampleBossRushUtils;
 using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs;
@@ -11,6 +12,8 @@ namespace ExampleBossRush.NPCs;
 public class EmpressOfLight : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.HallowBoss];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.HallowBoss);
 
     protected override void Update(NPC npc)
     {

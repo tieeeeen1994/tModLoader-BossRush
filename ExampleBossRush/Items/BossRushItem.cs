@@ -222,12 +222,12 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Lunatic Cultist
-        BRS.AddBoss(-13, new(
+        BRS.AddBoss(13, new(
             [NPCID.CultistBoss],
             spawnOffset: new(75, 20, 0, 0),
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: 8, damageMultiplier: 1.5f,
-                                    damageFlatIncrease: 50)
+            modifiedAttributes: new(lifeMultiplier: .4f, damageMultiplier: 1.3f,
+                                    lifeFlatIncrease: 10000, damageFlatIncrease: 50)
         ));
         #endregion
 
@@ -266,7 +266,11 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Moon Lord
-        BRS.AddBoss(15, new([NPCID.MoonLordCore], spawnAttributes: SpawnAttributes.NoSpawns));
+        BRS.AddBoss(15, new(
+            [NPCID.MoonLordCore],
+            spawnAttributes: SpawnAttributes.NoSpawns,
+            modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.5f, projectilesAffected: true)
+        ));
         #endregion
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.Audio;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
@@ -18,6 +19,8 @@ public class EyeOfCthulhuAndMinions : BossRushBossAndMinions
     };
 
     protected override List<int> ApplicableTypes => [NPCID.EyeofCthulhu, NPCID.ServantofCthulhu];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.EyeofCthulhu);
 
     protected override void Update(NPC npc)
     {

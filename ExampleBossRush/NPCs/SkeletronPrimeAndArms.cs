@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using static ExampleBossRush.ExampleBossRushUtils;
 using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs;
@@ -19,6 +20,8 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
         NPCID.PrimeVice,
         NPCID.PrimeLaser
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.SkeletronPrime);
 
     protected override void Update(NPC npc)
     {

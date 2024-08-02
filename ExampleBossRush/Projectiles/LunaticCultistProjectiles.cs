@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles
@@ -15,7 +16,10 @@ namespace ExampleBossRush.Projectiles
             ProjectileID.CultistBossLightningOrbArc,
             ProjectileID.CultistBossFireBall,
             ProjectileID.CultistBossFireBallClone,
+            ProjectileID.AncientDoomProjectile
         ];
+
+        protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.CultistBoss);
 
         protected override void Update(Projectile projectile)
         {

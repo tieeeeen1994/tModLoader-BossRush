@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -11,6 +12,8 @@ namespace ExampleBossRush.Projectiles;
 public class KingSlimeProjectiles : BossRushProjectiles
 {
     protected override List<int> ApplicableTypes => [ProjectileID.SpikedSlimeSpike];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.KingSlime);
 
     protected override void Update(Projectile projectile)
     {

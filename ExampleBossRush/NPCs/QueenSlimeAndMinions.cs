@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
@@ -13,6 +14,8 @@ public class QueenSlimeAndMinions : BossRushBossAndMinions
         NPCID.QueenSlimeMinionPink,
         NPCID.QueenSlimeMinionPurple
     ];
+
+    override protected bool AbsoluteCheck => IsCurrentBoss(NPCID.QueenSlimeBoss);
 
     protected override void Update(NPC npc)
     {

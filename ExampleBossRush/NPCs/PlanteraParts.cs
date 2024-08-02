@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
 public class PlanteraParts : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.Spore, NPCID.PlanterasTentacle, NPCID.Plantera];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.Plantera);
 
     protected override void Update(NPC npc)
     {

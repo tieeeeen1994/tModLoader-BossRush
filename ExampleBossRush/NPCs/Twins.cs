@@ -4,6 +4,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
@@ -13,6 +14,8 @@ public class Twins : BossRushBossAndMinions
         NPCID.Retinazer,
         NPCID.Spazmatism
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(ApplicableTypes);
 
     protected override void Update(NPC npc)
     {

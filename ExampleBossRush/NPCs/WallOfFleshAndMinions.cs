@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
@@ -16,6 +17,8 @@ public class WallOfFleshAndMinions : BossRushBossAndMinions
         NPCID.LeechTail,
         NPCID.WallofFlesh
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.WallofFlesh);
 
     protected override void Update(NPC npc)
     {

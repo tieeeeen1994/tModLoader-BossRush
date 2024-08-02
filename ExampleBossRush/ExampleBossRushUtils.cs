@@ -1,4 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush;
 
@@ -15,4 +17,8 @@ internal static class ExampleBossRushUtils
             return value;
         }
     }
+
+    internal static bool IsCurrentBoss(int type) => BRS.I.CurrentBoss.Exists(npc => npc.type == type);
+
+    internal static bool IsCurrentBoss(List<int> types) => BRS.I.CurrentBoss.Exists(npc => types.Contains(npc.type));
 }

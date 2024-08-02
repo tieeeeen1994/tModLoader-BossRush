@@ -4,13 +4,15 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
-using BRS = BossRush.BossRushSystem;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
 public class KingSlimeAndMinions : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.KingSlime, NPCID.BlueSlime, NPCID.SlimeSpiked];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.KingSlime);
 
     protected override void Update(NPC npc)
     {
@@ -36,30 +38,20 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
         }
         if (npc.type == NPCID.SlimeSpiked)
         {
-            if (BRS.I.ReferenceBoss == null)
+            var timer = StoreOrFetch(bombardSpikes, npc, 1.5f.ToFrames());
+            if (timer <= 0)
             {
-                if (bombardSpikes.Count > 0)
+                bombardSpikes[npc] = 1.5f.ToFrames();
+                if (Main.netMode != NetmodeID.MultiplayerClient)
                 {
-                    bombardSpikes.Clear();
+                    Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
+                                             npc.Center, new Vector2(0, -5),
+                                             ProjectileID.SpikedSlimeSpike, 1, 0f);
                 }
             }
             else
             {
-                var timer = StoreOrFetch(bombardSpikes, npc, 1.5f.ToFrames());
-                if (timer <= 0)
-                {
-                    bombardSpikes[npc] = 1.5f.ToFrames();
-                    if (Main.netMode != NetmodeID.MultiplayerClient)
-                    {
-                        Projectile.NewProjectile(npc.GetSource_FromAI("BombardSpikes"),
-                                                 npc.Center, new Vector2(0, -5),
-                                                 ProjectileID.SpikedSlimeSpike, 1, 0f);
-                    }
-                }
-                else
-                {
-                    bombardSpikes[npc] = timer - 1;
-                }
+                bombardSpikes[npc] = timer - 1;
             }
         }
     }

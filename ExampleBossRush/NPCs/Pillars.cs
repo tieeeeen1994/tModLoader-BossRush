@@ -1,8 +1,8 @@
 ﻿using ExampleBossRush.Types;
-using System;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs
 {
@@ -16,6 +16,8 @@ namespace ExampleBossRush.NPCs
             NPCID.LunarTowerNebula,
             NPCID.LunarTowerStardust
         ];
+
+        protected override bool AbsoluteCheck => IsCurrentBoss(ApplicableTypes);
 
         protected override void Update(NPC npc)
         {

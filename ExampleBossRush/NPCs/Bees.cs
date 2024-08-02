@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
 public class Bees : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.Bee, NPCID.BeeSmall];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.QueenBee);
 
     protected override void Update(NPC npc)
     {

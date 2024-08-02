@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -14,6 +15,8 @@ public class DeerclopsProjectiles : BossRushProjectiles
         ProjectileID.DeerclopsRangedProjectile,
         ProjectileID.InsanityShadowHostile
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.Deerclops);
 
     protected override void Update(Projectile projectile)
     {

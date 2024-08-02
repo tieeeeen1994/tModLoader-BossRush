@@ -6,6 +6,7 @@ using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
@@ -18,6 +19,8 @@ public class GolemParts : BossRushBossAndMinions
         NPCID.GolemHeadFree,
         NPCID.Golem
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.Golem);
 
     protected override void Update(NPC npc)
     {

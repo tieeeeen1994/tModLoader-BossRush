@@ -4,12 +4,15 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
 public class SkeletronAndHands : BossRushBossAndMinions
 {
     protected override List<int> ApplicableTypes => [NPCID.SkeletronHead, NPCID.SkeletronHand];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.SkeletronHead);
 
     protected override void Update(NPC npc)
     {

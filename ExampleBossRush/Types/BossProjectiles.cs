@@ -11,6 +11,8 @@ public abstract class BossRushProjectiles : GlobalProjectile
 
     protected abstract List<int> ApplicableTypes { get; }
 
+    protected abstract bool AbsoluteCheck { get; }
+
     protected abstract void Update(Projectile projectile);
 
     public sealed override bool AppliesToEntity(Projectile entity, bool lateInstantiation)
@@ -20,8 +22,8 @@ public abstract class BossRushProjectiles : GlobalProjectile
 
     public sealed override void PostAI(Projectile projectile)
     {
-        if (!projectile.friendly && BRS.I.IsBossRushActive &&
-            BRS.I.CurrentBoss != null && BRS.I.CurrentBossData != null)
+        if (!projectile.friendly && BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
+            BRS.I.CurrentBossData != null && AbsoluteCheck)
         {
             Update(projectile);
         }

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -15,6 +16,8 @@ public class SkeletronProjectiles : BossRushProjectiles
         ProjectileID.InfernoHostileBlast,
         ProjectileID.LostSoulHostile
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.SkeletronHead);
 
     protected override void Update(Projectile projectile)
     {

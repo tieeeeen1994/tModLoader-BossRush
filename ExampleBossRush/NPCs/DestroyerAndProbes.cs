@@ -3,6 +3,7 @@ using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;
 
 namespace ExampleBossRush.NPCs;
 
@@ -13,6 +14,8 @@ public class DestroyerAndProbes : BossRushBossAndMinions
         NPCID.DeadlySphere,
         NPCID.TheDestroyer
     ];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.TheDestroyer);
 
     protected override void Update(NPC npc)
     {

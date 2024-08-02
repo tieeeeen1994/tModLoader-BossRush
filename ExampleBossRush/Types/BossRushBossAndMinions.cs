@@ -11,6 +11,8 @@ public abstract class BossRushBossAndMinions : GlobalNPC
 
     protected abstract List<int> ApplicableTypes { get; }
 
+    protected abstract bool AbsoluteCheck { get; }
+
     protected abstract void Update(NPC npc);
 
     public sealed override bool AppliesToEntity(NPC entity, bool lateInstantiation)
@@ -20,7 +22,8 @@ public abstract class BossRushBossAndMinions : GlobalNPC
 
     public sealed override void PostAI(NPC npc)
     {
-        if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null && BRS.I.CurrentBossData != null)
+        if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
+            BRS.I.CurrentBossData != null && AbsoluteCheck)
         {
             Update(npc);
         }

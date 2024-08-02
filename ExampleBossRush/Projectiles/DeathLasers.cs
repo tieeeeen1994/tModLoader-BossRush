@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
+using static ExampleBossRush.ExampleBossRushUtils;   
 using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
@@ -10,6 +11,8 @@ namespace ExampleBossRush.Projectiles;
 public class DeathLasers : SharedBossProjectiles
 {
     protected override List<int> ApplicableTypes => [ProjectileID.DeathLaser];
+
+    protected override bool AbsoluteCheck => IsCurrentBoss(ApplicableBosses);
 
     protected override void Update(Projectile projectile)
     {
@@ -33,4 +36,6 @@ public class DeathLasers : SharedBossProjectiles
         FetchBoss(bosses, NPCID.TheDestroyer, ref damage, ref hits, ref multiplier, .04f);
         FetchBoss(bosses, NPCID.SkeletronPrime, ref damage, ref hits, ref multiplier, .07f);
     }
+
+    private List<int> ApplicableBosses => [NPCID.Retinazer, NPCID.TheDestroyer, NPCID.SkeletronPrime];
 }
