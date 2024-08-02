@@ -17,13 +17,14 @@ public class RandomMobs : GlobalNPC
             if (BRS.I.CurrentBossData is BossData bossData &&
                 bossData.SpawnAttributes is SpawnAttributes spawnData)
             {
-                try
-                {
-                    spawnRate = Math.Max(Util.RoundOff(spawnRate / spawnData.RateMultiplier), 0);
-                }
-                catch (DivideByZeroException)
+                float multiplier = spawnData.RateMultiplier;
+                if (multiplier <= 0)
                 {
                     spawnRate = 0;
+                }
+                else
+                {
+                    spawnRate = Math.Max(Util.RoundOff(spawnRate / multiplier), 0);
                 }
                 maxSpawns = Util.RoundOff((maxSpawns + spawnData.MaxFlatIncrease) * spawnData.MaxMultiplier);
             }

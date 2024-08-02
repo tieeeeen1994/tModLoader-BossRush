@@ -13,9 +13,15 @@ public static class Util
 {
     public static int RoundOff(this float value) => (int)MathF.Round(value, 0, MidpointRounding.ToEven);
 
-    public static int RoundOff(this double value) => (int)Math.Round(value, 0, MidpointRounding.ToEven);
-
     public static Vector2 RoundOff(this Vector2 value) => new(RoundOff(value.X), RoundOff(value.Y));
+
+    public static int ToWorldCoordinate(this int tileCoordinate) => tileCoordinate * 16 + 8;
+
+    public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
+
+    public static int ToFrames(this float seconds) => RoundOff(seconds * 60);
+
+    public static int ToFrames(this int seconds) => seconds * 60;
 
     public static void NewText(string message, Color? color = null, bool literal = false)
     {
@@ -43,11 +49,7 @@ public static class Util
         }
     }
 
-    public static int ToFrames(this float seconds) => RoundOff(seconds * 60);
-
-    public static int ToFrames(this int seconds) => seconds * 60;
-
-    public static Vector2 ChooseRandomPoint(this Rectangle rectangle)
+    internal static Vector2 ChooseRandomPoint(this Rectangle rectangle)
     {
         int signWidth = Math.Sign(rectangle.Width);
         int signHeight = Math.Sign(rectangle.Height);
@@ -56,9 +58,7 @@ public static class Util
         return new(offsetX, offsetY);
     }
 
-    public static int RandomSign(int number = 1) => Main.rand.NextBool() ? number : -number;
-
-    public static void CleanStage()
+    internal static void CleanStage()
     {
         foreach (var npc in Main.npc)
         {
@@ -81,8 +81,4 @@ public static class Util
             packet.Send();
         }
     }
-
-    public static int ToWorldCoordinate(this int tileCoordinate) => tileCoordinate * 16;
-
-    public static int ToWorldCoordinate(this double tileCoordinate) => RoundOff(tileCoordinate * 16d);
 }

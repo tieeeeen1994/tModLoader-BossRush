@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -32,47 +33,13 @@ public struct PlaceContext
 
     public readonly void TeleportPlayers()
     {
-        foreach (var player in Main.ActivePlayers)
-        {
-            if (player.active)
-            {
-                Vector2 position = TeleportRange.ChooseRandomPoint().RoundOff();
-                if (Main.netMode == NetmodeID.SinglePlayer)
-                {
-                    player.Teleport(position);
-                }
-                else if (Main.netMode == NetmodeID.Server)
-                {
-                    ModPacket packet = BR.I.GetPacket();
-                    packet.Write((byte)BR.PacketType.Teleport);
-                    packet.WriteVector2(position);
-                    packet.Send(player.whoAmI);
-                }
-            }
-        }
+        TeleportLogic((self, _) => self.TeleportRange.ChooseRandomPoint().RoundOff());
     }
 
     public readonly void BackToSpawn()
     {
         Vector2 worldCoordinates = new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates();
-        foreach (var player in Main.ActivePlayers)
-        {
-            if (player.active)
-            {
-                Vector2 position = worldCoordinates - new Vector2(player.width / 2, player.height);
-                if (Main.netMode == NetmodeID.SinglePlayer)
-                {
-                    player.Teleport(position);
-                }
-                else if (Main.netMode == NetmodeID.Server)
-                {
-                    ModPacket packet = BR.I.GetPacket();
-                    packet.Write((byte)BR.PacketType.Teleport);
-                    packet.WriteVector2(position);
-                    packet.Send(player.whoAmI);
-                }
-            }
-        }
+        TeleportLogic((self, player) => worldCoordinates - new Vector2(player.width / 2, player.height));
     }
 
     private static Vector2 UnderworldPosition(int xTileCoordinate)
@@ -80,5 +47,27 @@ public struct PlaceContext
         int yTileCoordinate = Util.RoundOff(Main.UnderworldLayer + .34f * (Main.maxTilesY - Main.UnderworldLayer));
         Vector2 worldPosition = new Vector2(xTileCoordinate, yTileCoordinate).ToWorldCoordinates();
         return worldPosition;
+    }
+
+    private readonly void TeleportLogic(Func<PlaceContext, Player, Vector2> positionFunction)
+    {
+        foreach (var player in Main.ActivePlayers)
+        {
+            if (player.active)
+            {
+                Vector2 position = positionFunction(this, player);
+                if (Main.netMode == NetmodeID.SinglePlayer)
+                {
+                    player.Teleport(position);
+                }
+                else if (Main.netMode == NetmodeID.Server)
+                {
+                    ModPacket packet = BR.I.GetPacket();
+                    packet.Write((byte)BR.PacketType.Teleport);
+                    packet.WriteVector2(position);
+                    packet.Send(player.whoAmI);
+                }
+            }
+        }
     }
 }

@@ -1,3 +1,4 @@
+using BossRush.Interfaces;
 using BossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ using BR = BossRush.BossRush;
 
 namespace BossRush;
 
-public class BossRushSystem : ModSystem
+public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 {
-    # region Fields & Properties
+    #region Fields & Properties
     public static BossRushSystem I => Instance;
     public static BossRushSystem Instance => ModContent.GetInstance<BossRushSystem>();
     public bool IsBossRushActive => State != States.Off;
@@ -29,7 +30,7 @@ public class BossRushSystem : ModSystem
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
-    # endregion
+    #endregion
 
     public override void NetSend(BinaryWriter writer)
     {
@@ -228,7 +229,7 @@ public class BossRushSystem : ModSystem
         switch (State)
         {
             case States.On:
-                Util.NewText("Mods.BossRush.Messages.Commence", new(102, 255, 255));
+                NewText("Mods.BossRush.Messages.Commence");
                 InitializeSystem();
                 ChangeState(States.Prepare);
                 break;
@@ -239,7 +240,7 @@ public class BossRushSystem : ModSystem
                     prepareTimer = 0;
                     if (bossQueue.Count <= 0)
                     {
-                        Util.NewText("Mods.BossRush.Messages.Win", new(102, 255, 255));
+                        NewText("Mods.BossRush.Messages.Win");
                         ChangeState(States.End);
                     }
                     else
@@ -256,7 +257,7 @@ public class BossRushSystem : ModSystem
                 break;
 
             case States.End:
-                Util.NewText("Mods.BossRush.Messages.End", new(102, 255, 255));
+                NewText("Mods.BossRush.Messages.End");
                 Util.CleanStage();
                 ResetSystem();
                 break;
@@ -270,13 +271,13 @@ public class BossRushSystem : ModSystem
         switch (State)
         {
             case States.Off:
-                Util.NewText("Mods.BossRush.Messages.Active", new(102, 255, 255));
+                NewText("Mods.BossRush.Messages.Active");
                 Util.CleanStage();
                 ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
-                Util.NewText("Mods.BossRush.Messages.Disable", new(102, 255, 255));
+                NewText("Mods.BossRush.Messages.Disable");
                 Util.CleanStage();
                 ChangeState(States.End);
                 break;
@@ -309,7 +310,7 @@ public class BossRushSystem : ModSystem
                     }
                 }
                 allDead = true;
-                Util.NewText("Mods.BossRush.Messages.Failure", new(102, 255, 255));
+                NewText("Mods.BossRush.Messages.Failure");
             }
             else
             {
@@ -362,7 +363,7 @@ public class BossRushSystem : ModSystem
         {
             Util.CleanStage();
             ChangeState(States.Prepare);
-            Util.NewText("Mods.BossRush.Messages.Despawn", new(102, 255, 255));
+            NewText("Mods.BossRush.Messages.Despawn");
         }
     }
 
@@ -474,11 +475,12 @@ public class BossRushSystem : ModSystem
         }
         else
         {
-            Util.NewText("Something went wrong. No players found when trying to spawn boss.",
-                         new(102, 255, 255), true);
+            NewText("Something went wrong. No players found when trying to spawn boss.", true);
             return [];
         }
     }
+
+    private void NewText(string text, bool literal = false) => Util.NewText(text, new(102, 255, 255), literal);
 
     public enum States : byte { Off, On, Prepare, Run, End }
 }

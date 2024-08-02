@@ -1,3 +1,4 @@
+using BossRush.Interfaces;
 using Microsoft.Xna.Framework;
 using System.IO;
 using System.Reflection;
@@ -9,9 +10,10 @@ using BRS = BossRush.BossRushSystem;
 
 namespace BossRush;
 
-public class BossRush : Mod
+public class BossRush : Mod, IInstanceable<BossRush>
 {
-    internal static BossRush I => ModContent.GetInstance<BossRush>();
+    public static BossRush I => ModContent.GetInstance<BossRush>();
+    public static BossRush Instance => I;
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
     {
@@ -88,7 +90,7 @@ public class BossRush : Mod
                 selected.position.X = X - selected.width / 2;
                 selected.position.Y = Y - selected.height;
                 selected.active = true;
-                selected.timeLeft = (int)(NPC.activeTime * 1.25);
+                selected.timeLeft = Util.RoundOff(NPC.activeTime * 1.25f);
                 selected.wet = Collision.WetCollision(selected.position, selected.width, selected.height);
                 selected.ai[0] = ai0;
                 selected.ai[1] = ai1;
