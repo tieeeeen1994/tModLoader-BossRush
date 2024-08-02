@@ -222,12 +222,12 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Lunatic Cultist
-        sign = Util.RandomSign();
         BRS.AddBoss(-13, new(
             [NPCID.CultistBoss],
-            spawnOffset: new(300 * sign, 0, -100 * sign, -500),
+            spawnOffset: new(75, 20, 0, 0),
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: 8, damageMultiplier: 1.5f)
+            modifiedAttributes: new(lifeMultiplier: 8, damageMultiplier: 1.5f,
+                                    damageFlatIncrease: 50)
         ));
         #endregion
 
