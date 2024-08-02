@@ -226,7 +226,7 @@ public class BossRushItem : ModItem
             [NPCID.CultistBoss],
             spawnOffset: new(75, 20, 0, 0),
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: .4f, damageMultiplier: 1.3f,
+            modifiedAttributes: new(lifeMultiplier: 4, damageMultiplier: 1.3f,
                                     lifeFlatIncrease: 10000, damageFlatIncrease: 50)
         ));
         #endregion
