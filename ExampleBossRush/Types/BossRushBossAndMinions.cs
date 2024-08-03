@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.Types;
 
@@ -22,8 +22,7 @@ public abstract class BossRushBossAndMinions : GlobalNPC
 
     public sealed override void PostAI(NPC npc)
     {
-        if (BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
-            BRS.I.CurrentBossData != null && AbsoluteCheck)
+        if (StandardChecks)
         {
             Update(npc);
         }
@@ -61,4 +60,7 @@ public abstract class BossRushBossAndMinions : GlobalNPC
             }
         }
     }
+
+    protected bool StandardChecks => BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
+                                     BRS.I.CurrentBossData != null && AbsoluteCheck;
 }

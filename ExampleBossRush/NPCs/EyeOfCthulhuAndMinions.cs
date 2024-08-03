@@ -1,4 +1,4 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;

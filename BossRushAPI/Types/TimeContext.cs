@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 
-namespace BossRush.Types;
+namespace BossRushAPI.Types;
 
 public struct TimeContext(double time, bool dayTime)
 {

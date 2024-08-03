@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.ID;
 using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush;
 

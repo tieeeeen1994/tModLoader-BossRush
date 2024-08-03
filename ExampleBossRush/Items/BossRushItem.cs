@@ -1,5 +1,5 @@
-using BossRush;
-using BossRush.Types;
+using BossRushAPI;
+using BossRushAPI.Types;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.Audio;
@@ -86,12 +86,13 @@ public class BossRushItem : ModItem
         #endregion
 
         # region Eater of Worlds
-        BRS.AddBoss(3, new(
+        BRS.AddBoss(-3, new(
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
             spawnOffset: new(-1000, 1000, 2000, 500),
             modifiedAttributes: new(damageMultiplier: 2, damageFlatIncrease: 70,
-                                    lifeMultiplier: 200, defenseMultiplier: 50),
+                                    lifeMultiplier: 200, defenseMultiplier: 2,
+                                    defenseFlatIncrease: 50),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion

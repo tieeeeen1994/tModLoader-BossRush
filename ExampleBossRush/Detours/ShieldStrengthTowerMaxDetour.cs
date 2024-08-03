@@ -3,7 +3,7 @@ using MonoMod.RuntimeDetour;
 using System;
 using System.Reflection;
 using Terraria;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.Detours;
 

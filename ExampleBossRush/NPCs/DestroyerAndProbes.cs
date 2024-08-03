@@ -1,4 +1,4 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;
@@ -48,7 +48,7 @@ public class DestroyerAndProbes : BossRushBossAndMinions
 
     public override void OnKill(NPC npc)
     {
-        if (npc.type == NPCID.Probe)
+        if (StandardChecks && npc.type == NPCID.Probe)
         {
             NPC.NewNPC(npc.GetSource_FromAI("ProbeDied"),
                        npc.Center.X.RoundOff(), npc.Center.Y.RoundOff(),

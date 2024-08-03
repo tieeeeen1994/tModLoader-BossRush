@@ -1,4 +1,4 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System;
@@ -48,7 +48,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                         var rotation = (npc.rotation + MathHelper.PiOver2).ToRotationVector2();
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                                                  rotation * 24f, ProjectileID.RocketSkeleton,
-                                                 1, 8f, -1, 0, 0, npc.target);
+                                                 Damage(.12f), 8f, -1, 0, 0, npc.target);
                     }
                 }
                 else
@@ -68,7 +68,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                     {
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                                                  npc.velocity * 1.5f, ProjectileID.Spike,
-                                                 1, 20f, -1, 0, 0, npc.target);
+                                                 Damage(.2f), 30f, -1, 0, 0, npc.target);
                     }
                     ai["SpikeCooldown"] = spikeCooldown = 2.ToFrames();
                 }
@@ -95,7 +95,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                         offset.Normalize();
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + (offset * 48),
                                                  velocity, ProjectileID.DeathLaser,
-                                                 1, 25, -1, 0, 0, 69);
+                                                 Damage(.07f), 25, -1, 0, 0, 69);
                     }
                 }
                 else
@@ -118,7 +118,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
 
     internal void SawScrap(NPC npc)
     {
-        if (npc.type == NPCID.PrimeSaw)
+        if (StandardChecks && npc.type == NPCID.PrimeSaw)
         {
             var scrapCooldown = StoreOrFetch("ScrapCooldown", 0);
             if (scrapCooldown <= 0)
@@ -128,7 +128,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                 {
                     var velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity,
-                                             ProjectileID.SaucerScrap, 1, 15f);
+                                             ProjectileID.SaucerScrap, Damage(.1f), 15f);
                 }
                 else
                 {
@@ -140,4 +140,6 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
             }
         }
     }
+
+    private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
 }

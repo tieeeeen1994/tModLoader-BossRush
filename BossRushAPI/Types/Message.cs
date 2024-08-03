@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace BossRush.Types;
+namespace BossRushAPI.Types;
 
 public struct Message(string text, bool literal, Color? color = null)
 {

@@ -1,5 +1,5 @@
-using BossRush.Interfaces;
-using BossRush.Types;
+using BossRushAPI.Interfaces;
+using BossRushAPI.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
@@ -8,9 +8,9 @@ using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
-using BR = BossRush.BossRush;
+using BR = BossRushAPI.BossRushAPI;
 
-namespace BossRush;
+namespace BossRushAPI;
 
 public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 {

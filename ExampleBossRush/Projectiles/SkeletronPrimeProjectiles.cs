@@ -1,11 +1,10 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
 
@@ -39,10 +38,6 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
         else if (projectile.type == ProjectileID.RocketSkeleton)
         {
             var rocketTracker = StoreOrFetch("RocketTracker", new Dictionary<Projectile, int>());
-            if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
-            {
-                projectile.damage = Util.RoundOff((int)originalDamage * .12f);
-            }
             StoreOrFetch(rocketTracker, projectile, 3.ToFrames());
             if (--rocketTracker[projectile] <= 0)
             {
@@ -52,8 +47,8 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
             {
                 if (player.active && !player.dead)
                 {
-                    Rectangle pBox = player.Hitbox;
-                    Rectangle iBox = new(pBox.X + 4, pBox.Y + 4, pBox.Width - 8, pBox.Height - 8);
+                    Point point = new(player.Center.X.RoundOff(), player.Center.Y.RoundOff());
+                    Rectangle iBox = new(point.X - 4, point.Y - 4, 8, 8);
                     if (projectile.Hitbox.Intersects(iBox))
                     {
                         projectile.Kill();
@@ -70,18 +65,7 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
         }
         else if (projectile.type == ProjectileID.Spike)
         {
-            if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
-            {
-                projectile.damage = Util.RoundOff((int)originalDamage * .2f);
-            }
             projectile.light = .5f;
-        }
-        else if (projectile.type == ProjectileID.SaucerScrap)
-        {
-            if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
-            {
-                projectile.damage = Util.RoundOff((int)originalDamage * .1f);
-            }
         }
     }
 }

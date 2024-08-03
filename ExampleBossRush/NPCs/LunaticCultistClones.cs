@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
 
@@ -25,13 +25,16 @@ public class LunaticCultistClone : BossRushBossAndMinions
         }
     }
 
-    public override bool? CanBeHitByItem(NPC npc, Player player, Item item)
-    {
-        return npc.type != NPCID.AncientLight && npc.type != NPCID.AncientDoom;
-    }
+    public override bool? CanBeHitByItem(NPC npc, Player player, Item item) => CanBeHitLogic(npc);
 
-    public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile)
+    public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile) => CanBeHitLogic(npc);
+
+    private bool? CanBeHitLogic(NPC npc)
     {
-        return npc.type != NPCID.AncientLight && npc.type != NPCID.AncientDoom;
+        if (StandardChecks && npc.type == NPCID.AncientLight || npc.type == NPCID.AncientDoom)
+        {
+            return false;
+        }
+        return null;
     }
 }

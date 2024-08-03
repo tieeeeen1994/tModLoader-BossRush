@@ -1,7 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush;
 
@@ -14,6 +14,8 @@ public class ExampleBossRushPlayer : ModPlayer
             switch (boss.type)
             {
                 case NPCID.EaterofWorldsHead:
+                case NPCID.EaterofWorldsBody:
+                case NPCID.EaterofWorldsTail:
                     Player.ZoneCorrupt = true;
                     break;
                 case NPCID.BrainofCthulhu:

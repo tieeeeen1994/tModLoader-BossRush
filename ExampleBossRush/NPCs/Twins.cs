@@ -38,13 +38,19 @@ public class Twins : BossRushBossAndMinions
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
     {
-        binaryWriter.Write(npc.defense);
-        binaryWriter.Write(npc.defDefense);
+        if (StandardChecks && ApplicableTypes.Contains(npc.type))
+        {
+            binaryWriter.Write(npc.defense);
+            binaryWriter.Write(npc.defDefense);
+        }
     }
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
     {
-        npc.defense = binaryReader.ReadInt32();
-        npc.defDefense = binaryReader.ReadInt32();
+        if (StandardChecks && ApplicableTypes.Contains(npc.type))
+        {
+            npc.defense = binaryReader.ReadInt32();
+            npc.defDefense = binaryReader.ReadInt32();
+        }
     }
 }

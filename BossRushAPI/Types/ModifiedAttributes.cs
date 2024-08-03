@@ -1,4 +1,4 @@
-﻿namespace BossRush.Types;
+﻿namespace BossRushAPI.Types;
 
 public struct ModifiedAttributes
 {

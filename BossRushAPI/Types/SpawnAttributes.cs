@@ -1,4 +1,4 @@
-﻿namespace BossRush.Types;
+﻿namespace BossRushAPI.Types;
 
 public struct SpawnAttributes(float maxMultiplier = 1f, int maxFlatIncrease = 0, float rateMultiplier = 1f)
 {

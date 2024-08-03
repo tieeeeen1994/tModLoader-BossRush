@@ -1,7 +1,7 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using System.Collections.Generic;
 using Terraria;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.Types
 {

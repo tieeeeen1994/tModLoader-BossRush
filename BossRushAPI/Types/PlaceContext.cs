@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using BR = BossRush.BossRush;
+using BR = BossRushAPI.BossRushAPI;
 
-namespace BossRush.Types;
+namespace BossRushAPI.Types;
 
 public struct PlaceContext
 {

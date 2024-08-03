@@ -1,4 +1,4 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
 
@@ -41,8 +41,8 @@ public class GolemParts : BossRushBossAndMinions
                         var velocity = Main.rand.NextVector2CircularEdge(5, 5);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity,
                                                  ProjectileID.Nail, Util.RoundOff(npc.damage * .15f), 0f);
-                    }    
-                } 
+                    }
+                }
             }
             fistStateTracker[npc] = npc.ai[0];
         }
@@ -87,19 +87,13 @@ public class GolemParts : BossRushBossAndMinions
         }
     }
 
-    public override bool? CanBeHitByItem(NPC npc, Player player, Item item)
-    {
-        return !(npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight);
-    }
+    public override bool? CanBeHitByItem(NPC npc, Player player, Item item) => CanBeHitLogic(npc);
 
-    public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile)
-    {
-        return !(npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight);
-    }
+    public override bool? CanBeHitByProjectile(NPC npc, Projectile projectile) => CanBeHitLogic(npc);
 
     public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
     {
-        if (npc.type == NPCID.GolemHeadFree)
+        if (StandardChecks && npc.type == NPCID.GolemHeadFree)
         {
             var realGolemHead = StoreOrFetch<NPC>("RealGolemHead", null);
             var extraHeads = StoreOrFetch("ExtraHeads", new NPC[2] { null, null });
@@ -112,7 +106,7 @@ public class GolemParts : BossRushBossAndMinions
 
     public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
     {
-        if (npc.type == NPCID.GolemHeadFree)
+        if (StandardChecks && npc.type == NPCID.GolemHeadFree)
         {
             ai["RealGolemHead"] = Main.npc[binaryReader.ReadInt32()];
             var extraHeads = StoreOrFetch("ExtraHeads", new NPC[2] { null, null });
@@ -121,5 +115,14 @@ public class GolemParts : BossRushBossAndMinions
             ai["ExtraHeads"] = extraHeads;
             ai["GolemHeadTracker"] = bitReader.ReadBit();
         }
+    }
+
+    private bool? CanBeHitLogic(NPC npc)
+    {
+        if (StandardChecks && (npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight))
+        {
+            return false;
+        }
+        return null;
     }
 }

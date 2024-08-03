@@ -2,6 +2,8 @@ An example mod that implements the Boss Rush API mod. This mod is playable.
 
 During Boss Rush Event, the player is expected to fight the bosses consecutively without rest.
 
+In order to start the Boss Rush event, players must craft the Lunar Acorn. Players can craft 2 Lunar Acorns using 20 Acorns and a Celestial Sigil.
+
 Here is the order of the bosses. Equal numbers mean they will be spawned randomly within that number.
 
 1. King Slime

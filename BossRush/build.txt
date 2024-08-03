@@ -1,3 +1,0 @@
-displayName = Boss Rush API
-author = tieeeeen1994
-version = 1.0.0

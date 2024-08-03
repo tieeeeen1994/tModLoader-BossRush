@@ -1,10 +1,10 @@
-﻿using BossRush.Types;
+﻿using BossRushAPI.Types;
 using System;
 using Terraria;
 using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
-namespace BossRush.NPCs;
+namespace BossRushAPI.NPCs;
 
 public class RandomMobs : GlobalNPC
 {

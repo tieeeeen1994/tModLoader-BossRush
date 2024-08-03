@@ -1,4 +1,4 @@
 displayName = Example Boss Rush
 author = tieeeeen1994
-version = 1.0.0
-modReferences = BossRush
+version = 1.0.1
+modReferences = BossRushAPI

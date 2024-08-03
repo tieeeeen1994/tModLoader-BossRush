@@ -1,9 +1,9 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
-namespace BossRush.NPCs;
+namespace BossRushAPI.NPCs;
 
 public class BossAndSlaves : GlobalNPC
 {

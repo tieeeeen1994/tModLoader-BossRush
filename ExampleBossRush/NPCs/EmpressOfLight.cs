@@ -1,4 +1,4 @@
-﻿using BossRush.Types;
+﻿using BossRushAPI.Types;
 using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria;

@@ -1,4 +1,4 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs;
@@ -18,7 +18,6 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
         NPCID.EaterofWorldsBody,
         NPCID.EaterofWorldsTail,
         NPCID.Corruptor,
-        NPCID.EaterofSouls,
         NPCID.VileSpit,
         NPCID.VileSpitEaterOfWorlds
     ];
@@ -83,6 +82,7 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
         {
             if (!spitTracker.TryGetValue(npc, out bool tracked) && !tracked)
             {
+                npc.CanBeReplacedByOtherNPCs = true;
                 npc.life = npc.lifeMax = 10;
                 npc.defense = 10000;
                 npc.knockBackResist = 0f;

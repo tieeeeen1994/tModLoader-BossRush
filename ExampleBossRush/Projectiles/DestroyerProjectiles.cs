@@ -1,10 +1,10 @@
-﻿using BossRush;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRush.BossRushSystem;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
 
