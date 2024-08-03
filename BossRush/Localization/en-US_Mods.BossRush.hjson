@@ -1,10 +1,3 @@
-Items: {
-	BossRushItem: {
-		DisplayName: Boss Rush Item
-		Tooltip: ""
-	}
-}
-
 Messages: {
 	Active: Boss Rush started.
 	Commence: Boss Rush is commencing.

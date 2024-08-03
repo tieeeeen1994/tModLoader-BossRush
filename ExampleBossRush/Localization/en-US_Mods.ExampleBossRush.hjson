@@ -4,3 +4,14 @@ DeathMessages: {
 	NebulaPillar: Nebula Pillar destroyed!
 	StardustPillar: Stardust Pillar destroyed!
 }
+
+Items: {
+	BossRushItem: {
+		DisplayName: Lunar Acorn
+		Tooltip:
+			'''
+			Initiates the Boss Rush Event.
+			'Thou hast created the nut of Cthulhu.'
+			'''
+	}
+}

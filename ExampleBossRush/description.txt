@@ -1,1 +1,107 @@
-Modify this file with a description of your mod.
+An example mod that implements the Boss Rush API mod. This mod is playable.
+
+During Boss Rush Event, the player is expected to fight the bosses consecutively without rest.
+
+Here is the order of the bosses. Equal numbers mean they will be spawned randomly within that number.
+
+1. King Slime
+- Only generates Spiked Slimes when hit.
+- Spiked Slimes now generate a projectile periodically.
+
+2. Deerclops
+- No changes.
+
+3. Eye of Cthulhu
+- Servants now perform a dash attack.
+
+4. Eater of Worlds
+- Now spawns a corruptor when a segment is destroyed.
+- Vile Spits now only take 1 damage and has 10 life.
+
+4. Brain of Cthulhu
+- Now spawns Ichor Stickers when a Creeper dies.
+- Ichor Sticker's projectiles is not affected by gravity.
+- brain of Cthulhu is immune to knockback in its second phase.
+
+5. Queen Bee
+- The bees she spawns are faster.
+
+6. Skeletron
+- Now fires more projectiles as hands die one by one.
+
+7. Wall of Flesh
+- All minions are immune to knockback.
+
+8. Queen Slime
+- Grounded minions are immune to knowckback.
+- Flying minions have high knockback resistance.
+
+9. The Twins
+- They go to their second phase much earlier.
+- Retinazer deals the same damage as Spazmatism now.
+
+9. The Destroyer
+- Probes are now susceptible to knockback.
+- Probes generate Deadly Spheres when they die.
+
+9. Skeletron Prime
+- Prime Cannon now fires a rocket after the bomb.
+- Prime Vice now throws Spiked Balls.
+- Prime Laser now fires 3 lasers.
+- Prime Saw now produces damaging scraps when damaged.
+
+10. Plantera
+- Always enraged.
+- Her second phase makes her fire much more projectiles than her first phase.
+- Plantera's Tentacles grant Plantera a huge defense boost.
+- Killing her tentacles will make her defense drop.
+
+11. Golem
+- Going to second phase now generates 3 heads.
+- Golem Fists are now invulnerable.
+- Golem Fists generate nails when retracting.
+
+12. Duke Fishron
+- Sharkrons now accelerate faster as they travel.
+- Bubbles now accelerate as they travel.
+- Duke Fishron goes to its phases much earlier.
+- Duke Fishron's last phase makes sharkrons and cthulhunados teleport as well.
+
+12. Empress of Light
+- Forces daytime when at very low health.
+
+13. Lunatic Cultist
+- Ancient Light is now invulnerable to damage.
+- Ancient Doom is now invulnerable to damage.
+- Phophecy's End is weakened, but the other attacks are now much more powerful.
+- The clones now deal contact damage.
+
+14. Solar Pillar
+- Has 150 shield points.
+- Spawning is more aggressive.
+
+14. Nebula Pillar
+- Has 150 shield points.
+- Spawning is more aggressive.
+
+14. Vortex Pillar
+- Has 150 shield points.
+- Spawning is more aggressive.
+
+14. Stardust Pillar
+- Has 150 shield points.
+- Spawning is more aggressive.
+
+15. Moon Lord
+- Now spawns with a True Eye of Cthulhu.
+- When the heart is exposed, a True Eye of Cthulhu spawns.
+- When the heart is exposed, The hands and heads periodically spawns Moon Boulders.
+- When Moon Lord dies, the heart combusts with Moon Boulders.
+
+All bosses (and their minions) have buffed stats in order to make the post Moon Lord gear relevant.
+
+The main purpose of this mod is to showcase the Boss Rush API mod, all the while providing a challenging vanilla experience. These changes were designed to be multiplayer-compatible.
+
+For suggestions, bug reports, or any other feedback, please visit the GitHub repository.
+
+https://github.com/tieeeeen1994/tModLoader-BossRush

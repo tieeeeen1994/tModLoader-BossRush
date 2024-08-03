@@ -17,14 +17,13 @@ public class BossRushItem : ModItem
         Item.value = 0;
         Item.rare = ItemRarityID.Purple;
         Item.useStyle = ItemUseStyleID.HoldUp;
-        Item.consumable = false;
         Item.useTime = Item.useAnimation = 60;
         Item.UseSound = SoundID.Roar;
         Item.autoReuse = false;
         Item.createTile = -1;
     }
 
-    public override string Texture => $"Terraria/Images/Item_{ItemID.Acorn}";
+    public override string Texture => nameof(ExampleBossRush) + "/Textures/" + nameof(BossRushItem);
 
     public override bool? UseItem(Player player)
     {
@@ -39,6 +38,15 @@ public class BossRushItem : ModItem
         }
 
         return true;
+    }
+
+    public override void AddRecipes()
+    {
+        var recipe = CreateRecipe(2);
+        recipe.AddIngredient(ItemID.Acorn, 20);
+        recipe.AddIngredient(ItemID.CelestialSigil);
+        recipe.AddTile(TileID.LunarCraftingStation);
+        recipe.Register();
     }
 
     private BossRushSystem BRS => ModContent.GetInstance<BossRushSystem>();
@@ -266,7 +274,7 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Moon Lord
-        BRS.AddBoss(-15, new(
+        BRS.AddBoss(15, new(
             [NPCID.MoonLordCore],
             spawnAttributes: SpawnAttributes.NoSpawns,
             modifiedAttributes: new(lifeMultiplier: .5f, damageMultiplier: 1.6f, projectilesAffected: true)

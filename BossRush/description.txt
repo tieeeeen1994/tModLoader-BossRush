@@ -1,1 +1,5 @@
-Modify this file with a description of your mod.
+A mod that contains API for creating boss rush events. This mod does not add any content. It is a framework for other mods to use.
+
+For more information, visit the GitHub repository.
+
+https://github.com/tieeeeen1994/tModLoader-BossRush
