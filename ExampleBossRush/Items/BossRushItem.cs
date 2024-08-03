@@ -13,7 +13,6 @@ public class BossRushItem : ModItem
     public override void SetDefaults()
     {
         Item.CloneDefaults(ItemID.Acorn);
-        Item.maxStack = 1;
         Item.value = 0;
         Item.rare = ItemRarityID.Purple;
         Item.useStyle = ItemUseStyleID.HoldUp;
