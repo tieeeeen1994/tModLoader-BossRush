@@ -22,6 +22,7 @@ public class ExampleBossRush : Mod
         On_VortexPillarBigProgressBar.GetMaxShieldValue += VortexShield;
         On_StardustPillarBigProgressBar.GetMaxShieldValue += StardustShield;
         ShieldStrengthTowerMaxDetour.Apply();
+        On_Projectile.CanExplodeTile += On_Projectile_CanExplodeTile;
     }
 
     public override void Unload()
@@ -45,16 +46,6 @@ public class ExampleBossRush : Mod
                     {
                         Dust.NewDust(position - new Vector2(15, 15), 30, 30, DustID.Demonite);
                     }
-                }
-                break;
-
-            case PacketTypes.BoulderProperties:
-                {
-                    int boulderIndex = reader.ReadInt32();
-                    Projectile projectile = Main.projectile[boulderIndex];
-                    projectile.friendly = false;
-                    projectile.hostile = true;
-                    projectile.trap = false;
                 }
                 break;
 
@@ -97,7 +88,8 @@ public class ExampleBossRush : Mod
         }
     }
 
-    private float VortexShield(On_VortexPillarBigProgressBar.orig_GetMaxShieldValue orig, VortexPillarBigProgressBar self)
+    private float VortexShield(On_VortexPillarBigProgressBar.orig_GetMaxShieldValue orig,
+                               VortexPillarBigProgressBar self)
     {
         if (BRS.I.IsBossRushActive)
         {
@@ -122,7 +114,8 @@ public class ExampleBossRush : Mod
         }
     }
 
-    private float StardustShield(On_StardustPillarBigProgressBar.orig_GetMaxShieldValue orig, StardustPillarBigProgressBar self)
+    private float StardustShield(On_StardustPillarBigProgressBar.orig_GetMaxShieldValue orig,
+                                 StardustPillarBigProgressBar self)
     {
         if (BRS.I.IsBossRushActive)
         {
@@ -134,10 +127,21 @@ public class ExampleBossRush : Mod
         }
     }
 
+    private bool On_Projectile_CanExplodeTile(On_Projectile.orig_CanExplodeTile orig, Projectile self, int x, int y)
+    {
+        if (BRS.I.IsBossRushActive && self.type == ProjectileID.BombSkeletronPrime && Main.getGoodWorld)
+        {
+            return false;
+        }
+        else
+        {
+            return orig(self, x, y);
+        }
+    }
+
     public enum PacketTypes : byte
     {
         CorruptorDust,
-        BoulderProperties, 
         PrimeScrap,
         EmpressClean
     }

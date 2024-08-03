@@ -59,32 +59,21 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
         }
         else if (npc.type == NPCID.PrimeVice)
         {
-            var boulderCooldown = StoreOrFetch("BoulderCooldown", 0);
+            var spikeCooldown = StoreOrFetch("SpikeCooldown", 0);
             if (npc.ai[2] == 2f || (npc.ai[2] == 5f))
             {
-                if (boulderCooldown <= 0)
+                if (spikeCooldown <= 0)
                 {
                     if (Main.netMode != NetmodeID.MultiplayerClient)
                     {
-                        var proj = Projectile.NewProjectileDirect(npc.GetSource_FromAI(), npc.Center,
-                                                                  npc.velocity * 1.5f, ProjectileID.Boulder,
-                                                                  1, 20f, -1, 0, 0, npc.target);
-                        proj.trap = false;
-                        proj.friendly = false;
-                        proj.hostile = true;
-                        if (Main.netMode == NetmodeID.Server)
-                        {
-                            ModPacket packet = EBR.Instance.GetPacket();
-                            packet.Write((byte)EBR.PacketTypes.BoulderProperties);
-                            packet.Write(proj.whoAmI);
-                            packet.Send();
-                        }
-                        proj.netUpdate = true;
+                        Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
+                                                 npc.velocity * 1.5f, ProjectileID.Spike,
+                                                 1, 20f, -1, 0, 0, npc.target);
                     }
-                    ai["BoulderCooldown"] = boulderCooldown = 2.ToFrames();
+                    ai["SpikeCooldown"] = spikeCooldown = 2.ToFrames();
                 }
             }
-            ai["BoulderCooldown"] = Math.Max(0, --boulderCooldown);
+            ai["SpikeCooldown"] = Math.Max(0, --spikeCooldown);
         }
         else if (npc.type == NPCID.PrimeSaw)
         {

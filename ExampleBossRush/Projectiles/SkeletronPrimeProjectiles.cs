@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static ExampleBossRush.ExampleBossRushUtils;
+using BRS = BossRush.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
 
@@ -13,8 +14,8 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
     protected override List<int> ApplicableTypes => [
         ProjectileID.BombSkeletronPrime,
         ProjectileID.RocketSkeleton,
-        ProjectileID.Boulder,
-        ProjectileID.SaucerScrap
+        ProjectileID.SaucerScrap,
+        ProjectileID.Spike
     ];
 
     protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.SkeletronPrime);
@@ -67,12 +68,13 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
                 projectile.velocity *= 20f;
             }
         }
-        else if (projectile.type == ProjectileID.Boulder)
+        else if (projectile.type == ProjectileID.Spike)
         {
             if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
             {
                 projectile.damage = Util.RoundOff((int)originalDamage * .2f);
             }
+            projectile.light = .5f;
         }
         else if (projectile.type == ProjectileID.SaucerScrap)
         {
