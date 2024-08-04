@@ -112,8 +112,8 @@ public class BossRushItem : ModItem
             [NPCID.QueenBee],
             spawnOffset: new(-1000, -1000, 2000, -200),
             timeContext: TimeContext.Noon,
-            modifiedAttributes: new(lifeFlatIncrease: 200, lifeMultiplier: 30,
-                                    damageFlatIncrease: 50, damageMultiplier: 1.5f),
+            modifiedAttributes: new(lifeFlatIncrease: 100, lifeMultiplier: 27,
+                                    damageFlatIncrease: 40),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion

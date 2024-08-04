@@ -16,9 +16,11 @@ public class QueenBeeProjectiles : BossRushProjectiles
 
     protected override void Update(Projectile projectile)
     {
-        if (projectile.type == ProjectileID.QueenBeeStinger && BRS.I.ReferenceBoss is NPC boss)
+        if (projectile.type == ProjectileID.QueenBeeStinger)
         {
-            projectile.damage = Util.RoundOff(boss.damage * .12f);
+            projectile.damage = Damage(.15f);
         }
     }
+
+    private int Damage(float multiplier) => Util.RoundOff(((int?)Ai["OriginalDamage"] ?? 0) * multiplier);
 }
