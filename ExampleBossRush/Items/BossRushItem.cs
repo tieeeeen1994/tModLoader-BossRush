@@ -63,24 +63,24 @@ public class BossRushItem : ModItem
         ));
         #endregion
 
-        #region Deerclops
-        sign = Util.RandomSign();
-        BRS.AddBoss(1, new(
-            [NPCID.Deerclops],
-            spawnOffset: new(500 * sign, 0, -200 * sign, -500),
-            modifiedAttributes: new(lifeMultiplier: 15, damageFlatIncrease: 40, projectilesAffected: true),
-            spawnAttributes: SpawnAttributes.NoSpawns
-        ));
-        #endregion
-
         #region Eye of Cthulhu
         sign = Util.RandomSign();
-        BRS.AddBoss(-2, new(
+        BRS.AddBoss(1, new(
             [NPCID.EyeofCthulhu],
             spawnOffset: new(1000 * sign, 1000, 200 * sign, -2000),
             timeContext: TimeContext.Night,
             modifiedAttributes: new(lifeMultiplier: 70, damageMultiplier: 6,
                                     lifeFlatIncrease: 80, damageFlatIncrease: 4),
+            spawnAttributes: SpawnAttributes.NoSpawns
+        ));
+        #endregion
+
+        #region Deerclops
+        sign = Util.RandomSign();
+        BRS.AddBoss(2, new(
+            [NPCID.Deerclops],
+            spawnOffset: new(500 * sign, 0, -200 * sign, -500),
+            modifiedAttributes: new(lifeMultiplier: 15, damageFlatIncrease: 40, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -102,8 +102,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(3, new(
             [NPCID.BrainofCthulhu],
             spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
-            modifiedAttributes: new(lifeMultiplier: 45, damageMultiplier: 2,
-                                    lifeFlatIncrease: 300, damageFlatIncrease: 70),
+            modifiedAttributes: new(lifeMultiplier: 20, lifeFlatIncrease: 300, damageFlatIncrease: 50),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         # endregion

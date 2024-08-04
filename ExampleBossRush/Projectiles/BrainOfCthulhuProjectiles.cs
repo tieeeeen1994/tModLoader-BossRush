@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using BossRushAPI;
 using ExampleBossRush.Types;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static ExampleBossRush.ExampleBossRushUtils;
@@ -16,6 +17,12 @@ public class BrainOfCthulhuProjectiles : BossRushProjectiles
     {
         if (projectile.type == ProjectileID.GoldenShowerHostile)
         {
+            var peeTracker = StoreOrFetch("PeeTracker", new Dictionary<int, bool>());
+            if (!peeTracker.TryGetValue(projectile.whoAmI, out bool isModified) && !isModified)
+            {
+                projectile.damage = Util.RoundOff(projectile.damage * .5f);
+                peeTracker[projectile.whoAmI] = true;
+            }
             projectile.velocity.Y = projectile.oldVelocity.Y;
         }
     }
