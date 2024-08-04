@@ -348,6 +348,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         if (!allDead && IsBossDefeated())
         {
             CurrentBossData?.DefeatMessage?.Display();
+            Util.CleanStage();
             ResurrectPlayers();
             allDead = false;
             bossQueue.Dequeue();

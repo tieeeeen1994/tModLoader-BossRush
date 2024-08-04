@@ -38,6 +38,7 @@ public class KingSlimeAndMinions : BossRushBossAndMinions
         }
         if (npc.type == NPCID.SlimeSpiked)
         {
+            npc.knockBackResist = .7f;
             var timer = StoreOrFetch(bombardSpikes, npc, 1.5f.ToFrames());
             if (timer <= 0)
             {

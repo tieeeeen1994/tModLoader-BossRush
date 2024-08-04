@@ -57,7 +57,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(0, new(
             [NPCID.KingSlime],
             spawnOffset: new(1000 * sign, -700, 200 * sign, -200),
-            modifiedAttributes: new(lifeMultiplier: 40, damageMultiplier: 2,
+            modifiedAttributes: new(lifeMultiplier: 30, damageMultiplier: 1.5f,
                                     lifeFlatIncrease: 80, damageFlatIncrease: 30),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
@@ -86,7 +86,7 @@ public class BossRushItem : ModItem
         #endregion
 
         # region Eater of Worlds
-        BRS.AddBoss(-3, new(
+        BRS.AddBoss(3, new(
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
             spawnOffset: new(-1000, 1000, 2000, 500),
