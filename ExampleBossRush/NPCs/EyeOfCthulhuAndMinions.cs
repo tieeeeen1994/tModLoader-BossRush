@@ -38,7 +38,7 @@ public class EyeOfCthulhuAndMinions : BossRushBossAndMinions
             if (state == "Default" && timer <= 0)
             {
                 state = "Dash";
-                timer = .5f.ToFrames();
+                timer = 1.2f.ToFrames();
                 dashTracker[npc] = npc.DirectionTo(Main.player[npc.target].Center);
                 SoundEngine.PlaySound(MiniRoar, npc.Center);
             }
@@ -46,10 +46,14 @@ public class EyeOfCthulhuAndMinions : BossRushBossAndMinions
             {
                 if (timer <= 0)
                 {
+                    npc.velocity = Vector2.Zero;
                     state = "Default";
                     timer = 3.ToFrames();
                 }
-                npc.velocity = dashTracker[npc] * 10f;
+                else
+                {
+                    npc.velocity = dashTracker[npc] * 20f;
+                }
             }
             servantTracker[npc] = (state, timer - 1);
             npc.knockBackResist = 0f;
