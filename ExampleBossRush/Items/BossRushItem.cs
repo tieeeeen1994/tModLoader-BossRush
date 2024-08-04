@@ -137,19 +137,19 @@ public class BossRushItem : ModItem
             [NPCID.WallofFlesh],
             placeContext: chooseSide,
             spawnOffset: offsetSide,
-            modifiedAttributes: new(lifeMultiplier: 40, lifeFlatIncrease: 100, damageFlatIncrease: 35),
+            modifiedAttributes: new(lifeMultiplier: 30, lifeFlatIncrease: 100, damageFlatIncrease: 35),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
 
         #region Queen Slime
         sign = Util.RandomSign();
-        BRS.AddBoss(7, new(
+        BRS.AddBoss(-7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
-            modifiedAttributes: new(lifeMultiplier: 10, damageMultiplier: 2f,
-                                    lifeFlatIncrease: 900),
+            modifiedAttributes: new(lifeMultiplier: 7, damageFlatIncrease: 10, damageMultiplier: 1.2f,
+                                    lifeFlatIncrease: 800, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
