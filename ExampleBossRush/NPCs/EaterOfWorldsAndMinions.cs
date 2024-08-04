@@ -86,6 +86,7 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 npc.life = npc.lifeMax = 10;
                 npc.defense = 10000;
                 npc.knockBackResist = 0f;
+                npc.velocity *= 2f;
                 spitTracker[npc] = true;
                 spitTimer[npc] = 5.ToFrames();
             }
@@ -121,10 +122,10 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 NPC currentBody = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsBody);
                 if (currentBody != null)
                 {
-                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .2f);
+                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .7f);
                     npc.life = npc.lifeMax;
                     npc.defense = 0;
-                    npc.damage = Util.RoundOff(currentBody.damage * .5f);
+                    npc.damage = Util.RoundOff(currentBody.damage);
                     npc.knockBackResist = 0f;
                     corruptTracker[npc] = true;
                 }
