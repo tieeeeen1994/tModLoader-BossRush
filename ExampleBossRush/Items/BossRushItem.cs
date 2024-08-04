@@ -65,10 +65,10 @@ public class BossRushItem : ModItem
 
         #region Deerclops
         sign = Util.RandomSign();
-        BRS.AddBoss(1, new(
+        BRS.AddBoss(-1, new(
             [NPCID.Deerclops],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500),
-            modifiedAttributes: new(lifeMultiplier: 20, damageMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 15, damageFlatIncrease: 40, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion

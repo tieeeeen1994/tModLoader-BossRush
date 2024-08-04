@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.Projectiles;
 
@@ -20,9 +19,15 @@ public class DeerclopsProjectiles : BossRushProjectiles
 
     protected override void Update(Projectile projectile)
     {
-        if (ApplicableTypes.Contains(projectile.type) && BRS.I.ReferenceBoss is NPC boss)
+        if (ApplicableTypes.Contains(projectile.type))
         {
-            projectile.damage = Util.RoundOff(boss.damage * .3f);
+            var tracker = StoreOrFetch("Tracker", new Dictionary<int, bool>());
+            if (!tracker.TryGetValue(projectile.whoAmI, out bool tracked) && !tracked)
+            {
+                tracker[projectile.whoAmI] = true;
+                projectile.damage = Util.RoundOff(projectile.damage * .5f);
+            }
+            CleanInactiveData(tracker);
         }
     }
 }
