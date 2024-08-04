@@ -18,7 +18,7 @@ public class DestroyerProjectiles : BossRushProjectiles
     {
         if (ApplicableTypes.Contains(projectile.type) && BRS.I.ReferenceBoss is NPC boss)
         {
-            projectile.damage = Util.RoundOff(boss.damage * .035f);
+            projectile.damage = Util.RoundOff(boss.damage * .04f);
         }
     }
 }

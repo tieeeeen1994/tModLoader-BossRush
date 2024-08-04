@@ -122,7 +122,7 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 NPC currentBody = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsBody);
                 if (currentBody != null)
                 {
-                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .7f);
+                    npc.lifeMax = Util.RoundOff(currentBody.lifeMax * .5f);
                     npc.life = npc.lifeMax;
                     npc.defense = 0;
                     npc.damage = Util.RoundOff(currentBody.damage);

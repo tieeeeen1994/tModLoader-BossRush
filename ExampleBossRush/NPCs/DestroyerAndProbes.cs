@@ -29,7 +29,7 @@ public class DestroyerAndProbes : BossRushBossAndMinions
                 ai["ProbeDamage"] = npc.damage;
                 ai["ProbeDefense"] = npc.defense;
             }
-            npc.knockBackResist = 1.2f;
+            npc.knockBackResist = 1f;
         }
         else if (npc.type == NPCID.DeadlySphere && probeDamage.HasValue && probeDefense.HasValue)
         {

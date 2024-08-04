@@ -32,8 +32,8 @@ public class DeathLasers : SharedBossProjectiles
 
     protected override void CalculateDamage(List<NPC> bosses, ref int damage, ref int hits, ref float multiplier)
     {
-        FetchBoss(bosses, NPCID.Retinazer, ref damage, ref hits, ref multiplier, .08f);
-        FetchBoss(bosses, NPCID.TheDestroyer, ref damage, ref hits, ref multiplier, .04f);
+        FetchBoss(bosses, NPCID.Retinazer, ref damage, ref hits, ref multiplier, .09f);
+        FetchBoss(bosses, NPCID.TheDestroyer, ref damage, ref hits, ref multiplier, .05f);
         FetchBoss(bosses, NPCID.SkeletronPrime, ref damage, ref hits, ref multiplier, .07f);
     }
 

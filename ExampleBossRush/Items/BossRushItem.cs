@@ -144,7 +144,7 @@ public class BossRushItem : ModItem
 
         #region Queen Slime
         sign = Util.RandomSign();
-        BRS.AddBoss(-7, new(
+        BRS.AddBoss(7, new(
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
@@ -159,7 +159,7 @@ public class BossRushItem : ModItem
             [NPCID.Retinazer, NPCID.Spazmatism],
             spawnOffset: new(1000, -700, -2000, -300),
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeMultiplier: 13, damageMultiplier: 1.8f, damageFlatIncrease: 30),
+            modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.1f, damageFlatIncrease: 45),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -169,14 +169,14 @@ public class BossRushItem : ModItem
             [NPCID.TheDestroyer],
             spawnOffset: new(-1000, 1000, 2000, 500),
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeMultiplier: 15, damageMultiplier: 1.3f,
-                                    lifeFlatIncrease: 20, damageFlatIncrease: 30),
+            modifiedAttributes: new(lifeMultiplier: 8, damageFlatIncrease: 25,
+                                    lifeFlatIncrease: 10),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         # endregion
 
         # region Skeletron Prime
-        BRS.AddBoss(8, new(
+        BRS.AddBoss(-8, new(
             [NPCID.SkeletronPrime],
             spawnOffset: new(-1000, -700, 2000, -300),
             timeContext: TimeContext.Night,
