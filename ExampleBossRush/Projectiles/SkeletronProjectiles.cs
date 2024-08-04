@@ -26,14 +26,10 @@ public class SkeletronProjectiles : BossRushProjectiles
             var skullTracker = StoreOrFetch("SkullTracker", new Dictionary<int, bool>());
             if (!skullTracker.TryGetValue(projectile.whoAmI, out bool tracked) && !tracked)
             {
-                if (BRS.I.ReferenceBoss is NPC boss)
-                {
-                    projectile.damage = Util.RoundOff(boss.damage * .05f);
-                }
+                projectile.damage = Damage(.1f);
                 projectile.timeLeft = 300;
                 skullTracker[projectile.whoAmI] = true;
             }
-
         }
         if (projectile.type == ProjectileID.InfernoHostileBlast)
         {
@@ -59,4 +55,6 @@ public class SkeletronProjectiles : BossRushProjectiles
             }
         }
     }
+
+    private int Damage(float multiplier) => Util.RoundOff(((int?)Ai["OriginalDamage"] ?? 0) * multiplier);
 }

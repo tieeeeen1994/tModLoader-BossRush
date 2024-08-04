@@ -119,12 +119,12 @@ public class BossRushItem : ModItem
         #endregion
 
         #region Skeletron
-        BRS.AddBoss(5, new(
+        BRS.AddBoss(-5, new(
             [NPCID.SkeletronHead],
             spawnOffset: new(-1000, -700, 2000, -300),
             timeContext: TimeContext.Night,
-            modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 40,
-                                    damageMultiplier: 2, damageFlatIncrease: 40),
+            modifiedAttributes: new(lifeFlatIncrease: 500, lifeMultiplier: 15,
+                                    damageFlatIncrease: 50),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion

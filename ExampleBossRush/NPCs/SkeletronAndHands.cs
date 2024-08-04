@@ -23,6 +23,7 @@ public class SkeletronAndHands : BossRushBossAndMinions
         }
         if (npc.type == NPCID.SkeletronHead)
         {
+            StoreOrFetch("OriginalDamage", npc.damage);
             var defense = StoreOrFetch("HeadDefense", npc.defense);
             var infernoAttack = StoreOrFetch("InfernoAttack", (0, 94));
             var spectreAttack = StoreOrFetch("SpectreAttack", (0, 61));
@@ -46,7 +47,7 @@ public class SkeletronAndHands : BossRushBossAndMinions
                     Vector2 velocity = npc.DirectionTo(Main.player[npc.target].Center) * 10f;
                     Projectile.NewProjectile(npc.GetSource_FromAI("Inferno"), npc.Center, velocity,
                                              ProjectileID.InfernoHostileBlast,
-                                             Util.RoundOff(npc.damage * .09f), 8f);
+                                             Damage(.11f), 8f);
                 }
                 else
                 {
@@ -62,7 +63,7 @@ public class SkeletronAndHands : BossRushBossAndMinions
                     Vector2 velocity = npc.DirectionTo(Main.player[npc.target].Center) * 5f;
                     Projectile.NewProjectile(npc.GetSource_FromAI("Spectre"), npc.Center, velocity,
                                              ProjectileID.LostSoulHostile,
-                                             Util.RoundOff(npc.damage * .07f), 0f);
+                                             Damage(.09f), 0f);
                 }
                 else
                 {
@@ -71,4 +72,6 @@ public class SkeletronAndHands : BossRushBossAndMinions
             }
         }
     }
+
+    private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
 }
