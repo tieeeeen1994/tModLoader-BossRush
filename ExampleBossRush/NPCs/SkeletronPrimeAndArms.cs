@@ -7,6 +7,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using static ExampleBossRush.ExampleBossRushUtils;
+using BRS = BossRushAPI.BossRushSystem;
 using EBR = ExampleBossRush.ExampleBossRush;
 
 namespace ExampleBossRush.NPCs;
@@ -31,12 +32,21 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
             var rocketTracker = StoreOrFetch("RocketTracker", new Dictionary<Projectile, int>());
             var laserTracker = StoreOrFetch("LaserTracker", new Dictionary<Projectile, bool>());
             StoreOrFetch("OriginalDamage", npc.damage);
+            if (ArePartsAlive)
+            {
+                npc.defense = npc.defDefense * 10;
+            }
+            else
+            {
+                npc.defense = npc.defDefense;
+            }
             CleanInactiveData(bombTracker);
             CleanInactiveData(rocketTracker);
             CleanInactiveData(laserTracker);
         }
         else if (npc.type == NPCID.PrimeCannon)
         {
+            StoreOrFetch("Cannon", npc);
             var rocketQueue = StoreOrFetch("RocketQueue", new List<int>());
             for (int i = 0; i < rocketQueue.Count; i++)
             {
@@ -59,6 +69,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
         }
         else if (npc.type == NPCID.PrimeVice)
         {
+            StoreOrFetch("Vice", npc);
             var spikeCooldown = StoreOrFetch("SpikeCooldown", 0);
             if (npc.ai[2] == 2f || (npc.ai[2] == 5f))
             {
@@ -68,7 +79,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                     {
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center,
                                                  npc.velocity * 1.5f, ProjectileID.Spike,
-                                                 Damage(.2f), 30f, -1, 0, 0, npc.target);
+                                                 Damage(.15f), 30f, -1, 0, 0, npc.target);
                     }
                     ai["SpikeCooldown"] = spikeCooldown = 2.ToFrames();
                 }
@@ -77,11 +88,13 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
         }
         else if (npc.type == NPCID.PrimeSaw)
         {
+            StoreOrFetch("Saw", npc);
             var scrapCooldown = StoreOrFetch("ScrapCooldown", 0);
             ai["ScrapCooldown"] = Math.Max(0, --scrapCooldown);
         }
         else if (npc.type == NPCID.PrimeLaser)
         {
+            StoreOrFetch("Laser", npc);
             var laserQueue = StoreOrFetch("LaserQueue", new List<(int, Vector2)>());
             for (int i = 0; i < laserQueue.Count; i++)
             {
@@ -94,8 +107,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                         var offset = velocity;
                         offset.Normalize();
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center + (offset * 48),
-                                                 velocity, ProjectileID.DeathLaser,
-                                                 Damage(.07f), 25, -1, 0, 0, 69);
+                                                 velocity, ProjectileID.DeathLaser, 1, 25, -1, 0, 0, 69);
                     }
                 }
                 else
@@ -128,7 +140,7 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
                 {
                     var velocity = Main.rand.NextVector2CircularEdge(10f, 10f);
                     Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity,
-                                             ProjectileID.SaucerScrap, Damage(.1f), 15f);
+                                             ProjectileID.SaucerScrap, Damage(.15f), 15f);
                 }
                 else
                 {
@@ -142,4 +154,20 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
     }
 
     private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
+
+    private bool ArePartsAlive
+    {
+        get
+        {
+            if (!ai.ContainsKey("Vice") || !ai.ContainsKey("Cannon") || !ai.ContainsKey("Saw") || !ai.ContainsKey("Laser"))
+            {
+                return true;
+            }
+            NPC vice = (NPC)ai["Vice"];
+            NPC saw = (NPC)ai["Saw"];
+            NPC laser = (NPC)ai["Laser"];
+            NPC cannon = (NPC)ai["Cannon"];
+            return vice.active || saw.active || laser.active || cannon.active;
+        }
+    }
 }

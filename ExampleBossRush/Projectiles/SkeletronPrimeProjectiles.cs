@@ -48,7 +48,7 @@ public class SkeletronPrimeProjectiles : BossRushProjectiles
                 if (player.active && !player.dead)
                 {
                     Point point = new(player.Center.X.RoundOff(), player.Center.Y.RoundOff());
-                    Rectangle iBox = new(point.X - 4, point.Y - 4, 8, 8);
+                    Rectangle iBox = new(point.X - 5, point.Y - 10, 10, 20);
                     if (projectile.Hitbox.Intersects(iBox))
                     {
                         projectile.Kill();

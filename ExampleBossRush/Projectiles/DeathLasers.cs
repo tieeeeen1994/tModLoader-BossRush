@@ -17,10 +17,10 @@ public class DeathLasers : SharedBossProjectiles
     protected override void Update(Projectile projectile)
     {
         base.Update(projectile);
-        var laserTracker = StoreOrFetch("LaserTracker", new Dictionary<Projectile, bool>());
-        if (!laserTracker.TryGetValue(projectile, out bool tracked) && !tracked)
+        if (BRS.I.ReferenceBoss is NPC boss && boss.type == NPCID.SkeletronPrime && projectile.ai[2] != 69)
         {
-            if (projectile.ai[2] != 69 && BRS.I.ReferenceBoss is NPC boss && boss.type == NPCID.SkeletronPrime)
+            var laserTracker = StoreOrFetch("LaserTracker", new Dictionary<Projectile, bool>());
+            if (!laserTracker.TryGetValue(projectile, out bool tracked) && !tracked)
             {
                 var laserQueue = StoreOrFetch("LaserQueue", new List<(int, Vector2)>());
                 laserQueue.Add((10, projectile.oldVelocity));
@@ -34,7 +34,7 @@ public class DeathLasers : SharedBossProjectiles
     {
         FetchBoss(bosses, NPCID.Retinazer, ref damage, ref hits, ref multiplier, .09f);
         FetchBoss(bosses, NPCID.TheDestroyer, ref damage, ref hits, ref multiplier, .05f);
-        FetchBoss(bosses, NPCID.SkeletronPrime, ref damage, ref hits, ref multiplier, .07f);
+        FetchBoss(bosses, NPCID.SkeletronPrime, ref damage, ref hits, ref multiplier, .13f);
     }
 
     private List<int> ApplicableBosses => [NPCID.Retinazer, NPCID.TheDestroyer, NPCID.SkeletronPrime];

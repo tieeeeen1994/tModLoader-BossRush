@@ -27,7 +27,7 @@ namespace ExampleBossRush.Types
             NPC boss = bosses.Find(boss => boss.type == type);
             if (boss != null)
             {
-                damage += boss.damage;
+                damage += (int?)Ai["OriginalDamage"] ?? boss.damage;
                 multiplier += addedMultiplier;
                 hits += 1;
             }
