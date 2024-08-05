@@ -1,11 +1,13 @@
-﻿using Terraria;
+﻿using BossRushAPI.Types;
+using System;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
 using BRS = BossRushAPI.BossRushSystem;
 
 namespace BossRushAPI.NPCs;
 
-public class BossAndSlaves : GlobalNPC
+public class BossAndMinions : GlobalNPC
 {
     public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
     {
@@ -16,9 +18,11 @@ public class BossAndSlaves : GlobalNPC
     {
         if (BRS.I.IsBossRushActive && BRS.I.CurrentBossData?.ModifiedAttributes is { } attributes)
         {
+            PreSetDefaults(npc, attributes);
             npc.lifeMax = attributes.ComputeLife(npc.lifeMax);
             npc.damage = attributes.ComputeDamage(npc.damage);
             npc.defense = attributes.ComputeDefense(npc.defense);
+            PostSetDefaults(npc, attributes);
         }
     }
 
@@ -38,4 +42,7 @@ public class BossAndSlaves : GlobalNPC
             BRS.I.MarkBossDefeat(npc);
         }
     }
+
+    public static event Action<NPC, ModifiedAttributes> PreSetDefaults = delegate { };
+    public static event Action<NPC, ModifiedAttributes> PostSetDefaults = delegate { };
 }

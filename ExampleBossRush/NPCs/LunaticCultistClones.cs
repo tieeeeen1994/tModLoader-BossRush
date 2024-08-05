@@ -33,7 +33,7 @@ public class LunaticCultistClone : BossRushBossAndMinions
     {
         if (StandardChecks && npc.type == NPCID.AncientLight || npc.type == NPCID.AncientDoom)
         {
-            return false;
+            return npc.chaseable = false;
         }
         return null;
     }

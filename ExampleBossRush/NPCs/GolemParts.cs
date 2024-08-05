@@ -1,4 +1,6 @@
 ﻿using BossRushAPI;
+using BossRushAPI.NPCs;
+using BossRushAPI.Types;
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -7,17 +9,27 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using static ExampleBossRush.ExampleBossRushUtils;
-using BRS = BossRushAPI.BossRushSystem;
 
 namespace ExampleBossRush.NPCs;
 
 public class GolemParts : BossRushBossAndMinions
 {
+    public override void Load()
+    {
+        BossAndMinions.PreSetDefaults += PreSetDefaults;
+    }
+
+    public override void Unload()
+    {
+        BossAndMinions.PreSetDefaults -= PreSetDefaults;
+    }
+
     protected override List<int> ApplicableTypes => [
         NPCID.GolemFistLeft,
         NPCID.GolemFistRight,
         NPCID.GolemHeadFree,
-        NPCID.Golem
+        NPCID.Golem,
+        NPCID.GolemHead
     ];
 
     protected override bool AbsoluteCheck => IsCurrentBoss(NPCID.Golem);
@@ -25,6 +37,7 @@ public class GolemParts : BossRushBossAndMinions
     protected override void Update(NPC npc)
     {
         var realGolemHead = StoreOrFetch<NPC>("RealGolemHead", null);
+        var extraHeads = StoreOrFetch("ExtraHeads", new NPC[2] { null, null });
         var fistStateTracker = StoreOrFetch("FistStateTracker", new Dictionary<NPC, float>());
         if (npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight)
         {
@@ -38,7 +51,7 @@ public class GolemParts : BossRushBossAndMinions
                 {
                     for (int i = 0; i < 10; i++)
                     {
-                        var velocity = Main.rand.NextVector2CircularEdge(5, 5);
+                        var velocity = Main.rand.NextVector2CircularEdge(10, 10);
                         Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity,
                                                  ProjectileID.Nail, Util.RoundOff(npc.damage * .15f), 0f);
                     }
@@ -49,7 +62,6 @@ public class GolemParts : BossRushBossAndMinions
         else if (npc.type == NPCID.GolemHeadFree)
         {
             var golemHeadTracker = StoreOrFetch("GolemHeadTracker", false);
-            var extraHeads = StoreOrFetch("ExtraHeads", new NPC[2] { null, null });
             if (!golemHeadTracker)
             {
                 ai["RealGolemHead"] = npc;
@@ -79,11 +91,6 @@ public class GolemParts : BossRushBossAndMinions
         else if (npc.type == NPCID.Golem)
         {
             CleanInactiveData(fistStateTracker);
-        }
-        if (BRS.I.ReferenceBoss == null || !BRS.I.ReferenceBoss.active)
-        {
-            npc.active = false;
-            Main.npc[npc.whoAmI] = new NPC() { active = false };
         }
     }
 
@@ -121,8 +128,16 @@ public class GolemParts : BossRushBossAndMinions
     {
         if (StandardChecks && (npc.type == NPCID.GolemFistLeft || npc.type == NPCID.GolemFistRight))
         {
-            return false;
+            return npc.chaseable = false;
         }
         return null;
+    }
+
+    private void PreSetDefaults(NPC npc, ModifiedAttributes attributes)
+    {
+        if (npc.type == NPCID.Golem)
+        {
+            npc.lifeMax = 25000;
+        }
     }
 }

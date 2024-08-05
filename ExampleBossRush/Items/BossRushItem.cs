@@ -188,7 +188,7 @@ public class BossRushItem : ModItem
         # endregion
 
         # region Plantera
-        BRS.AddBoss(-9, new(
+        BRS.AddBoss(9, new(
             [NPCID.Plantera],
             spawnOffset: new(-1000, 1500, 2000, 500),
             timeContext: TimeContext.Noon,
@@ -199,11 +199,10 @@ public class BossRushItem : ModItem
 
         #region Golem
         sign = Util.RandomSign();
-        BRS.AddBoss(10, new(
+        BRS.AddBoss(-10, new(
             [NPCID.Golem],
             spawnOffset: new(700 * sign, -400, -200 * sign, -10),
-            modifiedAttributes: new(lifeMultiplier: 7f, damageMultiplier: 1.5f,
-                                    lifeFlatIncrease: 100, damageFlatIncrease: 20),
+            modifiedAttributes: new(lifeMultiplier: 4, damageFlatIncrease: 50),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
