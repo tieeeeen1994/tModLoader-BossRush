@@ -188,11 +188,11 @@ public class BossRushItem : ModItem
         # endregion
 
         # region Plantera
-        BRS.AddBoss(9, new(
+        BRS.AddBoss(-9, new(
             [NPCID.Plantera],
             spawnOffset: new(-1000, 1500, 2000, 500),
             timeContext: TimeContext.Noon,
-            modifiedAttributes: new(lifeMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 3f, damageMultiplier: .9f, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
