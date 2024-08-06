@@ -8,7 +8,7 @@
 	<ellipse stroke="black" stroke-width="1" fill="none" cx="273.5" cy="195.5" rx="30" ry="30"/>
 	<text x="261.5" y="201.5" font-family="Times New Roman" font-size="20">On</text>
 	<ellipse stroke="black" stroke-width="1" fill="none" cx="444.5" cy="195.5" rx="30" ry="30"/>
-	<text x="418" y="201.5" font-family="Times New Roman" font-size="15">Prepare</text>
+	<text x="418" y="201.5" font-family="Times New Roman" font-size="17">Prepare</text>
 	<ellipse stroke="black" stroke-width="1" fill="none" cx="608.5" cy="195.5" rx="30" ry="30"/>
 	<text x="591.5" y="201.5" font-family="Times New Roman" font-size="20">Run</text>
 	<ellipse stroke="black" stroke-width="1" fill="none" cx="305.5" cy="50.5" rx="30" ry="30"/>
