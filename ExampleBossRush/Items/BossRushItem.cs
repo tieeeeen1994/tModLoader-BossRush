@@ -199,7 +199,7 @@ public class BossRushItem : ModItem
 
         #region Golem
         sign = Util.RandomSign();
-        BRS.AddBoss(-10, new(
+        BRS.AddBoss(10, new(
             [NPCID.Golem],
             spawnOffset: new(700 * sign, -400, -200 * sign, -10),
             modifiedAttributes: new(lifeMultiplier: 4, damageFlatIncrease: 50),
@@ -210,11 +210,11 @@ public class BossRushItem : ModItem
         #region Duke Fishron
         sign = Util.RandomSign();
         chooseSide = Main.rand.NextBool() ? PlaceContext.LeftOcean : PlaceContext.RightOcean;
-        BRS.AddBoss(11, new(
+        BRS.AddBoss(-11, new(
             [NPCID.DukeFishron],
             spawnOffset: new(900 * sign, 0, -200 * sign, -10),
             placeContext: chooseSide,
-            modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.7f, lifeFlatIncrease: 150),
+            modifiedAttributes: new(lifeMultiplier: 3, damageMultiplier: 1.03f, lifeFlatIncrease: 150),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
