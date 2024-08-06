@@ -9,6 +9,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using BR = BossRushAPI.BossRushAPI;
+using BRC = BossRushAPI.BossRushConfig;
 
 namespace BossRushAPI;
 
@@ -30,6 +31,9 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
     private bool allDead = false;
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
+    private int teleportTimer = 0;
+    private bool waitingForTeleport = false;
+    private bool waitedForTeleport = false;
     #endregion
 
     public override void NetSend(BinaryWriter writer)
@@ -229,7 +233,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         switch (State)
         {
             case States.On:
-                NewText("Mods.BossRush.Messages.Commence");
+                NewText("Mods.BossRushAPI.Messages.Commence");
                 InitializeSystem();
                 ChangeState(States.Prepare);
                 break;
@@ -237,16 +241,19 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
             case States.Prepare:
                 if (++prepareTimer >= 1.ToFrames())
                 {
-                    prepareTimer = 0;
                     if (bossQueue.Count <= 0)
                     {
-                        NewText("Mods.BossRush.Messages.Win");
+                        prepareTimer = 0;
+                        NewText("Mods.BossRushAPI.Messages.Win");
                         ChangeState(States.End);
                     }
                     else
                     {
-                        SpawnNextBoss();
-                        ChangeState(States.Run);
+                        if (SpawnNextBoss())
+                        {
+                            prepareTimer = 0;
+                            ChangeState(States.Run);
+                        }
                     }
                 }
                 break;
@@ -257,7 +264,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                 break;
 
             case States.End:
-                NewText("Mods.BossRush.Messages.End");
+                NewText("Mods.BossRushAPI.Messages.End");
                 Util.CleanStage();
                 ResetSystem();
                 break;
@@ -296,13 +303,13 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         switch (State)
         {
             case States.Off:
-                NewText("Mods.BossRush.Messages.Active");
+                NewText("Mods.BossRushAPI.Messages.Active");
                 Util.CleanStage();
                 ChangeState(States.On);
                 break;
             case States.Prepare:
             case States.Run:
-                NewText("Mods.BossRush.Messages.Disable");
+                NewText("Mods.BossRushAPI.Messages.Disable");
                 Util.CleanStage();
                 ChangeState(States.End);
                 break;
@@ -323,7 +330,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                     }
                 }
                 allDead = true;
-                NewText("Mods.BossRush.Messages.Failure");
+                NewText("Mods.BossRushAPI.Messages.Failure");
             }
             else
             {
@@ -377,7 +384,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         {
             Util.CleanStage();
             ChangeState(States.Prepare);
-            NewText("Mods.BossRush.Messages.Despawn");
+            NewText("Mods.BossRushAPI.Messages.Despawn");
         }
     }
 
@@ -422,37 +429,90 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         prepareTimer = 0;
         bossDefeated = null;
         candidates.Clear();
+        waitedForTeleport = false;
+        waitingForTeleport = false;
+        teleportTimer = 0;
         ChangeState(States.Off);
     }
 
-    private void SpawnNextBoss()
+    private bool SpawnNextBoss()
     {
-        var nextBossData = bossQueue.Peek();
-        if (nextBossData.PlaceContext == null)
+        if (!waitingForTeleport && !waitedForTeleport)
         {
-            CurrentBossData?.PlaceContext?.BackToSpawn();
+            var nextBossData = bossQueue.Peek();
+            if (nextBossData.PlaceContext == null)
+            {
+                if (CurrentBossData?.PlaceContext is PlaceContext context)
+                {
+                    context.BackToSpawn();
+                    waitingForTeleport = true;
+                }
+            }
+            else
+            {
+                if (nextBossData.PlaceContext is PlaceContext context)
+                {
+                    context.TeleportPlayers();
+                    waitingForTeleport = true;
+                }
+            }
         }
-        CurrentBossData = nextBossData;
-        _currentBoss = Spawn(CurrentBossData.Value);
-        bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
-        CurrentBossData?.StartMessage?.Display();
+        if (!waitingForTeleport && waitedForTeleport)
+        {
+            waitedForTeleport = false;
+            waitingForTeleport = false;
+            return SpawnLogic();
+        }
+        else
+        {
+            if (++teleportTimer >= BRC.I.placeContextTeleportationDelay.ToFrames())
+            {
+                teleportTimer = 0;
+                waitingForTeleport = false;
+                waitedForTeleport = true;
+            }
+            return false;
+        }
     }
 
-    private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
-
-    private bool IsBossDefeated() => !bossDefeated.ContainsValue(false);
-
-    private bool IsBossDespawned() => _currentBoss == null || bossDefeated == null ||
-                                      _currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
-
-    private List<NPC> Spawn(BossData data)
+    private bool SpawnLogic()
     {
-        data.TimeContext?.ChangeTime();
-        data.PlaceContext?.TeleportPlayers();
+        var nextBossData = bossQueue.Peek();
+        CurrentBossData = nextBossData;
+        nextBossData.TimeContext?.ChangeTime();
+        List<Player> targets = PickTargets();
+        if (targets.Count > 0)
+        {
+            Player target = Main.rand.Next(targets);
+            _currentBoss = [];
 
+            foreach (var type in nextBossData.Types)
+            {
+                Vector2 offsetValue = nextBossData.RandomSpawnLocation();
+                int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
+                int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
+
+                // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
+                int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
+                                          1, 0, 0, 0, 0, target.whoAmI);
+                _currentBoss.Add(Main.npc[npcIndex]);
+            }
+            bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
+            nextBossData.StartMessage?.Display();
+            return true;
+        }
+        else
+        {
+            NewText("Mods.BossRushAPI.Messages.NoTarget");
+            ChangeState(States.End);
+            return false;
+        }
+    }
+
+    private List<Player> PickTargets()
+    {
         List<Player> potentialTargetPlayers = [];
         float highestAggro = float.MinValue;
-
         foreach (var player in Main.ActivePlayers)
         {
             if (highestAggro == player.aggro)
@@ -466,33 +526,15 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                 highestAggro = player.aggro;
             }
         }
-
-        if (potentialTargetPlayers.Count > 0)
-        {
-
-            Player target = Main.rand.Next(potentialTargetPlayers);
-            List<NPC> spawnedBosses = [];
-
-            foreach (var type in data.Types)
-            {
-                Vector2 offsetValue = data.RandomSpawnLocation();
-                int spawnX = Util.RoundOff(target.Center.X + offsetValue.X);
-                int spawnY = Util.RoundOff(target.Center.Y + offsetValue.Y);
-
-                // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
-                int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
-                                          1, 0, 0, 0, 0, target.whoAmI);
-                spawnedBosses.Add(Main.npc[npcIndex]);
-            }
-
-            return spawnedBosses;
-        }
-        else
-        {
-            NewText("Something went wrong. No players found when trying to spawn boss.", true);
-            return [];
-        }
+        return potentialTargetPlayers;
     }
+
+    private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
+
+    private bool IsBossDefeated() => !bossDefeated.ContainsValue(false);
+
+    private bool IsBossDespawned() => _currentBoss == null || bossDefeated == null ||
+                                      _currentBoss.Any(boss => !bossDefeated[boss] && !boss.active);
 
     private void NewText(string text, bool literal = false) => Util.NewText(text, new(102, 255, 255), literal);
 
