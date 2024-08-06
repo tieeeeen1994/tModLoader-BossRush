@@ -243,7 +243,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerSolar],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.SolarPillar")
         ));
 
@@ -251,7 +251,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerNebula],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.NebulaPillar")
         ));
 
@@ -259,7 +259,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerStardust],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.StardustPillar")
         ));
 
@@ -267,7 +267,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerVortex],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 3),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.VortexPillar")
         ));
         #endregion
