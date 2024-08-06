@@ -276,7 +276,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(15, new(
             [NPCID.MoonLordCore],
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: .5f, damageMultiplier: 1.6f, projectilesAffected: true)
+            modifiedAttributes: new(lifeMultiplier: 5f, damageMultiplier: 1.1f, projectilesAffected: true)
         ));
         #endregion
     }
