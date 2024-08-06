@@ -210,7 +210,7 @@ public class BossRushItem : ModItem
         #region Duke Fishron
         sign = Util.RandomSign();
         chooseSide = Main.rand.NextBool() ? PlaceContext.LeftOcean : PlaceContext.RightOcean;
-        BRS.AddBoss(-11, new(
+        BRS.AddBoss(11, new(
             [NPCID.DukeFishron],
             spawnOffset: new(900 * sign, 0, -200 * sign, -10),
             placeContext: chooseSide,
@@ -223,7 +223,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(12, new([NPCID.HallowBoss],
                     spawnOffset: new(0, -300, 0, 0),
                     timeContext: TimeContext.Night,
-                    modifiedAttributes: new(lifeMultiplier: 5, damageMultiplier: 1.9f),
+                    modifiedAttributes: new(lifeMultiplier: 5),
                     spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
