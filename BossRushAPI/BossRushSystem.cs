@@ -249,7 +249,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                     }
                     else
                     {
-                        if (SpawnNextBoss())
+                        if (SpawnNextBossOrWaitingForTeleport())
                         {
                             prepareTimer = 0;
                             ChangeState(States.Run);
@@ -422,7 +422,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         ChangeState(States.Off);
     }
 
-    private bool SpawnNextBoss()
+    private bool SpawnNextBossOrWaitingForTeleport()
     {
         if (!waitingForTeleport && !waitedForTeleport)
         {
