@@ -14,16 +14,16 @@ Here is the order of the bosses. Equal numbers mean they will be spawned randoml
 - No changes.
 
 3. Eye of Cthulhu
-- Servants now perform a dash attack.
+- Servants now perform a short dash attack.
 
 4. Eater of Worlds
 - Now spawns a corruptor when a segment is destroyed.
-- Vile Spits now only take 1 damage and has 10 life.
+- Vile Spits now only take 1 damage (2 of critical) and has 10 life.
 
 4. Brain of Cthulhu
 - Now spawns Ichor Stickers when a Creeper dies.
 - Ichor Sticker's projectiles is not affected by gravity.
-- brain of Cthulhu is immune to knockback in its second phase.
+- Brain of Cthulhu is immune to knockback in its second phase.
 
 5. Queen Bee
 - The bees she spawns are faster.
@@ -35,12 +35,12 @@ Here is the order of the bosses. Equal numbers mean they will be spawned randoml
 - All minions are immune to knockback.
 
 8. Queen Slime
-- Grounded minions are immune to knowckback.
+- Grounded minions are immune to knockback.
 - Flying minions have high knockback resistance.
 
 9. The Twins
 - They go to their second phase much earlier.
-- Retinazer deals the same damage as Spazmatism now.
+- Retinazer significantly deals much more damage now.
 
 9. The Destroyer
 - Probes are now susceptible to knockback.
@@ -54,9 +54,10 @@ Here is the order of the bosses. Equal numbers mean they will be spawned randoml
 
 10. Plantera
 - Always enraged.
-- Her second phase makes her fire much more projectiles than her first phase.
+- Her second phase still fires projectiles the same way as her first phase, albeit slower.
 - Plantera's Tentacles grant Plantera a huge defense boost.
 - Killing her tentacles will make her defense drop.
+- Weakened her damage as she can be a bit challenging due to her rage.
 
 11. Golem
 - Going to second phase now generates 3 heads.
@@ -81,18 +82,22 @@ Here is the order of the bosses. Equal numbers mean they will be spawned randoml
 14. Solar Pillar
 - Has 150 shield points.
 - Spawning is more aggressive.
+- Weakened damage.
 
 14. Nebula Pillar
 - Has 150 shield points.
 - Spawning is more aggressive.
+- Weakened damage.
 
 14. Vortex Pillar
 - Has 150 shield points.
 - Spawning is more aggressive.
+- Weakened damage.
 
 14. Stardust Pillar
 - Has 150 shield points.
 - Spawning is more aggressive.
+- Weakened damage.
 
 15. Moon Lord
 - Now spawns with a True Eye of Cthulhu.

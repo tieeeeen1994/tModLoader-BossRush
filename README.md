@@ -10,10 +10,19 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 
 # Boss Rush API Changelog
 
+1.0.2
+- Optimizations, and more features for the API.
+- Not documented for now, but they will be in the wiki for sure.
+
 1.0.0
 - Initial release.
 
 # Example Boss Rush Changelog
+
+1.0.2
+- Rebalanced everything.
+- Weaknened everything as I realized balancing around Solar Armor and Zenith is a huge mistake.
+- They are stills tronge than their non-boss rush counterparts, however.
 
 1.0.0
 - Initial release.
