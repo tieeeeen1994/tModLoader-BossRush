@@ -19,9 +19,4 @@ public class BossRushConfig : ModConfig, IInstanceable<BossRushConfig>
 
     [DefaultValue(10)]
     public int respawnTimer;
-
-    [Header("PlaceContext")]
-    [DefaultValue(1)]
-    [Range(0, 10)]
-    public int placeContextTeleportationDelay;
 }

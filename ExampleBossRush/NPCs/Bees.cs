@@ -20,23 +20,18 @@ public class Bees : BossRushBossAndMinions
         {
             StoreOrFetch("OriginalDamage", npc.damage);
         }
-        if (BRS.I.ReferenceBoss is NPC boss)
+        else if (npc.type == NPCID.Bee)
         {
-            if (npc.type == NPCID.Bee)
-            {
-                npc.knockBackResist = 0f;
-                npc.damage = Damage(1);
-                npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .2f;
-                npc.velocity = npc.velocity.Clamp(10f);
-            }
-            else if (npc.type == NPCID.BeeSmall)
-            {
-                npc.damage = Damage(.75f);
-                npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .5f;
-                npc.velocity = npc.velocity.Clamp(20f);
-            }
+            npc.knockBackResist = 0f;
+            npc.damage = Damage(1);
+            npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .2f;
+            npc.velocity = npc.velocity.Clamp(10f);
+        }
+        else if (npc.type == NPCID.BeeSmall)
+        {
+            npc.damage = Damage(.75f);
+            npc.velocity += npc.DirectionTo(Main.player[npc.target].Center) * .5f;
+            npc.velocity = npc.velocity.Clamp(20f);
         }
     }
-
-    private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
 }

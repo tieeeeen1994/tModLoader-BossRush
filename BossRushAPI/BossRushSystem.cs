@@ -9,7 +9,6 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using BR = BossRushAPI.BossRushAPI;
-using BRC = BossRushAPI.BossRushConfig;
 
 namespace BossRushAPI;
 
@@ -24,6 +23,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
     public List<NPC> CurrentBoss => _currentBoss?.ToList();
     public NPC ReferenceBoss => _currentBoss?.Find(boss => boss.active);
     public BossData? CurrentBossData { get; private set; } = null;
+    internal List<int> TeleportReceipts { get; private set; } = null;
     private readonly Dictionary<float, List<BossData>> candidates = [];
     private readonly Queue<BossData> bossQueue = [];
     private List<NPC> _currentBoss = null;
@@ -32,8 +32,6 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
     private int teleportTimer = 0;
-    private bool waitingForTeleport = false;
-    private bool waitedForTeleport = false;
     #endregion
 
     public override void NetSend(BinaryWriter writer)
@@ -416,48 +414,42 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         prepareTimer = 0;
         bossDefeated = null;
         candidates.Clear();
-        waitedForTeleport = false;
-        waitingForTeleport = false;
+        TeleportReceipts = null;
         teleportTimer = 0;
         ChangeState(States.Off);
     }
 
     private bool SpawnNextBossOrWaitingForTeleport()
     {
-        if (!waitingForTeleport && !waitedForTeleport)
+        if (TeleportReceipts == null)
         {
             var nextBossData = bossQueue.Peek();
             if (nextBossData.PlaceContext == null)
             {
                 if (CurrentBossData?.PlaceContext is PlaceContext context)
                 {
+                    TeleportReceipts = [];
                     context.BackToSpawn();
-                    waitingForTeleport = true;
                 }
             }
             else
             {
                 if (nextBossData.PlaceContext is PlaceContext context)
                 {
+                    TeleportReceipts = [];
                     context.TeleportPlayers();
-                    waitingForTeleport = true;
                 }
             }
         }
-        if (!waitingForTeleport && waitedForTeleport)
+        if ((TeleportReceipts == null || TeleportReceipts.Count <= 0) && teleportTimer >= 5)
         {
-            waitedForTeleport = false;
-            waitingForTeleport = false;
+            TeleportReceipts = null;
+            teleportTimer = 0;
             return SpawnLogic();
         }
         else
         {
-            if (++teleportTimer >= BRC.I.placeContextTeleportationDelay.ToFrames())
-            {
-                teleportTimer = 0;
-                waitingForTeleport = false;
-                waitedForTeleport = true;
-            }
+            teleportTimer++;
             return false;
         }
     }

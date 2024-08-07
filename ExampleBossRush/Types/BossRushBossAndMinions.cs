@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BossRushAPI;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using BRS = BossRushAPI.BossRushSystem;
@@ -63,4 +64,14 @@ public abstract class BossRushBossAndMinions : GlobalNPC
 
     protected bool StandardChecks => BRS.I.IsBossRushActive && BRS.I.CurrentBoss != null &&
                                      BRS.I.CurrentBossData != null && AbsoluteCheck;
+
+    protected int Damage(float multiplier)
+    {
+        int damage = 0;
+        if (ai.TryGetValue("OriginalDamage", out object originalDamage))
+        {
+            damage = (int)originalDamage;
+        }
+        return Util.RoundOff(damage * multiplier);
+    }
 }

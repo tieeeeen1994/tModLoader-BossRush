@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BossRushAPI;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using BRS = BossRushAPI.BossRushSystem;
@@ -60,5 +61,15 @@ public abstract class BossRushProjectiles : GlobalProjectile
                 storage.Remove(entry.Key);
             }
         }
+    }
+
+    protected int Damage(float multiplier)
+    {
+        int damage = 0;
+        if (Ai.TryGetValue("OriginalDamage", out object originalDamage))
+        {
+            damage = (int)originalDamage;
+        }
+        return Util.RoundOff(damage * multiplier);
     }
 }

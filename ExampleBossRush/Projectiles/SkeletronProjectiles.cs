@@ -55,6 +55,4 @@ public class SkeletronProjectiles : BossRushProjectiles
             }
         }
     }
-
-    private int Damage(float multiplier) => Util.RoundOff(((int?)Ai["OriginalDamage"] ?? 0) * multiplier);
 }

@@ -10,14 +10,24 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 
 # Boss Rush API Changelog
 
+1.0.3
+- Remove the multiplayer compatibility config option.
+- Implement a fool-proof teleporting system to allow seamless multiplayer experience.
+
 1.0.2
 - Optimizations, and more features for the API.
 - Not documented for now, but they will be in the wiki for sure.
+- Add config options for multiplayer compatibility when teleporting players.
+- Add config options for bending the rules of boss rush events regarding player respawns.
 
 1.0.0
 - Initial release.
 
 # Example Boss Rush Changelog
+
+1.0.3
+- Quick hotfix that fixes the boss rush starting with Wall of Flesh.
+- Also fix bugs regarding OriginalDamage not being fetched. Bad code.
 
 1.0.2
 - Rebalanced everything.

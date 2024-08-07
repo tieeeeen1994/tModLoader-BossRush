@@ -153,8 +153,6 @@ public class SkeletronPrimeAndArms : BossRushBossAndMinions
         }
     }
 
-    private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
-
     private bool ArePartsAlive
     {
         get

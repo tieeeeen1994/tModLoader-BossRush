@@ -30,6 +30,9 @@ public class BossRushAPI : Mod, IInstanceable<BossRushAPI>
                         NetMessage.SendData(MessageID.TeleportEntity, -1, -1, null, 0,
                                             Main.myPlayer, position.X, position.Y);
                     }
+                    ModPacket packet = GetPacket();
+                    packet.Write((byte)PacketType.TeleportReceipt);
+                    packet.Send();
                 }
                 break;
 
@@ -44,6 +47,13 @@ public class BossRushAPI : Mod, IInstanceable<BossRushAPI>
                 if (Main.netMode == NetmodeID.MultiplayerClient)
                 {
                     Util.CleanStage();
+                }
+                break;
+
+            case PacketType.TeleportReceipt:
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    BRS.I.TeleportReceipts.Remove(whoAmI);
                 }
                 break;
         }
@@ -160,5 +170,5 @@ public class BossRushAPI : Mod, IInstanceable<BossRushAPI>
         }
     }
 
-    public enum PacketType : byte { Teleport, SpawnPlayer, CleanStage }
+    public enum PacketType : byte { Teleport, SpawnPlayer, CleanStage, TeleportReceipt }
 }

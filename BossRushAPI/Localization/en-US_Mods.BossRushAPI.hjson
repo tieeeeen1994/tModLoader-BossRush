@@ -15,7 +15,6 @@ Configs: {
 
 		Headers: {
 			Respawn: Respawn Mechanics
-			PlaceContext: Place Context Settings
 		}
 
 		respawnPlayers: {
@@ -35,17 +34,6 @@ Configs: {
 			Tooltip:
 				'''
 				This will be the amount of seconds for players to respawn within the stage.
-				'''
-		}
-
-		placeContextTeleportationDelay: {
-			Label: Teleportation Delay
-			Tooltip:
-				'''
-				The amount in seconds to wait when teleporting players based on Place Context.
-				This is to ensure that all players have teleported.
-				Increase this value if players are lagging and not teleporting properly.
-				Decrease this value for a smoother experience.
 				'''
 		}
 	}

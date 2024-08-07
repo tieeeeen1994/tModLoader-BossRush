@@ -72,6 +72,4 @@ public class SkeletronAndHands : BossRushBossAndMinions
             }
         }
     }
-
-    private int Damage(float multiplier) => Util.RoundOff(((int?)ai["OriginalDamage"] ?? 0) * multiplier);
 }

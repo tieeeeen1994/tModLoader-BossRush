@@ -4,6 +4,7 @@ using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using BR = BossRushAPI.BossRushAPI;
+using BRS = BossRushAPI.BossRushSystem;
 
 namespace BossRushAPI.Types;
 
@@ -62,6 +63,7 @@ public struct PlaceContext
                 }
                 else if (Main.netMode == NetmodeID.Server)
                 {
+                    BRS.I.TeleportReceipts.Add(player.whoAmI);
                     ModPacket packet = BR.I.GetPacket();
                     packet.Write((byte)BR.PacketType.Teleport);
                     packet.WriteVector2(position);

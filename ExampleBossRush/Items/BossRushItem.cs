@@ -133,7 +133,7 @@ public class BossRushItem : ModItem
         bool result = Main.rand.NextBool();
         PlaceContext chooseSide = result ? PlaceContext.LeftUnderworld : PlaceContext.RightUnderworld;
         Rectangle offsetSide = result ? new(-1000, 0, 0, 0) : new(1000, 0, 0, 0);
-        BRS.AddBoss(-6, new(
+        BRS.AddBoss(6, new(
             [NPCID.WallofFlesh],
             placeContext: chooseSide,
             spawnOffset: offsetSide,

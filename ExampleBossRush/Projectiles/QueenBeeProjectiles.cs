@@ -21,6 +21,4 @@ public class QueenBeeProjectiles : BossRushProjectiles
             projectile.damage = Damage(.15f);
         }
     }
-
-    private int Damage(float multiplier) => Util.RoundOff(((int?)Ai["OriginalDamage"] ?? 0) * multiplier);
 }
