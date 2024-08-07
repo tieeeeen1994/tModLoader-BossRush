@@ -8,7 +8,7 @@
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-	  <Exec Command="cd ..&#xD;&#xA;call post-build.bat" />
+	  <Exec Command="cd ..&#xD;&#xA;call post-build.bat&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)$(TargetName).dll&quot;" />
 	</Target>
 
 	<!-- References -->
