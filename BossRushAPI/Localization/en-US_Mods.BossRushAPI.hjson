@@ -1,0 +1,52 @@
+Messages: {
+	Active: Boss Rush started.
+	Commence: Boss Rush is commencing.
+	Disable: Boss Rush disabled.
+	Win: You win.
+	Failure: An issue of skill, it is.
+	Despawn: The boss disappeared. Retrying.
+	End: Boss Rush ended.
+	NoTarget: No players found when trying to spawn boss.
+}
+
+Configs: {
+	BossRushConfig: {
+		DisplayName: API Config
+
+		Headers: {
+			Respawn: Respawn Mechanics
+			PlaceContext: Place Context Settings
+		}
+
+		respawnPlayers: {
+			Label: Ongoing Stage Respawns
+			Tooltip:
+				'''
+				Whether to allow players to respawn when they die in a Boss Rush Stage.
+				If allowed, then respawn timer of players will naturally count down.
+				if disallowed, then respawn timers will pause.
+				In both scenarios, players will still instantly respawn after the boss is defeated.
+				Turn this on to allow; off to disable.
+				'''
+		}
+
+		respawnTimer: {
+			Label: Stage Respawn Timer
+			Tooltip:
+				'''
+				This will be the amount of seconds for players to respawn within the stage.
+				'''
+		}
+
+		placeContextTeleportationDelay: {
+			Label: Teleportation Delay
+			Tooltip:
+				'''
+				The amount in seconds to wait when teleporting players based on Place Context.
+				This is to ensure that all players have teleported.
+				Increase this value if players are lagging and not teleporting properly.
+				Decrease this value for a smoother experience.
+				'''
+		}
+	}
+}

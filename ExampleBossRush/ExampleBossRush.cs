@@ -32,6 +32,7 @@ public class ExampleBossRush : Mod
         On_VortexPillarBigProgressBar.GetMaxShieldValue -= VortexShield;
         On_StardustPillarBigProgressBar.GetMaxShieldValue -= StardustShield;
         ShieldStrengthTowerMaxDetour.Undo();
+        On_Projectile.CanExplodeTile -= On_Projectile_CanExplodeTile;
     }
 
     public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -129,7 +130,7 @@ public class ExampleBossRush : Mod
 
     private bool On_Projectile_CanExplodeTile(On_Projectile.orig_CanExplodeTile orig, Projectile self, int x, int y)
     {
-        if (BRS.I.IsBossRushActive && self.type == ProjectileID.BombSkeletronPrime && Main.getGoodWorld)
+        if (Main.getGoodWorld && BRS.I.IsBossRushActive && self.type == ProjectileID.BombSkeletronPrime)
         {
             return false;
         }
