@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.DataStructures;
 using Terraria.ModLoader;
+using BRC = BossRushAPI.BossRushConfig;
 using BRS = BossRushAPI.BossRushSystem;
 
 namespace BossRushAPI;
@@ -9,12 +10,10 @@ public class BossRushPlayer : ModPlayer
 {
     public override void UpdateDead()
     {
-        if (BRS.I.IsBossRushActive)
+        if (BRS.I.IsBossRushActive && !BRC.I.respawnPlayers)
         {
-            Player.respawnTimer = 10.ToFrames();
+            AssignRespawnTimer();
         }
-        // For debugging and quick respawns.
-        // Player.respawnTimer = 0;
     }
 
     public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
@@ -22,6 +21,10 @@ public class BossRushPlayer : ModPlayer
         if (BRS.I.IsBossRushActive)
         {
             BRS.I.TrackPlayerDeaths();
+            if (BRC.I.respawnPlayers)
+            {
+                AssignRespawnTimer();
+            }
         }
     }
 
@@ -33,4 +36,6 @@ public class BossRushPlayer : ModPlayer
             BRS.I.TrackPlayerDeaths();
         }
     }
+
+    private void AssignRespawnTimer() => Player.respawnTimer = BRC.I.respawnTimer.ToFrames();
 }

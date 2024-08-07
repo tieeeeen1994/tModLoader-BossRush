@@ -34,7 +34,6 @@ Configs: {
 			Label: Stage Respawn Timer
 			Tooltip:
 				'''
-				This option will only work if Ongoing Stage Respawns is enabled.
 				This will be the amount of seconds for players to respawn within the stage.
 				'''
 		}
@@ -45,7 +44,8 @@ Configs: {
 				'''
 				The amount in seconds to wait when teleporting players based on Place Context.
 				This is to ensure that all players have teleported.
-				This becomes an issue when there is lag in one of the players.
+				Increase this value if players are lagging and not teleporting properly.
+				Decrease this value for a smoother experience.
 				'''
 		}
 	}
