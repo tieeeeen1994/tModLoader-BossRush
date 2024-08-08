@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
@@ -46,6 +47,19 @@ public static class Util
             {
                 ChatHelper.BroadcastChatMessage(NetworkText.FromKey(message), color ?? Color.White);
             }
+        }
+    }
+
+    public static bool TryAdd<T>(this List<T> list, T item)
+    {
+        if (list.Contains(item))
+        {
+            return false;
+        }
+        else
+        {
+            list.Add(item);
+            return true;
         }
     }
 

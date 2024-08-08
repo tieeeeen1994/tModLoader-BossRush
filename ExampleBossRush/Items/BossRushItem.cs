@@ -178,7 +178,6 @@ public class BossRushItem : ModItem
         # region Skeletron Prime
         BRS.AddBoss(8, new(
             [NPCID.SkeletronPrime],
-            subTypes: [NPCID.PrimeCannon, NPCID.PrimeSaw, NPCID.PrimeVice, NPCID.PrimeLaser],
             spawnOffset: new(-1000, -700, 2000, -300),
             timeContext: TimeContext.Night,
             modifiedAttributes: new(lifeMultiplier: 4, defenseFlatIncrease: 1,

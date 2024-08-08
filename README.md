@@ -10,6 +10,11 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 
 # Boss Rush API Changelog
 
+1.0.4
+- Add safety checks and assignments in code in case other mods make detours.
+- Fix most other QoL mod incompatibilities.
+- The fixes may not cover all incompatibilities, so please report when issues arise!
+
 1.0.3
 - Remove the multiplayer compatibility config option.
 - Implement a fool-proof teleporting system to allow seamless multiplayer experience.
@@ -24,6 +29,9 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 - Initial release.
 
 # Example Boss Rush Changelog
+
+1.0.4
+- Remove Seletron Prime's arms as Sub Types.
 
 1.0.3
 - Quick hotfix that fixes the boss rush starting with Wall of Flesh.

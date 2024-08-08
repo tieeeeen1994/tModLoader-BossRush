@@ -275,11 +275,11 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
     {
         if (candidates.TryGetValue(position, out List<BossData> list))
         {
-            list.Add(data);
+            list.TryAdd(data);
         }
         else
         {
-            candidates.Add(position, [data]);
+            candidates.TryAdd(position, [data]);
         }
     }
 
@@ -327,10 +327,10 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 
     internal void DynamicAddBoss(NPC boss)
     {
-        _currentBoss.Add(boss);
+        _currentBoss.TryAdd(boss);
         if (Main.netMode != NetmodeID.MultiplayerClient)
         {
-            bossDefeated.Add(boss, false);
+            bossDefeated.TryAdd(boss, false);
         }
     }
 
@@ -462,8 +462,9 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         List<Player> targets = PickTargets();
         if (targets.Count > 0)
         {
-            Player target = Main.rand.Next(targets);
             _currentBoss = [];
+            bossDefeated = [];
+            Player target = Main.rand.Next(targets);
 
             foreach (var type in nextBossData.Types)
             {
@@ -474,7 +475,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                 // Start at index 1 to avoid encountering the nasty vanilla bug for certain bosses.
                 int npcIndex = NPC.NewNPC(new EntitySource_BossSpawn(target), spawnX, spawnY, type,
                                           1, 0, 0, 0, 0, target.whoAmI);
-                _currentBoss.Add(Main.npc[npcIndex]);
+                _currentBoss.TryAdd(Main.npc[npcIndex]);
             }
             bossDefeated = _currentBoss.ToDictionary(boss => boss, _ => false);
             nextBossData.StartMessage?.Display();
