@@ -10,6 +10,9 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 
 # Boss Rush API Changelog
 
+1.0.5
+- Rerelease the mod due to a compilation quirk. It made bosses have chungus amount of health.
+
 1.0.4
 - Add safety checks and assignments in code in case other mods make detours.
 - Fix most other QoL mod incompatibilities.
@@ -29,6 +32,9 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 - Initial release.
 
 # Example Boss Rush Changelog
+
+1.0.5
+- Rerelease the mod due to a compilation quirk. It made bosses have chungus amount of health.
 
 1.0.4
 - Remove Seletron Prime's arms as Sub Types.

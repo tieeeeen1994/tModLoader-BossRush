@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\..\tModLoader.targets" />
@@ -7,8 +7,8 @@
 	<PropertyGroup>
 		<ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
 	</PropertyGroup>
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
-	  <Exec Command="cd ..&#xD;&#xA;call post-build.bat&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).dll&quot; &quot;$(SolutionDir)$(TargetName).dll&quot;" />
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT'">
+		<Exec Command="call .post-build.bat $(Configuration)" />
 	</Target>
 
 	<!-- References -->
