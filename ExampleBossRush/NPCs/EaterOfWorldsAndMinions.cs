@@ -2,9 +2,11 @@
 using ExampleBossRush.Types;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 using static ExampleBossRush.ExampleBossRushUtils;
 using BRS = BossRushAPI.BossRushSystem;
 using EBR = ExampleBossRush.ExampleBossRush;
@@ -86,9 +88,13 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 npc.life = npc.lifeMax = 10;
                 npc.defense = 10000;
                 npc.knockBackResist = 0f;
-                npc.velocity *= 2f;
+                if (Main.netMode != NetmodeID.MultiplayerClient)
+                {
+                    npc.velocity *= 2f;
+                    npc.netUpdate = true;
+                }
                 spitTracker[npc] = true;
-                spitTimer[npc] = 5.ToFrames();
+                spitTimer[npc] = 3.ToFrames();
             }
             NPC currentHead = BRS.I.CurrentBoss.Find(boss => boss.type == NPCID.EaterofWorldsHead);
             if (currentHead != null)
@@ -131,6 +137,16 @@ public class EaterOfWorldsAndMinions : BossRushBossAndMinions
                 }
             }
         }
+    }
+
+    public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+    {
+        binaryWriter.WriteVector2(npc.velocity);
+    }
+
+    public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+    {
+        npc.velocity = binaryReader.ReadVector2();
     }
 
     private List<int> BossParts => [NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail];

@@ -33,6 +33,10 @@ If interested, the [repository wiki](https://github.com/tieeeeen1994/tModLoader-
 
 # Example Boss Rush Changelog
 
+1.0.6
+- Fixed Eater of Worlds where Vile Spits are travelling too fast due to velocity updates running in all clients.
+- Decreased the Vile Spit's time to live to 3 seconds only to avoid bad bugs.
+
 1.0.5
 - Rerelease the mod due to a compilation quirk. It made bosses have chungus amount of health.
 
