@@ -61,7 +61,7 @@ public class BossRushItem : ModItem
                                     lifeFlatIncrease: 80, damageFlatIncrease: 30),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
-        #endregion
+        #endregion King Slime
 
         #region Eye of Cthulhu
         sign = Util.RandomSign();
@@ -73,26 +73,26 @@ public class BossRushItem : ModItem
                                     lifeFlatIncrease: 80, damageFlatIncrease: 4),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
-        #endregion
+        #endregion Eye of Cthulhu
 
         #region Deerclops
         sign = Util.RandomSign();
         BRS.AddBoss(2, new(
             [NPCID.Deerclops],
             spawnOffset: new(500 * sign, 0, -200 * sign, -500),
-            modifiedAttributes: new(lifeMultiplier: 15, damageFlatIncrease: 40, projectilesAffected: true),
+            modifiedAttributes: new(lifeMultiplier: 15, damageFlatIncrease: 50, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
-        #endregion
+        #endregion Deerclops
 
         # region Eater of Worlds
         BRS.AddBoss(3, new(
             [NPCID.EaterofWorldsHead],
             subTypes: [NPCID.EaterofWorldsBody, NPCID.EaterofWorldsHead, NPCID.EaterofWorldsTail],
             spawnOffset: new(-1000, 1000, 2000, 500),
-            modifiedAttributes: new(damageMultiplier: 1.4f, damageFlatIncrease: 70,
-                                    lifeMultiplier: 110, defenseMultiplier: 2,
-                                    defenseFlatIncrease: 50),
+            modifiedAttributes: new(damageMultiplier: 1.3f, damageFlatIncrease: 50,
+                                    lifeMultiplier: 100, defenseMultiplier: 2,
+                                    defenseFlatIncrease: 30),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -102,7 +102,8 @@ public class BossRushItem : ModItem
         BRS.AddBoss(3, new(
             [NPCID.BrainofCthulhu],
             spawnOffset: new(500 * sign, 500, 200 * sign, -1000),
-            modifiedAttributes: new(lifeMultiplier: 20, lifeFlatIncrease: 300, damageFlatIncrease: 50),
+            modifiedAttributes: new(lifeMultiplier: 30, lifeFlatIncrease: 300, damageFlatIncrease: 50,
+                                    damageMultiplier: 1.3f),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         # endregion
@@ -137,7 +138,7 @@ public class BossRushItem : ModItem
             [NPCID.WallofFlesh],
             placeContext: chooseSide,
             spawnOffset: offsetSide,
-            modifiedAttributes: new(lifeMultiplier: 30, lifeFlatIncrease: 100, damageFlatIncrease: 35),
+            modifiedAttributes: new(lifeMultiplier: 30, lifeFlatIncrease: 70, damageFlatIncrease: 30),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -148,7 +149,7 @@ public class BossRushItem : ModItem
             [NPCID.QueenSlimeBoss],
             spawnOffset: new(1000 * sign, -500, -100 * sign, -100),
             timeContext: TimeContext.Noon,
-            modifiedAttributes: new(lifeMultiplier: 7, damageFlatIncrease: 10, damageMultiplier: 1.2f,
+            modifiedAttributes: new(lifeMultiplier: 7, damageFlatIncrease: 12, damageMultiplier: 1.2f,
                                     lifeFlatIncrease: 800, projectilesAffected: true),
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
@@ -198,10 +199,13 @@ public class BossRushItem : ModItem
 
         #region Golem
         sign = Util.RandomSign();
+        ModifiedAttributes golemModifiedAttributes =
+            Main.getGoodWorld ? new(lifeMultiplier: 1.5f, damageFlatIncrease: 15) :
+                                new(lifeMultiplier: 4, damageFlatIncrease: 50); ;
         BRS.AddBoss(10, new(
             [NPCID.Golem],
             spawnOffset: new(700 * sign, -400, -200 * sign, -10),
-            modifiedAttributes: new(lifeMultiplier: 4, damageFlatIncrease: 50),
+            modifiedAttributes: golemModifiedAttributes,
             spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -222,7 +226,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(12, new([NPCID.HallowBoss],
                     spawnOffset: new(0, -300, 0, 0),
                     timeContext: TimeContext.Night,
-                    modifiedAttributes: new(lifeMultiplier: 5),
+                    modifiedAttributes: new(lifeMultiplier: 4),
                     spawnAttributes: SpawnAttributes.NoSpawns
         ));
         #endregion
@@ -242,7 +246,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerSolar],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.SolarPillar")
         ));
 
@@ -250,7 +254,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerNebula],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.NebulaPillar")
         ));
 
@@ -258,7 +262,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerStardust],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.StardustPillar")
         ));
 
@@ -266,7 +270,7 @@ public class BossRushItem : ModItem
             [NPCID.LunarTowerVortex],
             spawnOffset: new(0, -500, 0, 0),
             spawnAttributes: SpawnAttributes.DoubleSpawns,
-            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f, damageFlatIncrease: -5),
+            modifiedAttributes: new(lifeMultiplier: 2, damageMultiplier: .9f),
             defeatMessage: Message.Vanilla("Mods.ExampleBossRush.DeathMessages.VortexPillar")
         ));
         #endregion
@@ -275,7 +279,7 @@ public class BossRushItem : ModItem
         BRS.AddBoss(15, new(
             [NPCID.MoonLordCore],
             spawnAttributes: SpawnAttributes.NoSpawns,
-            modifiedAttributes: new(lifeMultiplier: 5f, damageMultiplier: 1.1f, projectilesAffected: true)
+            modifiedAttributes: new(lifeMultiplier: 5f, damageMultiplier: 1.2f, projectilesAffected: true)
         ));
         #endregion
     }

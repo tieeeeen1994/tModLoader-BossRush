@@ -19,4 +19,11 @@ public class BossRushConfig : ModConfig, IInstanceable<BossRushConfig>
 
     [DefaultValue(10)]
     public int respawnTimer;
+
+    [Header("Multiplayer")]
+    [DefaultValue(true)]
+    public bool periodicSynchronization;
+
+    [DefaultValue(10)]
+    public int synchronizationTime;
 }

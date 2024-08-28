@@ -9,12 +9,14 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader;
 using BR = BossRushAPI.BossRushAPI;
+using BRC = BossRushAPI.BossRushConfig;
 
 namespace BossRushAPI;
 
 public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 {
     #region Fields & Properties
+
     public static BossRushSystem I => Instance;
     public static BossRushSystem Instance => ModContent.GetInstance<BossRushSystem>();
     public bool IsBossRushActive => State != States.Off;
@@ -32,7 +34,9 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
     private int allDeadEndTimer = 0;
     private int prepareTimer = 0;
     private int teleportTimer = 0;
-    #endregion
+    private int updateTimer = 0;
+
+    #endregion Fields & Properties
 
     public override void NetSend(BinaryWriter writer)
     {
@@ -254,11 +258,13 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                         }
                     }
                 }
+                PeriodicSync();
                 break;
 
             case States.Run:
                 CheckPlayerCondition();
                 CheckBossCondition();
+                PeriodicSync();
                 break;
 
             case States.End:
@@ -292,6 +298,7 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
                 Util.CleanStage();
                 ChangeState(States.On);
                 break;
+
             case States.Prepare:
             case States.Run:
                 NewText("Mods.BossRushAPI.Messages.Disable");
@@ -509,6 +516,15 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
         return potentialTargetPlayers;
     }
 
+    private void PeriodicSync()
+    {
+        if (BRC.I.periodicSynchronization && ++updateTimer >= BRC.I.synchronizationTime.ToFrames())
+        {
+            NetMessage.SendData(MessageID.WorldData);
+            updateTimer = 0;
+        }
+    }
+
     private bool IsBossGone() => IsBossDespawned() || IsBossDefeated();
 
     private bool IsBossDefeated() => !bossDefeated.ContainsValue(false);
@@ -518,5 +534,6 @@ public class BossRushSystem : ModSystem, IInstanceable<BossRushSystem>
 
     private void NewText(string text, bool literal = false) => Util.NewText(text, new(102, 255, 255), literal);
 
-    public enum States : byte { Off, On, Prepare, Run, End }
+    public enum States : byte
+    { Off, On, Prepare, Run, End }
 }

@@ -15,6 +15,7 @@ Configs: {
 
 		Headers: {
 			Respawn: Respawn Mechanics
+			Multiplayer: Multiplayer Options
 		}
 
 		respawnPlayers: {
@@ -31,10 +32,17 @@ Configs: {
 
 		respawnTimer: {
 			Label: Stage Respawn Timer
-			Tooltip:
-				'''
-				This will be the amount of seconds for players to respawn within the stage.
-				'''
+			Tooltip: This will be the amount of seconds for players to respawn within the stage.
+		}
+
+		periodicSynchronization: {
+			Label: Periodic Synchronization
+			Tooltip: Whether to synchronize all world data (including the Boss Rush System) per configured seconds.
+		}
+
+		synchronizationTime: {
+			Label: Synchronization Time
+			Tooltip: The amount of seconds to synchronize all world data if periodic synchronization is enabled.
 		}
 	}
 }
