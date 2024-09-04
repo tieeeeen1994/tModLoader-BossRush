@@ -135,7 +135,7 @@ public class GolemParts : BossRushBossAndMinions
 
     private void PreSetDefaults(NPC npc, ModifiedAttributes attributes)
     {
-        if (npc.type == NPCID.Golem)
+        if (npc.type == NPCID.Golem && !Main.getGoodWorld)
         {
             npc.lifeMax = 25000;
         }
